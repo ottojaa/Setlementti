@@ -1,0 +1,7 @@
+{
+  "name": "SetlementtiProjekti",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
