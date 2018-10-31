@@ -1,16 +1,48 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>
-      Home
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            Home
+        </ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>If you get lost, the
-    <a target="_blank" rel="noopener" href="https://ionicframework.com/docs">docs</a> will be your guide.</p>
+    <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="presentModal()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
+    <ul class="inline">
+        <li *ngFor="let part of data.results; let i = index">
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-subtitle>
+                        <ion-row class="row">
+                            <ion-col>
+                                <ion-icon style="font-size: 15px;" name="time"></ion-icon>
+                                {{ data.currentTime | date:'h:mm'}}
+                            </ion-col>
+                            <ion-col>
+                                <ion-badge color="tertiary">{{i+1}}</ion-badge>
+                            </ion-col>
+                        </ion-row>
+                    </ion-card-subtitle>
+                    <ion-card-title>
+                        <ion-text color="success">
+                            <h1>{{part.title}} </h1>
+                        </ion-text>
+
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    {{part.text}}
+                </ion-card-content>
+            </ion-card>
+        </li>
+    </ul>
+
 </ion-content>

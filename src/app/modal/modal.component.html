@@ -1,0 +1,29 @@
+<ion-content class="content">
+    <ion-fab vertical="top" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="closeModal()">
+            <ion-icon name="close"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+    <ion-grid class="grid">
+        <ion-col>
+            <ion-list>
+                <ion-input clearInput placeholder="Otsikkosi" [(ngModel)]="title"></ion-input>
+                <ion-textarea clearInput placeholder="Kerro vielä tarkemmin!" [(ngModel)]="query"></ion-textarea>
+                <ion-row class="buttons">
+                    <ion-button>
+                        <ion-icon name="image"></ion-icon>
+                    </ion-button>
+                    <ion-button>
+                        <ion-icon name="attach"></ion-icon>
+                    </ion-button>
+                    <ion-button (click)="update()">
+                        <ion-icon name="send"></ion-icon>
+                    </ion-button>
+                </ion-row>
+            </ion-list>
+
+        </ion-col>
+
+    </ion-grid>
+
+</ion-content>
