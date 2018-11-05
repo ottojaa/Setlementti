@@ -5,12 +5,12 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "AIzaSyB1ckE6eiU1vrEn1ZJMgaoJR1uZeS6ngXA",
-    authDomain: "osaamisen-nayttaminen.firebaseapp.com",
-    databaseURL: "https://osaamisen-nayttaminen.firebaseio.com",
-    projectId: "osaamisen-nayttaminen",
-    storageBucket: "osaamisen-nayttaminen.appspot.com",
-    messagingSenderId: "781161234617"
+    apiKey: 'AIzaSyB1ckE6eiU1vrEn1ZJMgaoJR1uZeS6ngXA',
+    authDomain: 'osaamisen-nayttaminen.firebaseapp.com',
+    databaseURL: 'https://osaamisen-nayttaminen.firebaseio.com',
+    projectId: 'osaamisen-nayttaminen',
+    storageBucket: 'osaamisen-nayttaminen.appspot.com',
+    messagingSenderId: '781161234617'
   }
 };
 
