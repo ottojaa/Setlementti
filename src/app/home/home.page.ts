@@ -2,7 +2,7 @@ import { Component} from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ModalComponent } from '../modal/modal.component';
 import {DataService} from '../services/data.service';
-
+import 'firebase/firestore';
 @Component({
     selector: 'app-home',
     templateUrl: 'home.page.html',
@@ -14,7 +14,9 @@ export class HomePage {
     inputTrue = false;
     lista = [];
     listPart = this.lista[0];
-    constructor(public modalController: ModalController, public data: DataService) {}
+    constructor(public modalController: ModalController, public data: DataService) {
+
+    }
 
     async presentModal() {
         const modal = await this.modalController.create({
