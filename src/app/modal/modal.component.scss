@@ -17,3 +17,19 @@
   justify-content: start !important;
   align-items: end!important;
 }
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 5px;
+  background: white;
+  margin: 10px 0;
+}
+progress::-webkit-progress-value {
+  transition: width 0.01s ease;
+}
+
+img {
+  width: 250px;
+}

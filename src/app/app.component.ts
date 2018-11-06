@@ -24,15 +24,11 @@ export class AppComponent {
             icon: 'list'
         },
         {
-            title: 'Login',
-            url: '/login',
-            icon: 'login'
-        },
-        {
-            title: 'Register',
-            url: '/register',
-            icon: 'register'
-        },
+            title: 'Uploadtesti',
+            url: '/file-upload',
+            icon: 'signout'
+        }
+
     ];
 
     constructor(

@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {IonicModule, IonicRouteStrategy, ModalController} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
@@ -27,6 +27,7 @@ export const firebaseConfig = environment.firebaseConfig;
         IonicModule.forRoot(),
         AppRoutingModule,
         FormsModule,
+        BrowserAnimationsModule,
         AngularFireAuthModule,
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireStorageModule,

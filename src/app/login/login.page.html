@@ -1,22 +1,29 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title>Login</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
+    <ion-grid class="grid">
+        <ion-col>
+            <ion-item>
+                <ion-label position="floating">Email</ion-label>
+                <ion-input type="text" [(ngModel)]="user.email"></ion-input>
+            </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Email</ion-label>
-    <ion-input type="text" [(ngModel)]="user.email"></ion-input>
-  </ion-item>
+            <ion-item>
+                <ion-label position="floating">Password</ion-label>
+                <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+            </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Password</ion-label>
-    <ion-input type="password" [(ngModel)]="user.password"></ion-input>
-  </ion-item>
-
-  <ion-button expand="full" style="margin-top: 25px;" (click)="login(user)">Login</ion-button>
-  <ion-button expand="full" (click)="register()">Register</ion-button>
+            <ion-button expand="full" style="margin-top: 25px;" (click)="login(user)">Login</ion-button>
+            <ion-button expand="full" (click)="register()">Register</ion-button>
+            <ion-button expand="full" (click)="skip()">Skip(testausta varten)</ion-button>
+            <ion-card *ngIf="message" position="floating">
+                <ion-card-header class="error">{{message}}</ion-card-header>
+            </ion-card>
+        </ion-col>
+    </ion-grid>
 
 </ion-content>
