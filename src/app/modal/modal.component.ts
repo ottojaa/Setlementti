@@ -61,51 +61,63 @@ export class ModalComponent implements OnInit {
     toggleHover(event: boolean) {
         this.isHovering = event;
     }
-
-    startUpload(event: FileList) {
+    file: any//                            HUOMIO HUOMIO
+    // Määritetään uploadfilu ja piilotetaan input
+    defineUpload(event: FileList) {
+        this.file = event.item(0);
+        this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
+    }
+    //Upataan annettu parametri ja suljetaan modaali
+    async startUpload(sentFile/*event: FileList*/) {
         // The File object
-        const file = event.item(0);
-
+        //const file = event.item(0);
+        console.log(sentFile);
         // Client-side validation example
-        if (file.type.split('/')[0] !== 'image') {
+        if (sentFile.type.split('/')[0] !== 'image') {
             console.error('unsupported file type :( ');
             return;
         }
 
         // The storage path
-        const path = `test/${new Date().getTime()}_${file.name}`;
+        const path = `test/${new Date().getTime()}_${sentFile.name}`;
 
         // Totally optional metadata
         const customMetadata = {app: 'My AngularFire-powered PWA!'};
 
         // The main task
-        this.task = this.storage.upload(path, file, {customMetadata});
+        this.task = this.storage.upload(path, sentFile, {customMetadata});
 
         // Progress monitoring
         this.percentage = this.task.percentageChanges();
+        console.log("haloo2")
         this.snapshot = this.task.snapshotChanges().pipe(
             tap(snap => {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
                     this.db.collection('photos').add({path, size: snap.totalBytes});
+                    console.log("haloo1")
                 }
             })
         );
 
         // The file's download URL
         this.snapshot.pipe(finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL())).subscribe();
+        this.closeModal();
     }
 
     isActive(snapshot) {
         return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
     }
 
-
-    update() {
+    // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
+    async update() {
+        if (this.file) {
+        await this.startUpload(this.file)
+        }
         this.data.currentTime = Date.now();
         this.data.results.push({'title': this.title, 'text': this.query});
         this.inputTrue = false;
-        this.modalController.dismiss();
+        //this.closeModal();
         console.log(this.data.results);
     }
 

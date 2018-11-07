@@ -27,7 +27,7 @@
 
 
                     <ion-label class="file-label">
-                        <input class="file-input" type="file" (change)="startUpload($event.target.files)">
+                        <input class="file-input" type="file" (change)="defineUpload($event.target.files)">
                     </ion-label>
 
                 <ion-item *ngIf="percentage | async as pct">
