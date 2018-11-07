@@ -1,5 +1,5 @@
 <ion-content class="content">
-        <img src="" id="tableBanner" style="display: none;"/>
+        
     <ion-fab vertical="top" horizontal="end" slot="fixed">
         <ion-fab-button (click)="closeModal()">
             <ion-icon name="close"></ion-icon>
@@ -10,9 +10,7 @@
             <ion-list>
                 <ion-input clearInput placeholder="Otsikkosi" [(ngModel)]="title"></ion-input>
                 <ion-textarea clearInput placeholder="Kerro vielä tarkemmin!" [(ngModel)]="query"></ion-textarea>
-                <div class="ion-canvas">
-                    <canvas #canvas></canvas>
-                </div>              
+                <img src="" id="tableBanner"/>              
                 <ion-row class="buttons">
                     <ion-button (click)="upload()">
                         <ion-icon name="attach"></ion-icon>

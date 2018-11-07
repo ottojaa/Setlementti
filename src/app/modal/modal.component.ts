@@ -82,22 +82,24 @@ export class ModalComponent implements OnInit {
         this.file = event.item(0);
         console.log(this.file);
         this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
-        localStorage.setItem('file', this.file);
+        //localStorage.setItem('file', this.file);
         
         let img = document.getElementById('tableBanner');
-
+        console.log(this.file.name);
+        console.log("tän jälkee tulee");
+        //console.log(localStorage.getItem('file'));
         //TÄHÄN PITÄS SAADA OIKEA SYNTAKSI
-        img.setAttribute('src', 'data:image/jpeg;base64,{{ base64_encode' + localStorage.getItem('file') + ' }}');
-        this.drawPreview(img)
+        img.setAttribute('src', URL.createObjectURL(this.file));
+       // this.drawPreview(img)
     }
     // Kanvakseen preview
-    drawPreview(preview) {
+    /*drawPreview(preview) {
         this._CANVAS = this.canvasEl.nativeElement;
         this._CANVAS.width = preview.width;
         this._CANVAS.height = preview.height;
 
         this._CANVAS.getContext("2d").drawImage(preview, 0, 0);
-    }
+    }*/
     //Upataan annettu parametri ja suljetaan modaali
     async startUpload(sentFile/*event: FileList*/) {
         // The File object
