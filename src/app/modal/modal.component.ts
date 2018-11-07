@@ -85,6 +85,8 @@ export class ModalComponent implements OnInit {
         localStorage.setItem('file', this.file);
         
         let img = document.getElementById('tableBanner');
+
+        //TÄHÄN PITÄS SAADA OIKEA SYNTAKSI
         img.setAttribute('src', 'data:image/jpeg;base64,{{ base64_encode' + localStorage.getItem('file') + ' }}');
         this.drawPreview(img)
     }
