@@ -1,4 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit,
+    ElementRef,
+    ViewChild } from '@angular/core';
 import {NavController, ModalController} from '@ionic/angular';
 import {DataService} from '../services/data.service';
 import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
@@ -38,10 +40,11 @@ export class ModalComponent implements OnInit {
     query;
     inputTrue;
     task: AngularFireUploadTask;
+    @ViewChild('canvas') canvasEl : ElementRef;
+    @ViewChild('#tableBanner') previewImg : ElementRef;
 
     // Progress monitoring
     percentage: Observable<number>;
-
     snapshot: Observable<any>;
 
     // Download URL
@@ -49,6 +52,18 @@ export class ModalComponent implements OnInit {
 
     // State for dropzone CSS toggling
     isHovering: boolean;
+    /**
+    * Reference Canvas object
+    */
+    private _CANVAS  : any;
+
+
+
+    /**
+    * Reference the context for the Canvas element
+    */
+    private _CONTEXT : any;
+  
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
                 private storage: AngularFireStorage, private db: AngularFirestore) {
@@ -65,7 +80,21 @@ export class ModalComponent implements OnInit {
     // Määritetään uploadfilu ja piilotetaan input
     defineUpload(event: FileList) {
         this.file = event.item(0);
+        console.log(this.file);
         this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
+        localStorage.setItem('file', this.file);
+        
+        let img = document.getElementById('tableBanner');
+        img.setAttribute('src', 'data:image/jpeg;base64,{{ base64_encode' + localStorage.getItem('file') + ' }}');
+        this.drawPreview(img)
+    }
+    // Kanvakseen preview
+    drawPreview(preview) {
+        this._CANVAS = this.canvasEl.nativeElement;
+        this._CANVAS.width = preview.width;
+        this._CANVAS.height = preview.height;
+
+        this._CANVAS.getContext("2d").drawImage(preview, 0, 0);
     }
     //Upataan annettu parametri ja suljetaan modaali
     async startUpload(sentFile/*event: FileList*/) {
