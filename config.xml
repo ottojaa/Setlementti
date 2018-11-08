@@ -88,4 +88,8 @@
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.781161234617-vqq45l0eree4rpgudsshg2iap45mdh1i" />
         <variable name="WEB_APPLICATION_CLIENT_ID" value="781161234617-b8h67899fh3k3kg8evuak7of1q62v1jb.apps.googleusercontent.com npm" />
     </plugin>
+    <plugin name="cordova-plugin-facebook4" spec="3.1.0">
+        <variable name="APP_ID" value="1044832605712018" />
+        <variable name="APP_NAME" value="firefighter" />
+    </plugin>
 </widget>

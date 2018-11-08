@@ -3,6 +3,7 @@ import {Component} from '@angular/core';
 import {NavController, AlertController, Platform} from '@ionic/angular';
 import {AngularFireAuth} from 'angularfire2/auth';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 
 import * as firebase from 'firebase/app';
 
@@ -18,7 +19,7 @@ export class LoginPage {
 
     user = {} as User;
 
-    constructor(private fireAuth: AngularFireAuth, private platform: Platform, private gplus: GooglePlus,
+    constructor(private fireAuth: AngularFireAuth, private platform: Platform, private gplus: GooglePlus, public facebook: Facebook,
         private alert: AlertController, public navCtrl: NavController) {
     }
 
@@ -29,6 +30,48 @@ export class LoginPage {
                 error => this.message = error.message
             );
     }
+    // -------------------------------Facebook Login------------------------------
+
+  async nativeFacebookLogin(): Promise<any> {
+    return this.facebook.login(['email'])
+      .then(response => {
+        const facebookCredential = firebase.auth.FacebookAuthProvider
+          .credential(response.authResponse.accessToken);
+
+        firebase.auth().signInWithCredential(facebookCredential)
+          .then(success => {
+            console.log('Firebase success: ' + JSON.stringify(success));
+            this.navCtrl.navigateForward('home');
+          });
+
+      }).catch((error) => {
+        console.log(error);
+      });
+  }
+
+
+  async webFacebookLogin(): Promise<void> {
+    try {
+      const provider = new firebase.auth.FacebookAuthProvider();
+      const credential = await this.fireAuth.auth.signInWithPopup(provider);
+
+      await this.navCtrl.navigateForward('home');
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  facebookLogin() {
+    if (this.platform.is('cordova')) {
+      this.nativeFacebookLogin();
+    } else {
+      this.webFacebookLogin();
+    }
+  }
+  signOutFb() {
+    this.fireAuth.auth.signOut();
+  }
 
     // -----------------------------------Google login---------------------------------
 
