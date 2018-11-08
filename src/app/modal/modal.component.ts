@@ -1,7 +1,7 @@
 import {Component, OnInit,
     ElementRef,
     ViewChild } from '@angular/core';
-import {NavController, ModalController} from '@ionic/angular';
+import {NavController, ModalController, Events} from '@ionic/angular';
 import {DataService} from '../services/data.service';
 import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
 import {AngularFirestore} from 'angularfire2/firestore';
@@ -11,6 +11,7 @@ import {finalize} from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import {HttpClient} from '@angular/common/http';
 import { stringify } from '@angular/core/src/render3/util';
+import * as $ from 'jquery';
 
 @Component({
     selector: 'app-modal',
@@ -67,7 +68,7 @@ export class ModalComponent implements OnInit {
   
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-                private storage: AngularFireStorage, private db: AngularFirestore) {
+                private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
     }
 
     upload(): void {
@@ -77,8 +78,11 @@ export class ModalComponent implements OnInit {
     toggleHover(event: boolean) {
         this.isHovering = event;
     }
+    files;
     file: any//                            HUOMIO HUOMIO
-    
+    inputsN: number;
+    fileCounter: number;
+    iCounter: number;
     makeVideoPreview() {
         let video = document.createElement('video');
             let parent = document.getElementById('previewSibling');
@@ -111,13 +115,33 @@ export class ModalComponent implements OnInit {
             // this.drawPreview(img)
     }
 
-    // Määritetään uploadfilu ja piilotetaan input
+    
+    createNewinput() {
+        let outerlabel = document.getElementById('input1')
+        this.inputsN++;
+        let input = document.createElement('input');
+        let inputlabel = document.createElement('ion-label');
+        
+        inputlabel.setAttribute('id', 'input'+this.inputsN);
+        inputlabel.setAttribute('class', 'file-label');
+        outerlabel.parentNode.insertBefore(inputlabel, outerlabel.nextSibling);
+        input.setAttribute('class', 'file-input');
+        input.setAttribute('type', 'file');
+        //input.setAttribute('(change)', 'defineUpload($event.target.files)');
+        //input.setAttribute('id', 'input'+this.inputsN);
+        input.onchange = (e: any) => {
+            let files = e.target.files;
+            this.defineUpload(files);
+        };
+        inputlabel.appendChild(input);
+    }
+    // Määritetään uploadfilu ja tehdään uusi input
     defineUpload(event: FileList) {
         this.file = event.item(0);
-        
-            
+           
         console.log(this.file);
-        this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
+        // Previewit, filuja ei lähetetä vielä mihinkään
+        //this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
         if (this.file.type.split('/')[0] === 'video') {
             this.makeVideoPreview();
         }
@@ -128,6 +152,11 @@ export class ModalComponent implements OnInit {
         if (this.file.type.split('/')[0] === 'image') {
             this.makeImgPreview();
         }
+
+        this.files[this.fileCounter] = this.file;
+        this.fileCounter++;
+        this.createNewinput()
+        
     }
     // Kanvakseen preview
     /*drawPreview(preview) {
@@ -137,6 +166,8 @@ export class ModalComponent implements OnInit {
 
         this._CANVAS.getContext("2d").drawImage(preview, 0, 0);
     }*/
+
+
     //Upataan annettu parametri ja suljetaan modaali
 
     async startUpload(sentFile/*event: FileList*/) {
@@ -175,9 +206,12 @@ export class ModalComponent implements OnInit {
             tap(snap => {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
-                    this.db.collection('photos').add({path, size: snap.totalBytes});
+                    this.db.collection('files').add({path, size: snap.totalBytes});
                     console.log("haloo1")
-                    this.closeModal();
+                    this.iCounter++;
+                    if (this.iCounter == (this.inputsN - 1)) {
+                        this.closeModal();
+                    }
                 }
             })
         );
@@ -196,7 +230,16 @@ export class ModalComponent implements OnInit {
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
     async update() {
         if (this.file) {
-        await this.startUpload(this.file)
+            let i;
+            for(i=0;i<(this.inputsN);i++) {
+                
+                if (i <(this.inputsN-1)) {
+        await this.startUpload(this.files[i])
+                console.log("ÄNNIEN ARVO:    " + this.inputsN);
+                console.log("iin arvo:    "+ i);
+            }
+                
+            }
         }
         this.data.currentTime = Date.now();
         this.data.results.push({'title': this.title, 'text': this.query});
@@ -211,7 +254,11 @@ export class ModalComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.files = [];
+        this.fileCounter = 0;
+        this.inputsN = 1;
         this.uploadFiles = 'out';
+        this.iCounter = 0;
     }
 
 }
