@@ -27,6 +27,11 @@ export class AppComponent {
             title: 'Uploadtesti',
             url: '/file-upload',
             icon: 'signout'
+        },
+        {
+            title: 'Profile',
+            url: '/profile',
+            icon: 'person'
         }
 
     ];
