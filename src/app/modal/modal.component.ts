@@ -78,20 +78,56 @@ export class ModalComponent implements OnInit {
         this.isHovering = event;
     }
     file: any//                            HUOMIO HUOMIO
+    
+    makeVideoPreview() {
+        let video = document.createElement('video');
+            let parent = document.getElementById('previewSibling');
+            parent.parentNode.insertBefore(video, parent.nextSibling);
+            video.setAttribute('controls', '');
+            video.setAttribute('style', 'max-height: 200px');
+            let source = document.createElement('source')
+            video.appendChild(source);
+            source.setAttribute('src', URL.createObjectURL(this.file))
+    }
+
+    makeAudioPreview() {
+        let audio = document.createElement('audio');
+            let parent = document.getElementById('previewSibling');
+            parent.parentNode.insertBefore(audio, parent.nextSibling);
+            audio.setAttribute('controls', '');
+            let source = document.createElement('source')
+            audio.appendChild(source);
+            source.setAttribute('src', URL.createObjectURL(this.file))
+    }
+
+    makeImgPreview() {
+        let img = document.createElement('img');
+            let parent = document.getElementById('previewSibling');
+            parent.parentNode.insertBefore(img, parent.nextSibling);
+            console.log(this.file.name);
+            console.log("tän jälkee tulee");
+            //console.log(localStorage.getItem('file'));
+            img.setAttribute('src', URL.createObjectURL(this.file));
+            // this.drawPreview(img)
+    }
+
     // Määritetään uploadfilu ja piilotetaan input
     defineUpload(event: FileList) {
         this.file = event.item(0);
+        
+            
         console.log(this.file);
         this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
+        if (this.file.type.split('/')[0] === 'video') {
+            this.makeVideoPreview();
+        }
+        if (this.file.type.split('/')[0] === 'audio') {
+            this.makeAudioPreview();
+        }
         //localStorage.setItem('file', this.file);
-        
-        let img = document.getElementById('tableBanner');
-        console.log(this.file.name);
-        console.log("tän jälkee tulee");
-        //console.log(localStorage.getItem('file'));
-        //TÄHÄN PITÄS SAADA OIKEA SYNTAKSI
-        img.setAttribute('src', URL.createObjectURL(this.file));
-       // this.drawPreview(img)
+        if (this.file.type.split('/')[0] === 'image') {
+            this.makeImgPreview();
+        }
     }
     // Kanvakseen preview
     /*drawPreview(preview) {
@@ -102,6 +138,7 @@ export class ModalComponent implements OnInit {
         this._CANVAS.getContext("2d").drawImage(preview, 0, 0);
     }*/
     //Upataan annettu parametri ja suljetaan modaali
+
     async startUpload(sentFile/*event: FileList*/) {
         // The File object
         //const file = event.item(0);

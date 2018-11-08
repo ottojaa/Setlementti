@@ -9,8 +9,8 @@
         <ion-col>
             <ion-list>
                 <ion-input clearInput placeholder="Otsikkosi" [(ngModel)]="title"></ion-input>
-                <ion-textarea clearInput placeholder="Kerro vielä tarkemmin!" [(ngModel)]="query"></ion-textarea>
-                <img src="" id="tableBanner"/>              
+                <ion-textarea id="previewSibling" clearInput placeholder="Kerro vielä tarkemmin!" [(ngModel)]="query"></ion-textarea>
+                             
                 <ion-row class="buttons">
                     <ion-button (click)="upload()">
                         <ion-icon name="attach"></ion-icon>
