@@ -10,6 +10,7 @@ import {tap} from 'rxjs/operators';
 import {finalize} from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import {HttpClient} from '@angular/common/http';
+import { stringify } from '@angular/core/src/render3/util';
 
 @Component({
     selector: 'app-modal',
@@ -55,14 +56,14 @@ export class ModalComponent implements OnInit {
     /**
     * Reference Canvas object
     */
-    private _CANVAS  : any;
+    //private _CANVAS  : any;
 
 
 
     /**
     * Reference the context for the Canvas element
     */
-    private _CONTEXT : any;
+    //private _CONTEXT : any;
   
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
@@ -105,15 +106,25 @@ export class ModalComponent implements OnInit {
         // The File object
         //const file = event.item(0);
         console.log(sentFile);
-        // Client-side validation example
-        if (sentFile.type.split('/')[0] !== 'image') {
+        // Tiedostotyyppi
+        if ((sentFile.type.split('/')[0] !== 'image' )&&( sentFile.type.split('/')[0] !== 'video' )&&( sentFile.type.split('/')[0] !== 'audio')) {
             console.error('unsupported file type :( ');
             return;
         }
-
-        // The storage path
-        const path = `test/${new Date().getTime()}_${sentFile.name}`;
-
+        let finished = 0;
+        // Kansio tiedostotyypin mukaan
+        let filetype;
+        if (sentFile.type.split('/')[0] === 'image') {
+            filetype = `images/${new Date().getTime()}_${sentFile.name}`;
+        }
+        if (sentFile.type.split('/')[0] === 'video') {
+            filetype = `videos/${new Date().getTime()}_${sentFile.name}`;
+        }
+        if (sentFile.type.split('/')[0] === 'audio') {
+            filetype = `audios/${new Date().getTime()}_${sentFile.name}`;
+        }
+        const path = filetype;
+        console.log(String(path));
         // Totally optional metadata
         const customMetadata = {app: 'My AngularFire-powered PWA!'};
 
@@ -129,13 +140,16 @@ export class ModalComponent implements OnInit {
                     // Update firestore on completion
                     this.db.collection('photos').add({path, size: snap.totalBytes});
                     console.log("haloo1")
+                    this.closeModal();
                 }
             })
         );
 
         // The file's download URL
         this.snapshot.pipe(finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL())).subscribe();
-        this.closeModal();
+        
+        
+        
     }
 
     isActive(snapshot) {
@@ -156,6 +170,7 @@ export class ModalComponent implements OnInit {
 
     closeModal() {
         this.modalController.dismiss();
+    
     }
 
     ngOnInit() {
