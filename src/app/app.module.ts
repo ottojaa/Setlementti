@@ -16,6 +16,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import {environment} from '../environments/environment';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 export const firebaseConfig = environment.firebaseConfig;
 
@@ -38,6 +39,7 @@ export const firebaseConfig = environment.firebaseConfig;
         StatusBar,
         SplashScreen,
         AuthService,
+        GooglePlus,
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],
     bootstrap: [AppComponent],
