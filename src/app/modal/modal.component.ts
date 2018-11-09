@@ -241,15 +241,17 @@ export class ModalComponent implements OnInit {
             tap(snap => {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
-                    this.db.collection('files').add({path, size: snap.totalBytes});
-                    console.log("haloo1")
+                    this.db.collection('files').add({path, size: snap.totalBytes}).then(() =>{
+                        console.log("haloo1")
                     this.iCounter++;
                     if (this.iCounter == (this.inputsN - 1)) {
                         setTimeout(() => {
-                            //this.closeModal();
+                            this.closeModal();
                             console.log('closeModal!');
-                        }, 2000);
+                        }, 200);
                     }
+                    });
+                    
                 }
             })
         );
