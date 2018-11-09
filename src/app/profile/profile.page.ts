@@ -24,9 +24,6 @@ interface User {
 export class ProfilePage implements OnInit {
     description;
     nickName;
-    test: any;
-
-    userData: Observable<User>;
 
     user: Observable<User>;
 
@@ -35,22 +32,6 @@ export class ProfilePage implements OnInit {
                 private router: Router, private data: DataService) {
     }
 
-    private createUserDoc(user) {
-
-        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-
-        const data: User = {
-            uid: user.uid,
-            email: user.email || null,
-            photoURL: 'https://i.redd.it/coiddgklw4301.jpg',
-            nickName: '',
-            description: ''
-        };
-        console.log(user.uid);
-        console.log(user.email);
-        return userRef.set(data);
-
-    }
 
     updateUserDoc(user) {
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
@@ -78,10 +59,7 @@ export class ProfilePage implements OnInit {
 
 
     ngOnInit() {
-        // -----jos käyttäjälle ei löydy dokumenttia firestoresta niin luo sellainen
-        if (!this.afs.firestore.doc(`users/${this.data.user.uid}`)) {
-            this.createUserDoc(this.data.user);
-        }
+        console.log(this.data.user.uid);
     }
 
 }

@@ -14,8 +14,8 @@
                 <img src="https://i.redd.it/coiddgklw4301.jpg">
             </ion-avatar>
             <ion-label padding>
-                    <h3>{{ data.user.nickName}}</h3>
-                    <h3>{{ data.user.description}}</h3>
+                    <h3 *ngIf="data.user.nickName">{{ data.user.nickName}}</h3>
+                    <h3 *ngIf="data.user.description">{{ data.user.description}}</h3>
             </ion-label>
         </ion-item>
     </ion-list>

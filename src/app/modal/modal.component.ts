@@ -12,6 +12,7 @@ import {tap} from 'rxjs/operators';
 import {finalize} from 'rxjs/operators';
 import {trigger, state, style, animate, transition} from '@angular/animations';
 import * as firebase from 'firebase/app';
+
 require('firebase/auth');
 import {HttpClient} from '@angular/common/http';
 import {stringify} from '@angular/core/src/render3/util';
@@ -66,17 +67,17 @@ export class ModalComponent implements OnInit {
      * Reference Canvas object
      */
 
-    //private _CANVAS  : any;
+    // private _CANVAS  : any;
 
 
     /**
      * Reference the context for the Canvas element
      */
-    //private _CONTEXT : any;
+    // private _CONTEXT : any;
 
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-                private storage: AngularFireStorage, private db: AngularFirestore, public events: Events, ) {
+                private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
     }
 
     upload(): void {
@@ -88,53 +89,52 @@ export class ModalComponent implements OnInit {
     }
 
 
-
     makeVideoPreview() {
-        let video = document.createElement('video');
-        let parent = document.getElementById('previewSibling');
+        const video = document.createElement('video');
+        const parent = document.getElementById('previewSibling');
         parent.parentNode.insertBefore(video, parent.nextSibling);
         video.setAttribute('controls', '');
         video.setAttribute('style', 'max-height: 200px');
-        let source = document.createElement('source');
+        const source = document.createElement('source');
         video.appendChild(source);
         source.setAttribute('src', URL.createObjectURL(this.file));
         this.createPreviewDelete(video, video);
     }
 
     makeAudioPreview() {
-        let audio = document.createElement('audio');
-        let parent = document.getElementById('previewSibling');
+        const audio = document.createElement('audio');
+        const parent = document.getElementById('previewSibling');
         parent.parentNode.insertBefore(audio, parent.nextSibling);
         audio.setAttribute('controls', '');
-        let source = document.createElement('source');
+        const source = document.createElement('source');
         audio.appendChild(source);
         source.setAttribute('src', URL.createObjectURL(this.file));
         this.createPreviewDelete(audio, audio);
     }
 
     makeImgPreview() {
-        let img = document.createElement('img');
-        let parent = document.getElementById('previewSibling');
+        const img = document.createElement('img');
+        const parent = document.getElementById('previewSibling');
         parent.parentNode.insertBefore(img, parent.nextSibling);
         console.log(this.file.name);
         console.log('tän jälkee tulee');
-        //console.log(localStorage.getItem('file'));
+        // console.log(localStorage.getItem('file'));
         img.setAttribute('src', URL.createObjectURL(this.file));
         // this.drawPreview(img)
         this.createPreviewDelete(img, img);
     }
 
     createPreviewDelete(sibling, deletable) {
-        let deleteButton = document.createElement('ion-button');
-        let icon = document.createElement('ion-icon');
+        const deleteButton = document.createElement('ion-button');
+        const icon = document.createElement('ion-icon');
         deleteButton.appendChild(icon);
         icon.setAttribute('name', 'close');
         sibling.parentNode.insertBefore(deleteButton, sibling.nextSibling);
-        //Määritetään fileCounterilla poistettava, files-taulukkoon tallennettu tiedosto
-        let deletableFile = this.fileCounter;
-        //this.files
+        // Määritetään fileCounterilla poistettava, files-taulukkoon tallennettu tiedosto
+        const deletableFile = this.fileCounter;
+        // this.files
         console.log('tää indexi poistetaan' + deletableFile);
-        let deletableInput = this.inputsN;
+        const deletableInput = this.inputsN;
         this.fileCounter++;
         deleteButton.addEventListener('click', () => {
             this.deletePreview(deletable, deleteButton);
@@ -170,10 +170,10 @@ export class ModalComponent implements OnInit {
         outerlabel.parentNode.insertBefore(inputlabel, outerlabel.nextSibling);
         input.setAttribute('class', 'file-input');
         input.setAttribute('type', 'file');
-        //input.setAttribute('(change)', 'defineUpload($event.target.files)');
-        //input.setAttribute('id', 'input'+this.inputsN);
+        // input.setAttribute('(change)', 'defineUpload($event.target.files)');
+        // input.setAttribute('id', 'input'+this.inputsN);
         input.onchange = (e: any) => {
-            let files = e.target.files;
+            const files = e.target.files;
             this.defineUpload(files);
         };
         inputlabel.appendChild(input);
@@ -186,14 +186,14 @@ export class ModalComponent implements OnInit {
         this.files[this.fileCounter] = this.file;
         console.log(this.file);
         // Previewit, filuja ei lähetetä vielä mihinkään
-        //this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
+        // this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
         if (this.file.type.split('/')[0] === 'video') {
             this.makeVideoPreview();
         }
         if (this.file.type.split('/')[0] === 'audio') {
             this.makeAudioPreview();
         }
-        //localStorage.setItem('file', this.file);
+        // localStorage.setItem('file', this.file);
         if (this.file.type.split('/')[0] === 'image') {
             this.makeImgPreview();
         }
@@ -212,18 +212,19 @@ export class ModalComponent implements OnInit {
     }*/
 
 
-    //Upataan annettu parametri ja suljetaan modaali
+    // Upataan annettu parametri ja suljetaan modaali
 
     async startUpload(sentFile/*event: FileList*/) {
         // The File object
-        //const file = event.item(0);
+        // const file = event.item(0);
         console.log(sentFile);
         // Tiedostotyyppi
-        if ((sentFile.type.split('/')[0] !== 'image') && (sentFile.type.split('/')[0] !== 'video') && (sentFile.type.split('/')[0] !== 'audio')) {
+        if ((sentFile.type.split('/')[0] !== 'image') && (sentFile.type.split('/')[0] !== 'video')
+            && (sentFile.type.split('/')[0] !== 'audio')) {
             console.error('unsupported file type :( ');
             return;
         }
-        let finished = 0;
+        const finished = 0;
         // Kansio tiedostotyypin mukaan
         let filetype;
         if (sentFile.type.split('/')[0] === 'image') {
@@ -253,7 +254,7 @@ export class ModalComponent implements OnInit {
                     this.db.collection('files').add({path, size: snap.totalBytes}).then(() => {
                         console.log('haloo1');
                         this.iCounter++;
-                        if (this.iCounter == (this.inputsN - 1)) {
+                        if (this.iCounter === (this.inputsN - 1)) {
                             setTimeout(() => {
                                 this.closeModal();
                                 console.log('closeModal!');

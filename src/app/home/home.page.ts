@@ -45,19 +45,45 @@ export class HomePage implements OnInit {
         this.inputTrue = true;
     }
 
+    private createUserDoc(user) {
+
+        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+
+        const data: User = {
+            uid: user.uid,
+            email: user.email || null,
+            photoURL: 'https://i.redd.it/coiddgklw4301.jpg',
+            nickName: 'Nickname',
+            description: 'Description'
+        };
+        console.log(user.uid);
+        console.log(user.email);
+        return userRef.set(data);
+
+    }
+
     signOut() {
         this.fireAuth.auth.signOut()
             .then(() => {
                 this.navCtrl.navigateForward('login');
             });
     }
+
     ngOnInit() {
-        this.data.user = firebase.auth().currentUser;
+        this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
         console.log(this.data.user);
-        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}`);
-        userRef.ref.get().then(( doc => {
-            this.data.user = doc.data();
+        if (!this.afs.firestore.doc(`users/${this.data.user.uid}`)) {
+
+            // -----jos käyttäjälle ei löydy dokumenttia firestoresta niin luo sellainen
+            // jos ei toimi, nii ottakaa yhen loginin ajaks huutomerkki pois ifistä (logiikka not found)
+
+            this.createUserDoc(this.data.user);
             console.log(this.data.user);
+        }
+        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}`);
+        userRef.ref.get().then((doc => {
+            this.data.user = doc.data();
+            console.log(doc.data());
         }));
     }
 }
