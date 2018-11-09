@@ -6,6 +6,8 @@ import {Injectable} from '@angular/core';
 export class DataService {
     currentTime;
     results = new Array();
+    user;
+    userInfo = new Array();
 
     constructor() {
     }

@@ -1,6 +1,8 @@
-import {Component, OnInit,
+import {
+    Component, OnInit,
     ElementRef,
-    ViewChild } from '@angular/core';
+    ViewChild
+} from '@angular/core';
 import {NavController, ModalController, Events} from '@ionic/angular';
 import {DataService} from '../services/data.service';
 import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
@@ -8,10 +10,11 @@ import {AngularFirestore} from 'angularfire2/firestore';
 import {Observable} from 'rxjs/Observable';
 import {tap} from 'rxjs/operators';
 import {finalize} from 'rxjs/operators';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {trigger, state, style, animate, transition} from '@angular/animations';
+import * as firebase from 'firebase/app';
+require('firebase/auth');
 import {HttpClient} from '@angular/common/http';
-import { stringify } from '@angular/core/src/render3/util';
-import * as $ from 'jquery';
+import {stringify} from '@angular/core/src/render3/util';
 
 @Component({
     selector: 'app-modal',
@@ -41,9 +44,14 @@ export class ModalComponent implements OnInit {
     title;
     query;
     inputTrue;
+    files;
+    file: any;
+    inputsN: number;
+    fileCounter: number;
+    iCounter: number;
     task: AngularFireUploadTask;
-    @ViewChild('canvas') canvasEl : ElementRef;
-    @ViewChild('#tableBanner') previewImg : ElementRef;
+    @ViewChild('canvas') canvasEl: ElementRef;
+    @ViewChild('#tableBanner') previewImg: ElementRef;
 
     // Progress monitoring
     percentage: Observable<number>;
@@ -55,20 +63,20 @@ export class ModalComponent implements OnInit {
     // State for dropzone CSS toggling
     isHovering: boolean;
     /**
-    * Reference Canvas object
-    */
+     * Reference Canvas object
+     */
+
     //private _CANVAS  : any;
 
 
-
     /**
-    * Reference the context for the Canvas element
-    */
+     * Reference the context for the Canvas element
+     */
     //private _CONTEXT : any;
-  
+
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-                private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
+                private storage: AngularFireStorage, private db: AngularFirestore, public events: Events, ) {
     }
 
     upload(): void {
@@ -78,47 +86,45 @@ export class ModalComponent implements OnInit {
     toggleHover(event: boolean) {
         this.isHovering = event;
     }
-    files;
-    file: any//                            HUOMIO HUOMIO
-    inputsN: number;
-    fileCounter: number;
-    iCounter: number;
+
+
+
     makeVideoPreview() {
         let video = document.createElement('video');
-            let parent = document.getElementById('previewSibling');
-            parent.parentNode.insertBefore(video, parent.nextSibling);
-            video.setAttribute('controls', '');
-            video.setAttribute('style', 'max-height: 200px');
-            let source = document.createElement('source')
-            video.appendChild(source);
-            source.setAttribute('src', URL.createObjectURL(this.file))
-            this.createPreviewDelete(video,video);
+        let parent = document.getElementById('previewSibling');
+        parent.parentNode.insertBefore(video, parent.nextSibling);
+        video.setAttribute('controls', '');
+        video.setAttribute('style', 'max-height: 200px');
+        let source = document.createElement('source');
+        video.appendChild(source);
+        source.setAttribute('src', URL.createObjectURL(this.file));
+        this.createPreviewDelete(video, video);
     }
 
     makeAudioPreview() {
         let audio = document.createElement('audio');
-            let parent = document.getElementById('previewSibling');
-            parent.parentNode.insertBefore(audio, parent.nextSibling);
-            audio.setAttribute('controls', '');
-            let source = document.createElement('source')
-            audio.appendChild(source);
-            source.setAttribute('src', URL.createObjectURL(this.file))
-            this.createPreviewDelete(audio,audio);
+        let parent = document.getElementById('previewSibling');
+        parent.parentNode.insertBefore(audio, parent.nextSibling);
+        audio.setAttribute('controls', '');
+        let source = document.createElement('source');
+        audio.appendChild(source);
+        source.setAttribute('src', URL.createObjectURL(this.file));
+        this.createPreviewDelete(audio, audio);
     }
 
     makeImgPreview() {
         let img = document.createElement('img');
-            let parent = document.getElementById('previewSibling');
-            parent.parentNode.insertBefore(img, parent.nextSibling);
-            console.log(this.file.name);
-            console.log("tän jälkee tulee");
-            //console.log(localStorage.getItem('file'));
-            img.setAttribute('src', URL.createObjectURL(this.file));
-            // this.drawPreview(img)
-            this.createPreviewDelete(img,img);
+        let parent = document.getElementById('previewSibling');
+        parent.parentNode.insertBefore(img, parent.nextSibling);
+        console.log(this.file.name);
+        console.log('tän jälkee tulee');
+        //console.log(localStorage.getItem('file'));
+        img.setAttribute('src', URL.createObjectURL(this.file));
+        // this.drawPreview(img)
+        this.createPreviewDelete(img, img);
     }
 
-    createPreviewDelete(sibling,deletable) {
+    createPreviewDelete(sibling, deletable) {
         let deleteButton = document.createElement('ion-button');
         let icon = document.createElement('ion-icon');
         deleteButton.appendChild(icon);
@@ -127,38 +133,39 @@ export class ModalComponent implements OnInit {
         //Määritetään fileCounterilla poistettava, files-taulukkoon tallennettu tiedosto
         let deletableFile = this.fileCounter;
         //this.files
-        console.log("tää indexi poistetaan" + deletableFile);
+        console.log('tää indexi poistetaan' + deletableFile);
         let deletableInput = this.inputsN;
         this.fileCounter++;
         deleteButton.addEventListener('click', () => {
-            this.deletePreview(deletable,deleteButton);
-            this.deleteInput(deletableFile,deletableInput)
-        })
+            this.deletePreview(deletable, deleteButton);
+            this.deleteInput(deletableFile, deletableInput);
+        });
     }
 
-    deletePreview(toDelete,deleteButton) {
+    deletePreview(toDelete, deleteButton) {
         toDelete.remove();
         deleteButton.remove();
     }
-    
-    deleteInput(index,inputN) {
+
+    deleteInput(index, inputN) {
         this.inputsN = this.inputsN - 1;
-        console.log("Mones tästä oikeastaan poistetaankaan?? HÄH? " + index)
-        console.log(this.files + "  minkälaine tää oli alunperi??");
+        console.log('Mones tästä oikeastaan poistetaankaan?? HÄH? ' + index);
+        console.log(this.files + '  minkälaine tää oli alunperi??');
         console.log(this.files[0]);
-        /*this.files = */this.files.splice(index, 1);
-        console.log(this.files + "  minkälaine täst arrayst tuli?");
+        /*this.files = */
+        this.files.splice(index, 1);
+        console.log(this.files + '  minkälaine täst arrayst tuli?');
         console.log(this.files[0]);
-        document.getElementById('input'+inputN).remove();
+        document.getElementById('input' + inputN).remove();
     }
-    
+
     createNewinput() {
-        let outerlabel = document.getElementById('input1')
+        const outerlabel = document.getElementById('input1');
         this.inputsN++;
-        let input = document.createElement('input');
-        let inputlabel = document.createElement('ion-label');
-        
-        inputlabel.setAttribute('id', 'input'+this.inputsN);
+        const input = document.createElement('input');
+        const inputlabel = document.createElement('ion-label');
+
+        inputlabel.setAttribute('id', 'input' + this.inputsN);
         inputlabel.setAttribute('class', 'file-label');
         outerlabel.parentNode.insertBefore(inputlabel, outerlabel.nextSibling);
         input.setAttribute('class', 'file-input');
@@ -171,11 +178,12 @@ export class ModalComponent implements OnInit {
         };
         inputlabel.appendChild(input);
     }
+
     // Määritetään uploadfilu ja tehdään uusi input
     defineUpload(event: FileList) {
         this.file = event.item(0);
         // Päivitetään uploadeja sisältävä taulukko
-        this.files[this.fileCounter] = this.file;   
+        this.files[this.fileCounter] = this.file;
         console.log(this.file);
         // Previewit, filuja ei lähetetä vielä mihinkään
         //this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
@@ -189,10 +197,11 @@ export class ModalComponent implements OnInit {
         if (this.file.type.split('/')[0] === 'image') {
             this.makeImgPreview();
         }
-        
-        this.createNewinput()
-        
+
+        this.createNewinput();
+
     }
+
     // Kanvakseen preview
     /*drawPreview(preview) {
         this._CANVAS = this.canvasEl.nativeElement;
@@ -210,7 +219,7 @@ export class ModalComponent implements OnInit {
         //const file = event.item(0);
         console.log(sentFile);
         // Tiedostotyyppi
-        if ((sentFile.type.split('/')[0] !== 'image' )&&( sentFile.type.split('/')[0] !== 'video' )&&( sentFile.type.split('/')[0] !== 'audio')) {
+        if ((sentFile.type.split('/')[0] !== 'image') && (sentFile.type.split('/')[0] !== 'video') && (sentFile.type.split('/')[0] !== 'audio')) {
             console.error('unsupported file type :( ');
             return;
         }
@@ -236,31 +245,30 @@ export class ModalComponent implements OnInit {
 
         // Progress monitoring
         this.percentage = this.task.percentageChanges();
-        console.log("haloo2")
+        console.log('haloo2');
         this.snapshot = this.task.snapshotChanges().pipe(
             tap(snap => {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
-                    this.db.collection('files').add({path, size: snap.totalBytes}).then(() =>{
-                        console.log("haloo1")
-                    this.iCounter++;
-                    if (this.iCounter == (this.inputsN - 1)) {
-                        setTimeout(() => {
-                            this.closeModal();
-                            console.log('closeModal!');
-                        }, 200);
-                    }
+                    this.db.collection('files').add({path, size: snap.totalBytes}).then(() => {
+                        console.log('haloo1');
+                        this.iCounter++;
+                        if (this.iCounter == (this.inputsN - 1)) {
+                            setTimeout(() => {
+                                this.closeModal();
+                                console.log('closeModal!');
+                            }, 200);
+                        }
                     });
-                    
+
                 }
             })
         );
 
         // The file's download URL
         this.snapshot.pipe(finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL())).subscribe();
-        
-        
-        
+
+
     }
 
     isActive(snapshot) {
@@ -271,26 +279,25 @@ export class ModalComponent implements OnInit {
     async update() {
         if (this.file) {
             let i;
-            for(i=0;i<(this.inputsN);i++) {
-                
-                if (i <(this.inputsN-1)) {
-        await this.startUpload(this.files[i])
-                console.log("ÄNNIEN ARVO:    " + this.inputsN);
-                console.log("iin arvo:    "+ i);
-            }
-                
+            for (i = 0; i < (this.inputsN); i++) {
+
+                if (i < (this.inputsN - 1)) {
+                    await this.startUpload(this.files[i]);
+                    console.log('ÄNNIEN ARVO:    ' + this.inputsN);
+                    console.log('iin arvo:    ' + i);
+                }
+
             }
         }
         this.data.currentTime = Date.now();
         this.data.results.push({'title': this.title, 'text': this.query});
         this.inputTrue = false;
-        //this.closeModal();
         console.log(this.data.results);
     }
 
     closeModal() {
         this.modalController.dismiss();
-    
+
     }
 
     ngOnInit() {

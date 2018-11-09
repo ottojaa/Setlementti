@@ -1,17 +1,27 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {ModalComponent} from '../modal/modal.component';
 import {DataService} from '../services/data.service';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {NavController, AlertController} from '@ionic/angular';
+import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
 import 'firebase/firestore';
+import * as firebase from 'firebase';
+
+interface User {
+    uid: string;
+    email: string;
+    photoURL: string;
+    description?: string;
+    nickName: string;
+}
 
 @Component({
     selector: 'app-home',
     templateUrl: 'home.page.html',
     styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
     private params = {};
     title;
     inputTrue = false;
@@ -19,7 +29,7 @@ export class HomePage {
     listPart = this.lista[0];
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
-                public data: DataService, public navCtrl: NavController) {
+                public data: DataService, public navCtrl: NavController, private afs: AngularFirestore) {
 
     }
 
@@ -40,5 +50,14 @@ export class HomePage {
             .then(() => {
                 this.navCtrl.navigateForward('login');
             });
+    }
+    ngOnInit() {
+        this.data.user = firebase.auth().currentUser;
+        console.log(this.data.user);
+        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}`);
+        userRef.ref.get().then(( doc => {
+            this.data.user = doc.data();
+            console.log(this.data.user);
+        }));
     }
 }

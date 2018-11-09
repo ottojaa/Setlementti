@@ -1,26 +1,31 @@
 <ion-header>
-  <ion-toolbar>
-      <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-    <ion-title>Profile</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Profile</ion-title>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content >
+<ion-content>
     <ion-list>
-      <ion-item>
-          <ion-avatar class="avatar" item-start>
-              <img src="https://www.poeticous.com/system/poets/photos/000/002/595/large/realniggawassup.jpg?1368308585">
+        <ion-item>
+            <ion-avatar class="avatar" item-start>
+                <img src="https://i.redd.it/coiddgklw4301.jpg">
             </ion-avatar>
             <ion-label padding>
-          <h1>Nimi</h1>
-          <h2>ikä tms</h2>
-          <h2>lisää extrapaskaa</h2>
-        </ion-label>
+                    <h3>{{ data.user.nickName}}</h3>
+                    <h3>{{ data.user.description}}</h3>
+            </ion-label>
         </ion-item>
     </ion-list>
-    <ion-item no-lines>
-        <ion-textarea placeholder="Enter a description"></ion-textarea>
-      </ion-item>
+    <ion-item>
+        <ion-label position="floating">Nickname</ion-label>
+        <ion-input type="text" [(ngModel)]="nickName"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label position="floating">Description</ion-label>
+        <ion-input type="text" [(ngModel)]="description"></ion-input>
+    </ion-item>
+    <ion-button expand="full"  (click)="updateUserDoc(this.data.user)">Update profile</ion-button>
 </ion-content>
