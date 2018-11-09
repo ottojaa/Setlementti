@@ -92,6 +92,7 @@ export class ModalComponent implements OnInit {
             let source = document.createElement('source')
             video.appendChild(source);
             source.setAttribute('src', URL.createObjectURL(this.file))
+            this.createPreviewDelete(video,video);
     }
 
     makeAudioPreview() {
@@ -102,6 +103,7 @@ export class ModalComponent implements OnInit {
             let source = document.createElement('source')
             audio.appendChild(source);
             source.setAttribute('src', URL.createObjectURL(this.file))
+            this.createPreviewDelete(audio,audio);
     }
 
     makeImgPreview() {
@@ -113,8 +115,42 @@ export class ModalComponent implements OnInit {
             //console.log(localStorage.getItem('file'));
             img.setAttribute('src', URL.createObjectURL(this.file));
             // this.drawPreview(img)
+            this.createPreviewDelete(img,img);
     }
 
+    createPreviewDelete(sibling,deletable) {
+        let deleteButton = document.createElement('ion-button');
+        let icon = document.createElement('ion-icon');
+        deleteButton.appendChild(icon);
+        icon.setAttribute('name', 'close');
+        sibling.parentNode.insertBefore(deleteButton, sibling.nextSibling);
+        //Määritetään fileCounterilla poistettava, files-taulukkoon tallennettu tiedosto
+        let deletableFile = this.fileCounter;
+        //this.files
+        console.log("tää indexi poistetaan" + deletableFile);
+        let deletableInput = this.inputsN;
+        this.fileCounter++;
+        deleteButton.addEventListener('click', () => {
+            this.deletePreview(deletable,deleteButton);
+            this.deleteInput(deletableFile,deletableInput)
+        })
+    }
+
+    deletePreview(toDelete,deleteButton) {
+        toDelete.remove();
+        deleteButton.remove();
+    }
+    
+    deleteInput(index,inputN) {
+        this.inputsN = this.inputsN - 1;
+        console.log("Mones tästä oikeastaan poistetaankaan?? HÄH? " + index)
+        console.log(this.files + "  minkälaine tää oli alunperi??");
+        console.log(this.files[0]);
+        /*this.files = */this.files.splice(index, 1);
+        console.log(this.files + "  minkälaine täst arrayst tuli?");
+        console.log(this.files[0]);
+        document.getElementById('input'+inputN).remove();
+    }
     
     createNewinput() {
         let outerlabel = document.getElementById('input1')
@@ -138,7 +174,8 @@ export class ModalComponent implements OnInit {
     // Määritetään uploadfilu ja tehdään uusi input
     defineUpload(event: FileList) {
         this.file = event.item(0);
-           
+        // Päivitetään uploadeja sisältävä taulukko
+        this.files[this.fileCounter] = this.file;   
         console.log(this.file);
         // Previewit, filuja ei lähetetä vielä mihinkään
         //this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
@@ -152,9 +189,7 @@ export class ModalComponent implements OnInit {
         if (this.file.type.split('/')[0] === 'image') {
             this.makeImgPreview();
         }
-
-        this.files[this.fileCounter] = this.file;
-        this.fileCounter++;
+        
         this.createNewinput()
         
     }
@@ -210,7 +245,10 @@ export class ModalComponent implements OnInit {
                     console.log("haloo1")
                     this.iCounter++;
                     if (this.iCounter == (this.inputsN - 1)) {
-                        this.closeModal();
+                        setTimeout(() => {
+                            //this.closeModal();
+                            console.log('closeModal!');
+                        }, 2000);
                     }
                 }
             })
