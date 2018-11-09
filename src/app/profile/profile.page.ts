@@ -40,10 +40,10 @@ export class ProfilePage implements OnInit {
             console.log(this.data.user);
         }));
         if (this.nickName === undefined) {
-            this.nickName = '';
+            this.nickName = 'Lempinimi';
         }
         if (this.description === undefined) {
-            this.description = '';
+            this.description = 'Bio';
         }
 
         const data: User = {

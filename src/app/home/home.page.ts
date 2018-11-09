@@ -46,6 +46,7 @@ export class HomePage implements OnInit {
     }
 
     private createUserDoc(user) {
+        console.log(this.data.user);
 
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
 
@@ -71,19 +72,19 @@ export class HomePage implements OnInit {
 
     ngOnInit() {
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
-        console.log(this.data.user);
-        if (!this.afs.firestore.doc(`users/${this.data.user.uid}`)) {
+        console.log(this.data.user.uid);
+        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}/`);
+        userRef.ref.get()
+            .then(doc => {
+                if (!doc.exists) {
+                    console.log('ei oo olemassa --> tee');
+                    this.createUserDoc(this.data.user);
 
-            // -----jos käyttäjälle ei löydy dokumenttia firestoresta niin luo sellainen
-            // jos ei toimi, nii ottakaa yhen loginin ajaks huutomerkki pois ifistä (logiikka not found)
-
-            this.createUserDoc(this.data.user);
-            console.log(this.data.user);
-        }
-        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}`);
-        userRef.ref.get().then((doc => {
-            this.data.user = doc.data();
-            console.log(doc.data());
-        }));
+                } else {
+                    this.data.user = doc.data();
+                    console.log('on olemassa, elä tee!');
+                    console.log(doc.data());
+                }
+            });
     }
 }
