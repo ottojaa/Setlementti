@@ -143,6 +143,7 @@ export class ModalComponent implements OnInit {
     }
 
     deletePreview(toDelete, deleteButton) {
+        this.fileCounter--;
         toDelete.remove();
         deleteButton.remove();
     }
@@ -160,7 +161,7 @@ export class ModalComponent implements OnInit {
     }
 
     createNewinput() {
-        const outerlabel = document.getElementById('input1');
+        const outerlabel = document.querySelector('.file-label');
         this.inputsN++;
         const input = document.createElement('input');
         const inputlabel = document.createElement('ion-label');
@@ -251,7 +252,7 @@ export class ModalComponent implements OnInit {
             tap(snap => {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
-                    this.db.collection('files').add({path, size: snap.totalBytes}).then(() => {
+                    this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then(() => {
                         console.log('haloo1');
                         this.iCounter++;
                         if (this.iCounter === (this.inputsN - 1)) {
