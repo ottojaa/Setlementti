@@ -257,7 +257,6 @@ export class ModalComponent implements OnInit {
                     this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then((docRef) => {
                         console.log('Document written with ID: ', docRef.id);
                         this.fileids.push(docRef.id);
-                        this.createPost();
                     }).then(() => {
                         console.log('haloo1');
                         this.iCounter++;
@@ -289,7 +288,14 @@ export class ModalComponent implements OnInit {
 
     createPost() {
         // let fileIdCollection = this.db.collection<Files>('files');
-        this.db.collection('certificates').add({files: this.fileids, author: this.data.user.uid});
+        // const header = document.getElementById('header').value;
+        // Luodaan firebase-collection: certificates ja tallennetaan sinne otsikko, teksti, tiedostojen Id:t, tekijä, pvm
+        this.db.collection('certificates').add({
+            title: this.title,
+             text: this.query,
+              files: this.fileids,
+               author: this.data.user.uid,
+                date: new Date()});
     }
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä

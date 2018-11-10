@@ -7,19 +7,19 @@
     </ion-fab>
     <ion-grid class="grid">
         <ion-col>
-            <ion-list>
-                <ion-input clearInput placeholder="Otsikkosi" [(ngModel)]="title"></ion-input>
-                <ion-textarea id="previewSibling" clearInput placeholder="Kerro vielä tarkemmin!" [(ngModel)]="query"></ion-textarea>
-                             
-                <ion-row class="buttons">
-                    <ion-button (click)="upload()">
-                        <ion-icon name="attach"></ion-icon>
-                    </ion-button>
-                    <ion-button (click)="update()">
-                        <ion-icon name="send"></ion-icon>
-                    </ion-button>
-                </ion-row>
-            </ion-list>
+                <ion-list>
+                        <ion-input clearInput placeholder="Otsikkosi" [(ngModel)]="title"></ion-input>
+                        <ion-textarea id="previewSibling" clearInput placeholder="Kerro vielä tarkemmin!" [(ngModel)]="query"></ion-textarea>
+                                     
+                        <ion-row class="buttons">
+                            <ion-button (click)="upload()">
+                                <ion-icon name="attach"></ion-icon>
+                            </ion-button>
+                            <ion-button (click)="update()">
+                                <ion-icon name="send"></ion-icon>
+                            </ion-button>
+                        </ion-row>
+                    </ion-list>
             <ion-item [@slideInOut]="uploadFiles" class="dropzone"
                       dropZone
                       (hovered)="toggleHover($event)"
