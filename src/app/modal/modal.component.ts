@@ -46,6 +46,7 @@ export class ModalComponent implements OnInit {
     query;
     inputTrue;
     files;
+    fileids;
     file: any;
     inputsN: number;
     fileCounter: number;
@@ -252,11 +253,18 @@ export class ModalComponent implements OnInit {
             tap(snap => {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
-                    this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then(() => {
+                    console.log(this.data.user.uid);
+                    this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then((docRef) => {
+                        console.log('Document written with ID: ', docRef.id);
+                        this.fileids.push(docRef.id);
+                        this.createPost();
+                    }).then(() => {
                         console.log('haloo1');
                         this.iCounter++;
                         if (this.iCounter === (this.inputsN - 1)) {
+
                             setTimeout(() => {
+                                this.createPost();
                                 this.closeModal();
                                 console.log('closeModal!');
                             }, 200);
@@ -275,6 +283,13 @@ export class ModalComponent implements OnInit {
 
     isActive(snapshot) {
         return snapshot.state === 'running' && snapshot.bytesTransferred < snapshot.totalBytes;
+    }
+
+    // Tallennetaan itse postaus tietokantaan
+
+    createPost() {
+        // let fileIdCollection = this.db.collection<Files>('files');
+        this.db.collection('certificates').add({files: this.fileids, author: this.data.user.uid});
     }
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
@@ -303,6 +318,7 @@ export class ModalComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.fileids = [];
         this.files = [];
         this.fileCounter = 0;
         this.inputsN = 1;
