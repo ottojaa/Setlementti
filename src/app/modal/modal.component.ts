@@ -300,7 +300,7 @@ export class ModalComponent implements OnInit {
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
     async update() {
-        if (this.file) {
+        if (this.files.lenght > 0) {
             let i;
             for (i = 0; i < (this.inputsN); i++) {
 
@@ -311,6 +311,12 @@ export class ModalComponent implements OnInit {
                 }
 
             }
+        } else {
+            this.createPost();
+            setTimeout(() => {
+                this.closeModal();
+            }, 200);
+
         }
         this.data.currentTime = Date.now();
         this.data.results.push({'title': this.title, 'text': this.query});
