@@ -52,6 +52,7 @@ export class ModalComponent implements OnInit {
     fileCounter: number;
     iCounter: number;
     task: AngularFireUploadTask;
+    filesid: any;
     @ViewChild('canvas') canvasEl: ElementRef;
     @ViewChild('#tableBanner') previewImg: ElementRef;
 
@@ -257,6 +258,8 @@ export class ModalComponent implements OnInit {
                     this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then((docRef) => {
                         console.log('Document written with ID: ', docRef.id);
                         this.fileids.push(docRef.id);
+                        this.filesid = docRef.id;
+
                     }).then(() => {
                         console.log('haloo1');
                         this.iCounter++;
@@ -266,7 +269,7 @@ export class ModalComponent implements OnInit {
                                 this.createPost();
                                 this.closeModal();
                                 console.log('closeModal!');
-                            }, 200);
+                            }, 1000);
                         }
                     });
 
@@ -276,7 +279,9 @@ export class ModalComponent implements OnInit {
 
         // The file's download URL
         this.snapshot.pipe(finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL())).subscribe();
-
+        /*this.db.collection('files').doc(this.filesid).set({
+            downloadURL: this.downloadURL
+        }, { merge: true });*/
 
     }
 
@@ -290,6 +295,7 @@ export class ModalComponent implements OnInit {
         // let fileIdCollection = this.db.collection<Files>('files');
         // const header = document.getElementById('header').value;
         // Luodaan firebase-collection: certificates ja tallennetaan sinne otsikko, teksti, tiedostojen Id:t, tekijä, pvm
+        console.log(this.fileids + ' upataanko mitä?');
         this.db.collection('certificates').add({
             title: this.title,
              text: this.query,
@@ -300,7 +306,8 @@ export class ModalComponent implements OnInit {
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
     async update() {
-        if (this.files.lenght > 0) {
+        console.log(this.files.length);
+        if (this.files.length > 0) {
             let i;
             for (i = 0; i < (this.inputsN); i++) {
 

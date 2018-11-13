@@ -4,9 +4,11 @@ import {ModalComponent} from '../modal/modal.component';
 import {DataService} from '../services/data.service';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {NavController, AlertController} from '@ionic/angular';
-import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
+import {AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from 'angularfire2/firestore';
 import 'firebase/firestore';
 import * as firebase from 'firebase';
+import { Observable } from 'rxjs';
+import 'rxjs/Rx';
 
 interface User {
     uid: string;
@@ -14,6 +16,19 @@ interface User {
     photoURL: string;
     description?: string;
     nickName: string;
+}
+
+interface Certificate {
+    author: string;
+    date: string;
+    files: [];
+    text: string;
+    title: string;
+}
+
+interface File {
+    path: string;
+    size: string;
 }
 
 @Component({
@@ -27,12 +42,27 @@ export class HomePage implements OnInit {
     inputTrue = false;
     lista = [];
     listPart = this.lista[0];
+    certificateDoc: AngularFirestoreCollection<Certificate>;
+    certificatesCol: AngularFirestoreCollection<Certificate>;
+    certificates: any;
+    certificate: Observable<Certificate>;
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
-                public data: DataService, public navCtrl: NavController, private afs: AngularFirestore) {
+                public data: DataService, public navCtrl: NavController, private afs: AngularFirestore, private db: AngularFirestore) {
 
     }
 
+
+    getCertificates() {
+        this.certificates = this.certificatesCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                const data = a.payload.doc.data() as Certificate;
+                // console.log(data);
+                const id = a.payload.doc.id;
+                return {id, data};
+            });
+        });
+    }
     async presentModal() {
         const modal = await this.modalController.create({
             component: ModalComponent,
@@ -57,8 +87,8 @@ export class HomePage implements OnInit {
             nickName: 'Nickname',
             description: 'Description'
         };
-        console.log(user.uid);
-        console.log(user.email);
+        // console.log(user.uid);
+        // console.log(user.email);
         return userRef.set(data);
 
     }
@@ -70,9 +100,15 @@ export class HomePage implements OnInit {
             });
     }
 
+
+
     ngOnInit() {
+
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
-        console.log(this.data.user.uid);
+
+    // console.log(document.getElementById('card1').innerHTML);
+
+        // console.log(this.data.user.uid);
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}/`);
         userRef.ref.get()
             .then(doc => {
@@ -86,5 +122,12 @@ export class HomePage implements OnInit {
                     console.log(doc.data());
                 }
             });
+
+            this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid)
+        );
+            this.getCertificates();
+       // for (let i = 0; i <= certificates.length) {
+
+       // }
     }
 }

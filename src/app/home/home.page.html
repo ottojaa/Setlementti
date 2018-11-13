@@ -23,14 +23,14 @@
     </ion-fab>
 
     <ul class="inline">
-        <li *ngFor="let part of data.results; let i = index">
+        <li *ngFor="let certificate of certificates | async; let i = index">
             <ion-card>
                 <ion-card-header>
                     <ion-card-subtitle>
                         <ion-row class="row">
                             <ion-col>
                                 <ion-icon style="font-size: 15px;" name="time"></ion-icon>
-                                {{ data.currentTime | date:'h:mm'}}
+                                {{ certificate.data.date }}
                             </ion-col>
                             <ion-col>
                                 <ion-badge color="warning">{{i+1}}</ion-badge>
@@ -39,14 +39,22 @@
                     </ion-card-subtitle>
                     <ion-card-title>
                         <ion-text>
-                            <h1>{{part.title}} </h1>
+                            <h1>{{certificate.data.title}} </h1>
                         </ion-text>
 
                     </ion-card-title>
                 </ion-card-header>
                 <ion-card-content>
-                    {{part.text}}
+                    {{certificate.data.text}}
                 </ion-card-content>
+              
+                        {{certificate.files}}
+                   
+              <!-- <li *ngFor="let files of certificate| async">
+                   {{certificate.files}}
+                        <ion-img [width]="imgWidth" [height]="imgHeight" src="..."></ion-img>
+
+                </li>-->
             </ion-card>
         </li>
     </ul>
