@@ -4,7 +4,9 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-buttons slot="end">
-            <ion-button (click)="signOut()">Sign out<ion-icon name="log-out"></ion-icon></ion-button>
+            <ion-button (click)="signOut()">Sign out
+                <ion-icon name="log-out"></ion-icon>
+            </ion-button>
         </ion-buttons>
         <ion-title>
             Home
@@ -27,13 +29,14 @@
             <ion-card>
                 <ion-card-header>
                     <ion-card-subtitle>
-                        <ion-row class="row">
+                        <ion-row>
                             <ion-col>
-                                <ion-icon style="font-size: 15px;" name="time"></ion-icon>
-                                {{ data.currentTime | date:'h:mm'}}
+                                <ion-avatar class="avatar" item-start>
+                                    <img src="https://i.redd.it/coiddgklw4301.jpg">
+                                </ion-avatar>
                             </ion-col>
                             <ion-col>
-                                <ion-badge color="warning">{{i+1}}</ion-badge>
+                                <p>{{ data.currentTime | date:'MMM d, y, hh:mm'}}</p>
                             </ion-col>
                         </ion-row>
                     </ion-card-subtitle>
