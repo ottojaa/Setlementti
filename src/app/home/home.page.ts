@@ -122,7 +122,6 @@ export class HomePage implements OnInit {
                     console.log(doc.data());
                 }
             });
-
             this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid)
         );
             this.getCertificates();

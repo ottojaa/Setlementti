@@ -4,52 +4,48 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-buttons slot="end">
-            <ion-button (click)="signOut()">Sign out<ion-icon name="log-out"></ion-icon></ion-button>
+            <ion-button (click)="signOut()">Sign out
+                <ion-icon name="log-out"></ion-icon>
+            </ion-button>
         </ion-buttons>
         <ion-title>
             Home
         </ion-title>
     </ion-toolbar>
 </ion-header>
-
 <ion-content padding>
-
     <h1>Welcome!</h1>
-
     <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button (click)="presentModal()">
             <ion-icon name="add"></ion-icon>
         </ion-fab-button>
     </ion-fab>
-
     <ul class="inline">
         <li *ngFor="let certificate of certificates | async; let i = index">
             <ion-card>
                 <ion-card-header>
-                    <ion-card-subtitle>
-                        <ion-row class="row">
+                   <!-- <ion-card-subtitle>
+                        <ion-row>
                             <ion-col>
-                                <ion-icon style="font-size: 15px;" name="time"></ion-icon>
-                                {{ certificate.data.date }}
+                                <ion-avatar class="avatar" item-start>
+                                    <img src="https://i.redd.it/coiddgklw4301.jpg">
+                                </ion-avatar>
                             </ion-col>
                             <ion-col>
-                                <ion-badge color="warning">{{i+1}}</ion-badge>
+                                <p>{{ data.currentTime | date:'MMM d, y, hh:mm'}}</p>
                             </ion-col>
-                        </ion-row>
+                        </ion-row>-->
                     </ion-card-subtitle>
                     <ion-card-title>
                         <ion-text>
                             <h1>{{certificate.data.title}} </h1>
                         </ion-text>
-
                     </ion-card-title>
                 </ion-card-header>
                 <ion-card-content>
                     {{certificate.data.text}}
                 </ion-card-content>
-              
                         {{certificate.files}}
-                   
               <!-- <li *ngFor="let files of certificate| async">
                    {{certificate.files}}
                         <ion-img [width]="imgWidth" [height]="imgHeight" src="..."></ion-img>
@@ -58,5 +54,4 @@
             </ion-card>
         </li>
     </ul>
-
 </ion-content>

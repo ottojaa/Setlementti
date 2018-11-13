@@ -7,7 +7,14 @@
 }
 .row{
   display: flex !important;
-  justify-content: space-around !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100%;
+  height: 100%;
+}
+.ion-card-subtitle{
+  display: flex !important;
+  justify-content: space-evenly !important;
   align-items: center !important;
   width: 100%;
   height: 100%;
