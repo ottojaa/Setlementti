@@ -266,14 +266,6 @@ export class ModalComponent implements OnInit {
                         // const filesRef = this.db.collection('files');
                         console.log('haloo1');
                         this.iCounter++;
-                        if (this.iCounter === (this.inputsN - 1)) {
-
-                            setTimeout(() => {
-                                this.createPost();
-                                this.closeModal();
-                                console.log('closeModal!');
-                            }, 1000);
-                        }
                     });
 
                 }
@@ -288,10 +280,21 @@ export class ModalComponent implements OnInit {
             storageRef.child(path).getDownloadURL().then( (url) => {
                 // Or inserted into an <img> element:
                 this.downloadURLs.push(url);
+                console.log(url + ' DOWNLOADURL');
                 this.db.doc('files/' + this.filesid).update({downloadURL: url});
+                if (this.iCounter === (this.inputsN - 1)) {
+                    this.createPost();
+                    console.log('CREATE POST');
+                    setTimeout(() => {
+
+                        this.closeModal();
+                        console.log('closeModal!');
+                    }, 1000);
+                }
               }).catch(function(error) {
                 // Handle any errors
               });
+
 
         }
             )).subscribe();
