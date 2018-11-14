@@ -21,7 +21,7 @@
         </ion-fab-button>
     </ion-fab>
     <ul class="inline">
-        <li *ngFor="let certificate of certificates | async; let i = index">
+        <li *ngFor="let certificate of certificates | async; let i = index" >
             <ion-card>
                 <ion-card-header>
                    <!-- <ion-card-subtitle>
@@ -34,21 +34,20 @@
                             <ion-col>
                                 <p>{{ data.currentTime | date:'MMM d, y, hh:mm'}}</p>
                             </ion-col>
-                        </ion-row>-->
-                    </ion-card-subtitle>
+                        </ion-row>
+                    </ion-card-subtitle>-->
                     <ion-card-title>
                         <ion-text>
                             <h1>{{certificate.data.title}} </h1>
                         </ion-text>
                     </ion-card-title>
                 </ion-card-header>
-                <ion-card-content>
+                <ion-card-content id="id{{i}}">
                     {{certificate.data.text}}
                 </ion-card-content>
-                        {{certificate.files}}
-              <!-- <li *ngFor="let files of certificate| async">
-                   {{certificate.files}}
-                        <ion-img [width]="imgWidth" [height]="imgHeight" src="..."></ion-img>
+                        
+               <!-- mitä hemmettiä täs pitäs tehä ?<li *ngFor="let URL of certificate| async">
+                        <ion-img [width]="imgWidth" [height]="imgHeight" src="{{URL.date.downloadURLS}}"></ion-img>
 
                 </li>-->
             </ion-card>

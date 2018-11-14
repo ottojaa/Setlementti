@@ -24,11 +24,15 @@ interface Certificate {
     files: [];
     text: string;
     title: string;
+    downloadURLs: [];
 }
 
 interface File {
     path: string;
     size: string;
+    sender: string;
+    downloadURL: string;
+
 }
 
 @Component({
@@ -42,8 +46,10 @@ export class HomePage implements OnInit {
     inputTrue = false;
     lista = [];
     listPart = this.lista[0];
-    certificateDoc: AngularFirestoreCollection<Certificate>;
+    certificateDoc: AngularFirestoreDocument<Certificate>;
     certificatesCol: AngularFirestoreCollection<Certificate>;
+    fileDoc: AngularFirestoreDocument<File>;
+    filesCol: AngularFirestoreCollection<File>;
     certificates: any;
     certificate: Observable<Certificate>;
 
@@ -52,12 +58,52 @@ export class HomePage implements OnInit {
 
     }
 
+    // Kokeilu luoda mediat javascriptillä
+    getSrcURL(URLs) {
+        if (URLs) {
+            for (let i = 0; i < URLs.length; i++) {
+                // this.afs.doc('files/' + files[i]);
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
+                    const img = document.createElement('img');
+                    img.setAttribute('src', URLs[i]);
+                    document.getElementById('id' + i).appendChild(img);
+                }
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
+                    const video = document.createElement('video');
+                    video.setAttribute('controls', '');
+                    video.setAttribute('style', 'max-height: 200px');
+                    const source = document.createElement('source');
+                    source.setAttribute('src', URLs[i]);
+                    document.getElementById('id' + i).appendChild(video);
+                }
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
+                    const audio = document.createElement('audio');
+                    audio.setAttribute('controls', '');
+                    audio.setAttribute('style', 'max-height: 200px');
+                    const source = document.createElement('source');
+                    source.setAttribute('src', URLs[i]);
+                    document.getElementById('id' + i).appendChild(audio);
+                }
+
+
+                console.log(this.fileDoc);
+                // fileUrls.push(this.fileDoc.downloadURL)
+            }
+        }
+
+
+
+
+        }
 
     getCertificates() {
+        // Uploadattujen modaalien data
+        // Media näkyy toimivassa versiossa vain niillä, jotka upattu 14.11. jälkeisen päivityksen jälkeen
         this.certificates = this.certificatesCol.snapshotChanges().map(actions => {
             return actions.map(a => {
                 const data = a.payload.doc.data() as Certificate;
-                // console.log(data);
+                console.log(data);
+                this.getSrcURL(data.downloadURLs);
                 const id = a.payload.doc.id;
                 return {id, data};
             });
@@ -106,7 +152,7 @@ export class HomePage implements OnInit {
 
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
 
-    // console.log(document.getElementById('card1').innerHTML);
+        // console.log(document.getElementById('card1').innerHTML);
 
         // console.log(this.data.user.uid);
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}/`);

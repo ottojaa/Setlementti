@@ -3,19 +3,19 @@ import {
     ElementRef,
     ViewChild
 } from '@angular/core';
-import {NavController, ModalController, Events} from '@ionic/angular';
-import {DataService} from '../services/data.service';
-import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
-import {AngularFirestore} from 'angularfire2/firestore';
-import {Observable} from 'rxjs/Observable';
-import {tap} from 'rxjs/operators';
-import {finalize} from 'rxjs/operators';
-import {trigger, state, style, animate, transition} from '@angular/animations';
+import { NavController, ModalController, Events } from '@ionic/angular';
+import { DataService } from '../services/data.service';
+import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
+import { AngularFirestore } from 'angularfire2/firestore';
+import { Observable } from 'rxjs/Observable';
+import { tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import * as firebase from 'firebase/app';
 
 require('firebase/auth');
-import {HttpClient} from '@angular/common/http';
-import {stringify} from '@angular/core/src/render3/util';
+import { HttpClient } from '@angular/common/http';
+import { stringify } from '@angular/core/src/render3/util';
 
 @Component({
     selector: 'app-modal',
@@ -76,10 +76,10 @@ export class ModalComponent implements OnInit {
      * Reference the context for the Canvas element
      */
     // private _CONTEXT : any;
-
+    downloadURLs;
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-                private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
+        private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
     }
 
     upload(): void {
@@ -242,10 +242,10 @@ export class ModalComponent implements OnInit {
         const path = filetype;
         console.log(String(path));
         // Totally optional metadata
-        const customMetadata = {app: 'My AngularFire-powered PWA!'};
+        const customMetadata = { app: 'My AngularFire-powered PWA!' };
 
         // The main task
-        this.task = this.storage.upload(path, sentFile, {customMetadata});
+        this.task = this.storage.upload(path, sentFile, { customMetadata });
 
         // Progress monitoring
         this.percentage = this.task.percentageChanges();
@@ -255,12 +255,15 @@ export class ModalComponent implements OnInit {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
                     console.log(this.data.user.uid);
-                    this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then((docRef) => {
+                    this.db.collection('files').add({ path, size: snap.totalBytes, sender: this.data.user.uid }).then((docRef) => {
                         console.log('Document written with ID: ', docRef.id);
                         this.fileids.push(docRef.id);
                         this.filesid = docRef.id;
 
+
                     }).then(() => {
+                        console.log(this.filesid);
+                        // const filesRef = this.db.collection('files');
                         console.log('haloo1');
                         this.iCounter++;
                         if (this.iCounter === (this.inputsN - 1)) {
@@ -278,10 +281,26 @@ export class ModalComponent implements OnInit {
         );
 
         // The file's download URL
-        this.snapshot.pipe(finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL())).subscribe();
-        /*this.db.collection('files').doc(this.filesid).set({
-            downloadURL: this.downloadURL
-        }, { merge: true });*/
+        this.snapshot.pipe(finalize(() => {
+            this.downloadURL = this.storage.ref(path).getDownloadURL();
+            const storage = firebase.storage();
+            const storageRef = storage.ref();
+            storageRef.child(path).getDownloadURL().then( (url) => {
+                // Or inserted into an <img> element:
+                this.downloadURLs.push(url);
+                this.db.doc('files/' + this.filesid).update({downloadURL: url});
+              }).catch(function(error) {
+                // Handle any errors
+              });
+
+        }
+            )).subscribe();
+        /*this.snapshot.pipe(finalize(() => {
+            const filesRef = this.db.collection('files');
+            filesRef.doc(this.filesid).set({
+                downloadURL: this.downloadURL
+            }, { merge: true });
+        })).subscribe();*/
 
     }
 
@@ -298,10 +317,12 @@ export class ModalComponent implements OnInit {
         console.log(this.fileids + ' upataanko mitä?');
         this.db.collection('certificates').add({
             title: this.title,
-             text: this.query,
-              files: this.fileids,
-               author: this.data.user.uid,
-                date: new Date()});
+            text: this.query,
+            files: this.fileids,
+            downloadURLs: this.downloadURLs,
+            author: this.data.user.uid,
+            date: new Date()
+        });
     }
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
@@ -326,7 +347,7 @@ export class ModalComponent implements OnInit {
 
         }
         this.data.currentTime = Date.now();
-        this.data.results.push({'title': this.title, 'text': this.query});
+        this.data.results.push({ 'title': this.title, 'text': this.query });
         this.inputTrue = false;
         console.log(this.data.results);
     }
@@ -337,6 +358,9 @@ export class ModalComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.title = '';
+        this.query = '';
+        this.downloadURLs = [];
         this.fileids = [];
         this.files = [];
         this.fileCounter = 0;
