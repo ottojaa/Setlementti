@@ -18,6 +18,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import {environment} from '../environments/environment';
 import { Facebook } from '@ionic-native/facebook/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 
 export const firebaseConfig = environment.firebaseConfig;
@@ -35,6 +36,7 @@ export const firebaseConfig = environment.firebaseConfig;
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireStorageModule,
         AngularFirestoreModule,
+        AngularFireDatabaseModule,
         CoreModule
     ],
     providers: [

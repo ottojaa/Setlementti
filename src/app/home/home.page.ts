@@ -59,7 +59,7 @@ export class HomePage implements OnInit {
     }
 
     // Kokeilu luoda mediat javascriptillä
-    getSrcURL(URLs) {
+    async getSrcURL(URLs) {
         if (URLs) {
             for (let i = 0; i < URLs.length; i++) {
                 // this.afs.doc('files/' + files[i]);
@@ -103,6 +103,7 @@ export class HomePage implements OnInit {
             return actions.map(a => {
                 const data = a.payload.doc.data() as Certificate;
                 console.log(data);
+                console.log(data.downloadURLs);
                 // this.getSrcURL(data.downloadURLs);
                 const id = a.payload.doc.id;
                 return { id, data };

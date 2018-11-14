@@ -6,6 +6,7 @@ import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import {DataService} from '../services/data.service';
+import {Upload} from './upload';
 
 interface User {
     uid: string;
@@ -29,6 +30,8 @@ export class ProfilePage implements OnInit {
     realAge;
     editMode = false;
     isReadOnly = true;
+    selectedFiles: FileList;
+    currentUpload: Upload;
 
     user: Observable<User>;
 
@@ -74,6 +77,15 @@ export class ProfilePage implements OnInit {
         }
     }
 
+    detectFiles(event) {
+        this.selectedFiles = event.target.files;
+    }
+
+    uploadSingle() {
+        const file = this.selectedFiles.item(0);
+        this.currentUpload = new Upload(file);
+        this.data.pushUpload(this.currentUpload);
+    }
 
     ngOnInit() {
         this.description = this.data.user.description;

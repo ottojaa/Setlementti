@@ -92,4 +92,8 @@
         <variable name="APP_ID" value="1044832605712018" />
         <variable name="APP_NAME" value="firefighter" />
     </plugin>
+    <plugin name="cordova-plugin-telerik-imagepicker" spec="2.2.2">
+        <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value="good day my friend" />
+    </plugin>
+    <plugin name="cordova-plugin-crop" spec="0.4.0" />
 </widget>

@@ -13,8 +13,7 @@
         </ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content padding>
-    <h1>Welcome!</h1>
+<ion-content padding class="background">
     <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button (click)="presentModal()">
             <ion-icon name="add"></ion-icon>
@@ -22,20 +21,11 @@
     </ion-fab>
     <ul class="inline">
         <li *ngFor="let certificate of certificates | async; let i = index" >
-            <ion-card>
+            <ion-card class="white">
                 <ion-card-header>
-                   <!-- <ion-card-subtitle>
-                        <ion-row>
-                            <ion-col>
-                                <ion-avatar class="avatar" item-start>
-                                    <img src="https://i.redd.it/coiddgklw4301.jpg">
-                                </ion-avatar>
-                            </ion-col>
-                            <ion-col>
-                                <p>{{ data.currentTime | date:'MMM d, y, hh:mm'}}</p>
-                            </ion-col>
-                        </ion-row>
-                    </ion-card-subtitle>-->
+                    <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
+                        <ion-img [src]="certificate.data.downloadURLs[0]"></ion-img>
+                    </div>
                     <ion-card-title>
                         <ion-text>
                             <h1>{{certificate.data.title}} </h1>
@@ -45,11 +35,6 @@
                 <ion-card-content id="id{{i}}">
                     {{certificate.data.text}}
                 </ion-card-content>
-                        
-               <!-- mitä hemmettiä täs pitäs tehä ?<li *ngFor="let URL of certificate| async">
-                        <ion-img [width]="imgWidth" [height]="imgHeight" src="{{URL.date.downloadURLS}}"></ion-img>
-
-                </li>-->
             </ion-card>
         </li>
     </ul>
