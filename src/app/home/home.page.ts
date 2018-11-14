@@ -94,7 +94,7 @@ export class HomePage implements OnInit {
 
 
 
-        }
+    }
 
     getCertificates() {
         // Uploadattujen modaalien data
@@ -103,9 +103,9 @@ export class HomePage implements OnInit {
             return actions.map(a => {
                 const data = a.payload.doc.data() as Certificate;
                 console.log(data);
-                this.getSrcURL(data.downloadURLs);
+                // this.getSrcURL(data.downloadURLs);
                 const id = a.payload.doc.id;
-                return {id, data};
+                return { id, data };
             });
         });
     }
