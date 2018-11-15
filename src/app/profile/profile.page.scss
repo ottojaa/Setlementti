@@ -4,10 +4,46 @@
 }
 
 .profile-image {
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
+  margin: auto;
+}
+.image-container{
+  max-width: 150px;
 }
 .input{
   text-align: right !important;
+}
+
+.file-label{
+  position: relative;
+  margin: auto;
+  width: 50%;
+  height: 50%;
+  --padding-start: 0 !important;
+}
+.image-container > input{
+  display: none;
+}
+.profile-details{
+  text-align: right !important;
+}
+.file-label .buttonz{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transition: all 0.3s ease-in;
+}
+.file-label .buttonz:hover{
+  opacity: 1;
+
+}
+.button1{
+  font-size: 11px;
+}
+.button2{
+  font-size: 12px;
 }

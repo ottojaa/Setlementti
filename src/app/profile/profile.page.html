@@ -12,33 +12,61 @@
 
 
     <form #formCtrl="ngForm">
-        <div align="center" *ngIf="formCtrl.form.valid">
+        <ion-grid *ngIf="formCtrl.form.valid">
+            <ion-row>
+                <ion-col size="4" class="image-container">
+                    <label for="input1" class="file-label">
+                        <img class="profile-image" *ngIf="previewURL" [src]=previewURL>
+                        <img class="profile-image" *ngIf="imageURL && !previewURL" [src]=imageURL>
+                        <img class="profile-image" *ngIf="!imageURL" src="http://www.precision-spine.com/wp-content/uploads/2015/09/person-icon.png">
+                        <ion-row>
+                            <ion-col size="5">
+                                <ion-button color="success" *ngIf="uploadTrue" (click)="upload()" class="button1">
+                                    <ion-icon name="checkmark"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                            <ion-col size="5">
+                                <ion-button color="danger" *ngIf="uploadTrue" (click)="cancel()" class="button2">
+                                    <ion-icon name="close"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                        </ion-row>
+                    </label>
+                    <input class="file-input" id="input1" type="file" [disabled]="!inputField" (change)="defineUpload($event)"
+                           accept=".png, .jpg">
+                </ion-col>
+                <ion-col size="8" class="profile-details">
+                    <p>{{data.user.nickName}}</p>
+                    <p> {{data.user.description}}</p>
+                    <p>{{data.user.age}} years old</p>
+                </ion-col>
+            </ion-row>
 
-            <h1>{{data.user.nickName}}</h1>
-            <img class="profile-image" src="https://i.redd.it/coiddgklw4301.jpg">
-            <!--<ion-label>
-                <ion-input type="file" (change)="detectFiles($event)"></ion-input>
-            </ion-label>
-            <ion-button color="danger" [disabled]="!selectedFiles" (click)="uploadSingle()">Change avatar</ion-button>!-->
-            <h4> {{data.user.description}}</h4>
-            <h5>{{data.user.age}} years old</h5>
-        </div>
-        <ion-list>
+        </ion-grid>
+        <ion-list [@slideInOut]="editProfile">
             <ion-item>
                 <ion-label>Name</ion-label>
-                <ion-input class="input" [(ngModel)]="nickName" required [readonly]="isReadOnly" [ngModelOptions]="{standalone:true}"></ion-input>
+                <ion-input class="input" [(ngModel)]="nickName" required [readonly]="isReadOnly"
+                           [ngModelOptions]="{standalone:true}"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>City</ion-label>
-                <ion-input class="input" [(ngModel)]="description" required [readonly]="isReadOnly" [ngModelOptions]="{standalone:true}"></ion-input>
+                <ion-input class="input" [(ngModel)]="description" required [readonly]="isReadOnly"
+                           [ngModelOptions]="{standalone:true}"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label >Birth Date</ion-label>
-                <ion-datetime class="input" required name="birthdate" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" [(ngModel)]="dob" [disabled]="isReadOnly" [ngModelOptions]="{standalone:true}"></ion-datetime>
+                <ion-label>Birth Date</ion-label>
+                <ion-datetime class="input" required name="birthdate" displayFormat="DD MMM YYYY"
+                              pickerFormat="DD MMM YYYY" [(ngModel)]="dob" [disabled]="isReadOnly"
+                              [ngModelOptions]="{standalone:true}"></ion-datetime>
             </ion-item>
 
         </ion-list>
-        <ion-button *ngIf="editMode" expand="full" color="danger" [disabled]="!formCtrl.form.valid" ion-button block (click)="updateUserDoc(this.data.user)">Save Changes</ion-button>
-        <ion-button *ngIf="!editMode" expand="full" color="secondary" [disabled]="!formCtrl.form.valid" ion-button block (click)="toggleReadOnly()">Edit profile</ion-button>
+        <ion-button *ngIf="editMode" expand="full" color="danger" [disabled]="!formCtrl.form.valid" ion-button block
+                    (click)="updateUserDoc(this.data.user)">Save Changes
+        </ion-button>
+        <ion-button *ngIf="!editMode" expand="full" color="secondary" [disabled]="!formCtrl.form.valid" ion-button block
+                    (click)="toggleReadOnly()">Edit profile
+        </ion-button>
     </form>
 </ion-content>
