@@ -19,13 +19,14 @@ import {environment} from '../environments/environment';
 import { Facebook } from '@ionic-native/facebook/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { CertificateCardComponent } from './certificate-card/certificate-card.component';
 
 
 export const firebaseConfig = environment.firebaseConfig;
 
 @NgModule({
-    declarations: [AppComponent, ModalComponent],
-    entryComponents: [ModalComponent],
+    declarations: [AppComponent, ModalComponent, CertificateCardComponent],
+    entryComponents: [ModalComponent, CertificateCardComponent],
     imports: [
         BrowserModule,
         IonicModule.forRoot(),

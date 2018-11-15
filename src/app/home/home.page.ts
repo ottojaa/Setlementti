@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {ModalComponent} from '../modal/modal.component';
+import {CertificateCardComponent} from '../certificate-card/certificate-card.component';
 import {DataService} from '../services/data.service';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {NavController, AlertController} from '@ionic/angular';
@@ -25,6 +26,7 @@ interface Certificate {
     text: string;
     title: string;
     downloadURLs: [];
+    cid: string;
 }
 
 interface File {
@@ -117,6 +119,16 @@ export class HomePage implements OnInit {
         });
         return await modal.present();
     }
+
+    async presentCertificate(id) {
+        localStorage.setItem('cid', id);
+        const modal = await this.modalController.create({
+            component: CertificateCardComponent,
+            componentProps: {value: 123}
+        });
+        return await modal.present();
+    }
+
 
     setInput() {
         this.inputTrue = true;

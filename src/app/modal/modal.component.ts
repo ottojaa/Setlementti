@@ -325,6 +325,11 @@ export class ModalComponent implements OnInit {
             downloadURLs: this.downloadURLs,
             author: this.data.user.uid,
             date: new Date()
+        }).then((docRef) => {
+            console.log('Document written with ID: ', docRef.id);
+            const cid = docRef.id;
+            this.db.doc('certificates/' + cid).update({cid: cid});
+
         });
     }
 
