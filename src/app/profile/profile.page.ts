@@ -54,6 +54,7 @@ export class ProfilePage implements OnInit {
     imageURL;
     previewURL;
     previkkaURL;
+    lastURL;
     editProfile;
     uploadTrue = false;
     inputField = true;
@@ -81,9 +82,8 @@ export class ProfilePage implements OnInit {
         console.log(this.previewURL);
         this.file = event.target.files[0];
         this.storage.upload(`users/${this.data.user.uid}/previewPic`, this.file);
-        setTimeout(() => {
-            this.setPreviewReference();
-        }, 2000);
+        const img = document.getElementById('preview');
+        img.setAttribute('src', URL.createObjectURL(this.file));
         console.log(this.file);
         this.uploadTrue = true;
     }
@@ -104,7 +104,9 @@ export class ProfilePage implements OnInit {
     }
 
     cancel() {
-        this.previewURL = null;
+        const img = document.getElementById('preview');
+        img.setAttribute('src', this.lastURL);
+        console.log(this.imageURL);
         this.uploadTrue = false;
         this.enableInput();
     }
@@ -113,7 +115,9 @@ export class ProfilePage implements OnInit {
         if (this.storage.ref(`users/${this.data.user.uid}/profilePic`)) {
             this.downloadURL = this.storage.ref(`users/${this.data.user.uid}/profilePic`).getDownloadURL().subscribe(url => {
                 if (url) {
+                    console.log('aseta uusi imageurli');
                     this.imageURL = url;
+                    this.lastURL = this.imageURL;
                     console.log(this.imageURL);
                 }
             });
@@ -125,6 +129,7 @@ export class ProfilePage implements OnInit {
         if (this.storage.ref(`users/${this.data.user.uid}/previewPic`)) {
             this.previkkaURL = this.storage.ref(`users/${this.data.user.uid}/previewPic`).getDownloadURL().subscribe(url => {
                 if (url) {
+                    console.log('aseta uusi imageurli');
                     this.previewURL = url;
                     console.log(this.previewURL);
                 }
