@@ -9,7 +9,7 @@
       <ion-col>
         <ul class="inline">
           
-          <li *ngFor="let certificate of certificates | async; let i = index" >
+          <div *ngFor="let certificate of certificates | async; let i = index" >
               <ion-card class="white">
                   <ion-card-header>
                       <ion-card-title>
@@ -22,12 +22,7 @@
                       {{certificate.data.text}}
                   </ion-card-content>
               </ion-card>
-          </li>
-      </ul>
-      </ion-col>
-
-  </ion-grid>
-  <li *ngFor="let part of data.results; let i = index">
+                <li *ngFor="let part of data.results; let i = index">
       <ion-card>
           <ion-card-header>
               <ion-card-subtitle>
@@ -41,23 +36,29 @@
                       </ion-col>
                   </ion-row>
               </ion-card-subtitle>
-              <ion-card-title>
+              <!--<ion-card-title>
                   <ion-text color="success">
                       <h1>{{part.title}} </h1>
                   </ion-text>
 
-              </ion-card-title>
+              </ion-card-title>-->
           </ion-card-header>
           <ion-card-content>
-              <ion-img [src]="part.imgsrc"></ion-img>
+              <img [attr.src]="part.imgsrc">
               <video controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">
-                  <source src="{{part.videosrc}}" type="video/mp4" />
+                  <source [attr.src]="part.videosrc" type="video/mp4" />
                 </video>
                 <audio controls>
-                    <source src="{{part.audiosrc}}" type="audio/mpeg">
+                    <source [attr.src]="part.audiosrc" type="audio/mpeg">
                   </audio>
           </ion-card-content>
       </ion-card>
   </li>
+</div>
+      </ul>
+      </ion-col>
+
+  </ion-grid>
+
 </ion-content>
 

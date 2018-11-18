@@ -51,12 +51,14 @@ export class CertificateCardComponent implements OnInit {
   inputTrue;
   certificatesCol: AngularFirestoreCollection<Certificate>;
   certificates: any;
+  certificate: Observable<Certificate>;
   constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
     private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events) { }
 
 pushSrcs(URLs) {
   if (URLs) {
     for (let i = 0; i < URLs.length; i++) {
+      console.log(URLs[i]);
         // this.afs.doc('files/' + files[i]);
         if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
           this.data.results.push({'part.imgsrc': URLs[i]});
@@ -68,29 +70,38 @@ pushSrcs(URLs) {
           this.data.results.push({'part.audiosrc': URLs[i]});
         }
     }
+    console.log(this.data.results);
 }
 }
 
   closeModal() {
+    this.data.results = [];
     this.modalController.dismiss();
   }
 
-  ngOnInit() {
-    const cid = localStorage.getItem('cid');
+  getMedia(cid) {
     this.certificatesCol = this.afs.collection('certificates', ref => ref.where('cid', '==', cid));
     this.certificates = this.certificatesCol.snapshotChanges().map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as Certificate;
-        console.log(data[0]);
-        this.pushSrcs(data[0].downloadURLs);
+        console.log(data);
         const id = a.payload.doc.id;
+        this.pushSrcs(data.downloadURLs);
         return { id, data };
       });
     });
+      console.log(this.certificates);
+      // this.pushSrcs(this.certificates.data.downloadURLs);
+
+  }
+
+  ngOnInit() {
+    const cid = localStorage.getItem('cid');
+    console.log(cid);
+    this.getMedia(cid);
     this.data.currentTime = Date.now();
-    this.data.results.push({ 'title': this.title, 'text': this.query });
+    // this.data.results.push({ 'title': this.title, 'text': this.query });
     this.inputTrue = false;
-    console.log(this.data.results);
     this.title = '';
     this.query = '';
     /*this.downloadURLs = [];
