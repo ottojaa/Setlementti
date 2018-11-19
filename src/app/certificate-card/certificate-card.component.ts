@@ -61,16 +61,21 @@ pushSrcs(URLs) {
       console.log(URLs[i]);
         // this.afs.doc('files/' + files[i]);
         if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
-          this.data.results.push({'part.imgsrc': URLs[i]});
+          this.data.results.push({'imgsrc': URLs[i], 'title': 'Testaillaaan'});
+          this.inputTrue = false;
+          console.log('testi1');
         }
         if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
-          this.data.results.push({'part.videosrc': URLs[i]});
+          this.data.results.push({'videosrc': URLs[i]});
+          this.inputTrue = false;
         }
         if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
-          this.data.results.push({'part.audiosrc': URLs[i]});
+          this.data.results.push({'audiosrc': URLs[i]});
+          this.inputTrue = false;
         }
     }
     console.log(this.data.results);
+    console.log('testi2');
 }
 }
 

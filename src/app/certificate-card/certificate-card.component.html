@@ -7,6 +7,44 @@
   </ion-fab>
   <ion-grid class="grid">
       <ion-col>
+            <li *ngFor="let part of data.results; let i = index">
+                    <ion-card>
+                        <ion-card-header>
+                            <ion-card-subtitle>
+                                <ion-row class="row">
+                                    <ion-col>
+                                        <ion-icon style="font-size: 15px;" name="time"></ion-icon>
+                                        {{ data.currentTime | date:'h:mm'}}
+                                    </ion-col>
+                                    <ion-col>
+                                        <ion-badge color="tertiary">{{i+1}}</ion-badge>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-card-subtitle>
+                            <!--<ion-card-title>
+                                <ion-text color="success">
+                                    <h1>{{part.title}} </h1>
+                                </ion-text>
+              
+                            </ion-card-title>-->
+                        </ion-card-header>
+                        <ion-card-content>
+                                <ion-card-title>
+                                        <ion-text color="success">
+                                            <h1>{{part.title}} </h1>
+                                        </ion-text>
+                
+                                    </ion-card-title>
+                            <td><img src="{{part.imgsrc}}" alt="ei toimi" class="img-responsive"/></td>
+                            <video controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                                <source [attr.src]="part.videosrc" type="video/mp4" />
+                              </video>
+                              <audio controls>
+                                  <source [attr.src]="part.audiosrc" type="audio/mpeg">
+                                </audio>
+                        </ion-card-content>
+                    </ion-card>
+                </li>
         <ul class="inline">
           
           <div *ngFor="let certificate of certificates | async; let i = index" >
@@ -22,42 +60,11 @@
                       {{certificate.data.text}}
                   </ion-card-content>
               </ion-card>
-                <li *ngFor="let part of data.results; let i = index">
-      <ion-card>
-          <ion-card-header>
-              <ion-card-subtitle>
-                  <ion-row class="row">
-                      <ion-col>
-                          <ion-icon style="font-size: 15px;" name="time"></ion-icon>
-                          {{ data.currentTime | date:'h:mm'}}
-                      </ion-col>
-                      <ion-col>
-                          <ion-badge color="tertiary">{{i+1}}</ion-badge>
-                      </ion-col>
-                  </ion-row>
-              </ion-card-subtitle>
-              <!--<ion-card-title>
-                  <ion-text color="success">
-                      <h1>{{part.title}} </h1>
-                  </ion-text>
-
-              </ion-card-title>-->
-          </ion-card-header>
-          <ion-card-content>
-              <img [attr.src]="part.imgsrc">
-              <video controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">
-                  <source [attr.src]="part.videosrc" type="video/mp4" />
-                </video>
-                <audio controls>
-                    <source [attr.src]="part.audiosrc" type="audio/mpeg">
-                  </audio>
-          </ion-card-content>
-      </ion-card>
-  </li>
+                
 </div>
       </ul>
       </ion-col>
-
+      
   </ion-grid>
 
 </ion-content>
