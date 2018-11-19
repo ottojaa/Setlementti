@@ -13,6 +13,7 @@ export class DataService {
     results = new Array();
     user;
     userInfo = new Array();
+    collection;
 
 
     constructor(private af: AngularFirestore, private db: AngularFireDatabase) {
