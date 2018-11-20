@@ -48,11 +48,8 @@ interface Certificate {
 
 
 export class CertificateCardComponent implements OnInit {
-<<<<<<< HEAD
-  title;
-=======
+
     title;
->>>>>>> e50aa419a3601e7ac06b7a67064fd361ed375009
     query;
     inputTrue;
     certificates: any;
@@ -63,40 +60,9 @@ export class CertificateCardComponent implements OnInit {
     animationState;
     expansionIndex;
     animationStates = [];
-<<<<<<< HEAD
-  constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-    private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events) { }
 
-    async pushSrcs(URLs) {
-      if (URLs) {
-          for (let i = 0; i < URLs.length; i++) {
-              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
-                  this.imageSources.push({'imgsrc': URLs[i], 'title': 'Testaillaaan'});
-                  this.inputTrue = false;
-                  this.animationStates[i] = 'in';
-              }
-              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
-                  this.videoSources.push({'videosrc': URLs[i]});
-                  this.inputTrue = false;
-                  this.animationStates[i] = 'in';
-              }
-              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
-                  this.audioSources.push({'audiosrc': URLs[i]});
-                  this.inputTrue = false;
-                  this.animationStates[i] = 'in';
-              }
-          }
-      }
-  }
-
-=======
-
-    constructor(private nav: NavController,
-                private modalController: ModalController,
-                public data: DataService,
-                private storage: AngularFireStorage,
-                private afs: AngularFirestore,
-                public events: Events) {
+    constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
+                private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events) {
     }
 
     async pushSrcs(URLs) {
@@ -120,7 +86,7 @@ export class CertificateCardComponent implements OnInit {
             }
         }
     }
->>>>>>> e50aa419a3601e7ac06b7a67064fd361ed375009
+
 
     closeModal() {
         this.pageData = [];
@@ -131,37 +97,6 @@ export class CertificateCardComponent implements OnInit {
         this.animationStates[i] = this.animationStates[i] === 'out' ? 'in' : 'out';
     }
 
-<<<<<<< HEAD
-  minimize(i) {
-    this.animationStates[i] = this.animationStates[i] === 'out' ? 'in' : 'out';
-}
-  async getMedia(cid) {
-    const collectionRef: AngularFirestoreDocument<Certificate> = this.afs.doc(`certificates/${cid}/`);
-    collectionRef.ref.get()
-        .then(doc => {
-            if (!doc.exists) {
-                console.log('is not of existing');
-
-            } else {
-                this.pageData = doc.data();
-                console.log(this.pageData.downloadURLs);
-                this.pushSrcs(this.pageData.downloadURLs);
-                console.log('success');
-                console.log(doc.data());
-            }
-        });
-}
-
-ngOnInit() {
-  const cid = localStorage.getItem('cid');
-  console.log(cid);
-  this.getMedia(cid);
-  this.data.currentTime = Date.now();
-  this.inputTrue = false;
-  this.title = '';
-  this.query = '';
-}
-=======
     async getMedia(cid) {
         const collectionRef: AngularFirestoreDocument<Certificate> = this.afs.doc(`certificates/${cid}/`);
         collectionRef.ref.get()
@@ -188,7 +123,5 @@ ngOnInit() {
         this.title = '';
         this.query = '';
     }
->>>>>>> e50aa419a3601e7ac06b7a67064fd361ed375009
-
 }
 
