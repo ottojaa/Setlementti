@@ -29,3 +29,19 @@
   max-height:300px;
   overflow: hidden;
 }
+.item{
+
+  z-index: 10000 !important;
+  overflow: visible;
+  background: var(--ion-color-light);
+}
+.uppercase {
+  margin: 10px;
+
+  text-transform: capitalize !important;
+}
+.stay {
+
+  overflow: visible;
+  background: var(--ion-color-light);
+}

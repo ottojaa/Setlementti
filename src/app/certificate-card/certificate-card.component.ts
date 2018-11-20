@@ -118,7 +118,6 @@ export class CertificateCardComponent implements OnInit {
         const cid = localStorage.getItem('cid');
         console.log(cid);
         this.getMedia(cid);
-        this.data.currentTime = Date.now();
         this.inputTrue = false;
         this.title = '';
         this.query = '';
