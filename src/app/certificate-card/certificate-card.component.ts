@@ -3,14 +3,15 @@ import {
   ElementRef,
   ViewChild
 } from '@angular/core';
-import { NavController, ModalController, Events } from '@ionic/angular';
-import { DataService } from '../services/data.service';
-import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
-import { tap } from 'rxjs/operators';
-import { finalize } from 'rxjs/operators';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {NavController, ModalController, Events} from '@ionic/angular';
+import {DataService} from '../services/data.service';
+import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
+import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from 'angularfire2/firestore';
+import {Observable} from 'rxjs/Observable';
+import {map} from 'rxjs/operators/map';
+import {tap} from 'rxjs/operators';
+import {finalize} from 'rxjs/operators';
+import {trigger, state, style, animate, transition} from '@angular/animations';
 import * as firebase from 'firebase/app';
 
 interface Certificate {
@@ -47,76 +48,76 @@ interface Certificate {
 })
 export class CertificateCardComponent implements OnInit {
   title;
-  query;
-  inputTrue;
-  certificatesCol: AngularFirestoreCollection<Certificate>;
-  certificates: any;
-  certificate: Observable<Certificate>;
+    query;
+    inputTrue;
+    certificates: any;
+    pageData;
+    imageSources = new Array();
+    videoSources = new Array();
+    audioSources = new Array();
+    animationState;
+    expansionIndex;
+    animationStates = [];
   constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
     private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events) { }
 
-pushSrcs(URLs) {
-  if (URLs) {
-    for (let i = 0; i < URLs.length; i++) {
-      console.log(URLs[i]);
-        // this.afs.doc('files/' + files[i]);
-        if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
-          this.data.results.push({'imgsrc': URLs[i], 'title': 'Testaillaaan'});
-          this.inputTrue = false;
-          console.log('testi1');
-        }
-        if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
-          this.data.results.push({'videosrc': URLs[i]});
-          this.inputTrue = false;
-        }
-        if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
-          this.data.results.push({'audiosrc': URLs[i]});
-          this.inputTrue = false;
-        }
-    }
-    console.log(this.data.results);
-    console.log('testi2');
-}
-}
+    async pushSrcs(URLs) {
+      if (URLs) {
+          for (let i = 0; i < URLs.length; i++) {
+              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
+                  this.imageSources.push({'imgsrc': URLs[i], 'title': 'Testaillaaan'});
+                  this.inputTrue = false;
+                  this.animationStates[i] = 'in';
+              }
+              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
+                  this.videoSources.push({'videosrc': URLs[i]});
+                  this.inputTrue = false;
+                  this.animationStates[i] = 'in';
+              }
+              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
+                  this.audioSources.push({'audiosrc': URLs[i]});
+                  this.inputTrue = false;
+                  this.animationStates[i] = 'in';
+              }
+          }
+      }
+  }
+
 
   closeModal() {
     this.data.results = [];
     this.modalController.dismiss();
   }
 
-  getMedia(cid) {
-    this.certificatesCol = this.afs.collection('certificates', ref => ref.where('cid', '==', cid));
-    this.certificates = this.certificatesCol.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Certificate;
-        console.log(data);
-        const id = a.payload.doc.id;
-        this.pushSrcs(data.downloadURLs);
-        return { id, data };
-      });
-    });
-      console.log(this.certificates);
-      // this.pushSrcs(this.certificates.data.downloadURLs);
+  minimize(i) {
+    this.animationStates[i] = this.animationStates[i] === 'out' ? 'in' : 'out';
+}
+  async getMedia(cid) {
+    const collectionRef: AngularFirestoreDocument<Certificate> = this.afs.doc(`certificates/${cid}/`);
+    collectionRef.ref.get()
+        .then(doc => {
+            if (!doc.exists) {
+                console.log('is not of existing');
 
-  }
+            } else {
+                this.pageData = doc.data();
+                console.log(this.pageData.downloadURLs);
+                this.pushSrcs(this.pageData.downloadURLs);
+                console.log('success');
+                console.log(doc.data());
+            }
+        });
+}
 
-  ngOnInit() {
-    const cid = localStorage.getItem('cid');
-    console.log(cid);
-    this.getMedia(cid);
-    this.data.currentTime = Date.now();
-    // this.data.results.push({ 'title': this.title, 'text': this.query });
-    this.inputTrue = false;
-    this.title = '';
-    this.query = '';
-    /*this.downloadURLs = [];
-    this.fileids = [];
-    this.files = [];
-    this.fileCounter = 0;
-    this.inputsN = 1;
-    this.uploadFiles = 'out';
-    this.iCounter = 0;*/
-  }
+ngOnInit() {
+  const cid = localStorage.getItem('cid');
+  console.log(cid);
+  this.getMedia(cid);
+  this.data.currentTime = Date.now();
+  this.inputTrue = false;
+  this.title = '';
+  this.query = '';
+}
 
 }
 

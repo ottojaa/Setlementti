@@ -318,6 +318,7 @@ export class ModalComponent implements OnInit {
         // const header = document.getElementById('header').value;
         // Luodaan firebase-collection: certificates ja tallennetaan sinne otsikko, teksti, tiedostojen Id:t, tekijä, pvm
         console.log(this.fileids + ' upataanko mitä?');
+        if (this.fileids.length === this.downloadURLs.length) {
         this.db.collection('certificates').add({
             title: this.title,
             text: this.query,
@@ -331,6 +332,7 @@ export class ModalComponent implements OnInit {
             this.db.doc('certificates/' + cid).update({cid: cid});
 
         });
+    }
     }
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä

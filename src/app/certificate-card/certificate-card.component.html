@@ -1,71 +1,62 @@
 <ion-content class="content">
-        
-  <ion-fab vertical="top" horizontal="end" slot="fixed">
-      <ion-fab-button (click)="closeModal()">
-          <ion-icon name="close"></ion-icon>
-      </ion-fab-button>
-  </ion-fab>
-  <ion-grid class="grid">
-      <ion-col>
-            <li *ngFor="let part of data.results; let i = index">
-                    <ion-card>
-                        <ion-card-header>
-                            <ion-card-subtitle>
-                                <ion-row class="row">
-                                    <ion-col>
-                                        <ion-icon style="font-size: 15px;" name="time"></ion-icon>
-                                        {{ data.currentTime | date:'h:mm'}}
-                                    </ion-col>
-                                    <ion-col>
-                                        <ion-badge color="tertiary">{{i+1}}</ion-badge>
-                                    </ion-col>
-                                </ion-row>
-                            </ion-card-subtitle>
-                            <!--<ion-card-title>
-                                <ion-text color="success">
-                                    <h1>{{part.title}} </h1>
-                                </ion-text>
-              
-                            </ion-card-title>-->
-                        </ion-card-header>
-                        <ion-card-content>
-                                <ion-card-title>
-                                        <ion-text color="success">
-                                            <h1>{{part.title}} </h1>
-                                        </ion-text>
-                
-                                    </ion-card-title>
-                            <td><img src="{{part.imgsrc}}" alt="ei toimi" class="img-responsive"/></td>
-                            <video controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">
-                                <source [attr.src]="part.videosrc" type="video/mp4" />
-                              </video>
-                              <audio controls>
-                                  <source [attr.src]="part.audiosrc" type="audio/mpeg">
+
+    <ion-fab vertical="top" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="closeModal()">
+            <ion-icon name="close"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+    <ion-grid class="grid">
+        <ion-col>
+            <li>
+                <ion-card id="grey">
+                    <ion-card-header>
+                        <ion-row class="row">
+                            <ion-col>
+                                <ion-icon style="font-size: 15px; font-weight: 600" name="time"></ion-icon>
+                                {{ pageData?.date?.toDate() | date:'medium'}}
+                            </ion-col>
+                        </ion-row>
+                        <ion-card-title>
+                            <h1>{{pageData?.title}} </h1>
+                        </ion-card-title>
+                    </ion-card-header>
+                    <div *ngFor="let file of imageSources, let i = index;">
+                        <ion-card [@slideInOut]="animationStates[i]" class="other">
+                            <ion-card-content (click)="minimize(i)">
+                                <img *ngIf="file?.imgsrc" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"/>
+                            </ion-card-content>
+                        </ion-card>
+                    </div>
+                    <div *ngFor="let file of videoSources, let i = index;">
+                        <ion-card [@slideInOut]="animationStates[i]" class="other">
+                            <ion-card-content>
+                                <video *ngIf="file?.videosrc" controls="controls" preload="metadata" autoplay="autoplay"
+                                       webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                                    <source [attr.src]="file?.videosrc" type="video/mp4"/>
+                                </video>
+                            </ion-card-content>
+                        </ion-card>
+                    </div>
+                    <div *ngFor="let file of audioSources, let i = index;">
+                        <ion-card [@slideInOut]="animationStates[i]" class="other">
+                            <ion-card-content>
+                                <audio *ngIf="file?.audiosrc" controls>
+                                    <source [attr.src]="file?.audiosrc" type="audio/mpeg">
                                 </audio>
-                        </ion-card-content>
-                    </ion-card>
-                </li>
-        <ul class="inline">
-          
-          <div *ngFor="let certificate of certificates | async; let i = index" >
-              <ion-card class="white">
-                  <ion-card-header>
-                      <ion-card-title>
-                          <ion-text>
-                              <h1>{{certificate.data.title}} </h1>
-                          </ion-text>
-                      </ion-card-title>
-                  </ion-card-header>
-                  <ion-card-content id="id{{i}}">
-                      {{certificate.data.text}}
-                  </ion-card-content>
-              </ion-card>
-                
-</div>
-      </ul>
-      </ion-col>
-      
-  </ion-grid>
+                            </ion-card-content>
+                        </ion-card>
+                    </div>
+                    <ion-card-content>
+                        <p> {{pageData?.text}}</p>
+                    </ion-card-content>
+                </ion-card>
+            </li>
+            <ul class="inline">
+
+
+            </ul>
+        </ion-col>
+
+    </ion-grid>
 
 </ion-content>
-
