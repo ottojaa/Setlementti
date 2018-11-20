@@ -16,7 +16,7 @@
             <ion-row>
                 <ion-col size="4" class="image-container">
                     <label for="input1" class="file-label">
-                        <img id="preview" class="profile-image"  [src]=imageURL>
+                        <img *ngIf="imageURL" id="preview" class="profile-image"  [src]=imageURL>
                         <img class="profile-image" *ngIf="!imageURL" src="http://www.precision-spine.com/wp-content/uploads/2015/09/person-icon.png">
                         <ion-row>
                             <ion-col size="5">
