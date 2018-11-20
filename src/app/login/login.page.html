@@ -1,12 +1,16 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="secondary">
         <ion-title>Login</ion-title>
     </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
     <ion-grid class="grid">
+
         <ion-col>
+            <ion-item class="imgbox">
+                    <ion-img class="logo" src="/../assets/logo/osaaminen.png"></ion-img>
+            </ion-item>  
             <ion-item>
                 <ion-label position="floating">Email</ion-label>
                 <ion-input type="text" [(ngModel)]="user.email">
@@ -21,10 +25,18 @@
                 </ion-input>
             </ion-item>
 
-            <ion-button id="login" expand="full" style="margin-top: 25px;" (click)="login(user)" icon-start><ion-icon name="log-in"></ion-icon>Login</ion-button>
-            <ion-button id="register" expand="full" (click)="register()" icon-start><ion-icon name="document"></ion-icon>Register</ion-button>
-            <ion-button id="ion-color-danger" color="ion-color-danger" expand="full" (click)="googleLogin()" icon-start><ion-icon name="logo-google"></ion-icon>Sign in with Google</ion-button>
-            <ion-button id="fb" color="fb" expand="full" (click)="facebookLogin()" icon-start><ion-icon name="logo-facebook"></ion-icon>Sign in with Facebook</ion-button>
+            <ion-button id="login" expand="full" style="margin-top: 25px;" (click)="login(user)" icon-start>
+                <ion-icon name="log-in"></ion-icon>Login
+            </ion-button>
+            <ion-button id="register" expand="full" (click)="register()" icon-start>
+                <ion-icon name="document"></ion-icon>Register
+            </ion-button>
+            <ion-button id="ion-color-danger" color="ion-color-danger" expand="full" (click)="googleLogin()" icon-start>
+                <ion-icon name="logo-google"></ion-icon>Sign in with Google
+            </ion-button>
+            <ion-button id="fb" color="fb" expand="full" (click)="facebookLogin()" icon-start>
+                <ion-icon name="logo-facebook"></ion-icon>Sign in with Facebook
+            </ion-button>
             <ion-card *ngIf="message" position="floating">
                 <ion-card-header class="error">{{message}}</ion-card-header>
             </ion-card>
