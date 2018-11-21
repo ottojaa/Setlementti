@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="secondary">
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
@@ -19,22 +19,41 @@
             <ion-icon name="add"></ion-icon>
         </ion-fab-button>
     </ion-fab>
-    <ul class="inline">
-        <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
+    <ion-searchbar
+            value=""
+            id="searchbar"
+            placeholder="Search"
+            mode="md"
+            spellcheck="false"
+            color="light"
+            debounce="250"
+            (ionChange)="search($event)"
+            showCancelButton="false">
+    </ion-searchbar>
+    <ion-button *ngIf="identifier && !searchTrue" expand="full" (click)="showAllUsers()">Show All Users</ion-button>
+    <ion-button *ngIf="searchTrue" expand="full" (click)="cancelSearch()">Cancel Search</ion-button>
+    <ion-list [@slideInOut]="identifier">
+        <ion-item *ngFor="let user of data.users">
+            <ion-label>{{user?.nickName}} {{user?.email}}</ion-label>
+        </ion-item>
+        <div *ngIf="data?.users?.length < 1 && searchTrue">
+            <p>No users found</p>
+        </div>
+    </ion-list>
+    <ul class="inline" *ngIf="!query">
+        <li *ngFor="let certificate of certificates | async; let i = index"
+            (click)="presentCertificate(certificate.id)">
             <ion-card class="white">
                 <ion-card-header>
                     <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
                         <ion-img class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
                     </div>
                     <ion-card-title>
-                        <ion-text >
+                        <ion-text>
                             <h1>{{certificate.data.title}} </h1>
                         </ion-text>
                     </ion-card-title>
                 </ion-card-header>
-                <!--<ion-card-content id="id{{i}}">
-                    {{certificate.data.text}}
-                </ion-card-content>-->
             </ion-card>
         </li>
     </ul>

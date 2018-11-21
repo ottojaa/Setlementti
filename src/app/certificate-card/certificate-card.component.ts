@@ -61,30 +61,31 @@ export class CertificateCardComponent implements OnInit {
     expansionIndex;
     animationStates = [];
 
-  constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-    private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events) { }
+    constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
+                private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events) {
+    }
 
     async pushSrcs(URLs) {
-      if (URLs) {
-          for (let i = 0; i < URLs.length; i++) {
-              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
-                  this.imageSources.push({'imgsrc': URLs[i], 'title': 'Testaillaaan'});
-                  this.inputTrue = false;
-                  this.animationStates[i] = 'in';
-              }
-              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
-                  this.videoSources.push({'videosrc': URLs[i]});
-                  this.inputTrue = false;
-                  this.animationStates[i] = 'in';
-              }
-              if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
-                  this.audioSources.push({'audiosrc': URLs[i]});
-                  this.inputTrue = false;
-                  this.animationStates[i] = 'in';
-              }
-          }
-      }
-  }
+        if (URLs) {
+            for (let i = 0; i < URLs.length; i++) {
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
+                    this.imageSources.push({'imgsrc': URLs[i], 'title': 'Testaillaaan'});
+                    this.inputTrue = false;
+                    this.animationStates[i] = 'in';
+                }
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
+                    this.videoSources.push({'videosrc': URLs[i]});
+                    this.inputTrue = false;
+                    this.animationStates[i] = 'in';
+                }
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
+                    this.audioSources.push({'audiosrc': URLs[i]});
+                    this.inputTrue = false;
+                    this.animationStates[i] = 'in';
+                }
+            }
+        }
+    }
 
 
     closeModal() {

@@ -25,13 +25,13 @@ import { stringify } from '@angular/core/src/render3/util';
             state('in', style({
                 overflow: 'hidden',
                 height: '*',
-                width: '300px'
+                width: '100%'
             })),
             state('out', style({
                 opacity: '0',
                 overflow: 'hidden',
-                height: '0px',
-                width: '0px'
+                height: '*',
+                width: '0'
             })),
             transition('in => out', animate('400ms ease-in-out')),
             transition('out => in', animate('400ms ease-in-out'))
@@ -163,23 +163,7 @@ export class ModalComponent implements OnInit {
     }
 
     createNewinput() {
-        const outerlabel = document.querySelector('.file-label');
         this.inputsN++;
-        const input = document.createElement('input');
-        const inputlabel = document.createElement('ion-label');
-
-        inputlabel.setAttribute('id', 'input' + this.inputsN);
-        inputlabel.setAttribute('class', 'file-label');
-        outerlabel.parentNode.insertBefore(inputlabel, outerlabel.nextSibling);
-        input.setAttribute('class', 'file-input');
-        input.setAttribute('type', 'file');
-        // input.setAttribute('(change)', 'defineUpload($event.target.files)');
-        // input.setAttribute('id', 'input'+this.inputsN);
-        input.onchange = (e: any) => {
-            const files = e.target.files;
-            this.defineUpload(files);
-        };
-        inputlabel.appendChild(input);
     }
 
     // Määritetään uploadfilu ja tehdään uusi input
@@ -204,18 +188,6 @@ export class ModalComponent implements OnInit {
         this.createNewinput();
 
     }
-
-    // Kanvakseen preview
-    /*drawPreview(preview) {
-        this._CANVAS = this.canvasEl.nativeElement;
-        this._CANVAS.width = preview.width;
-        this._CANVAS.height = preview.height;
-
-        this._CANVAS.getContext("2d").drawImage(preview, 0, 0);
-    }*/
-
-
-    // Upataan annettu parametri ja suljetaan modaali
 
     async startUpload(sentFile/*event: FileList*/) {
         // The File object
@@ -337,6 +309,7 @@ export class ModalComponent implements OnInit {
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
     async update() {
+        this.uploadFiles = 'out';
         console.log(this.files.length);
         if (this.files.length > 0) {
             let i;
