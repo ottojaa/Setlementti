@@ -53,6 +53,7 @@ export class ModalComponent implements OnInit {
     iCounter: number;
     task: AngularFireUploadTask;
     filesid: any;
+    imagePreview = false;
     @ViewChild('canvas') canvasEl: ElementRef;
     @ViewChild('#tableBanner') previewImg: ElementRef;
 
@@ -122,12 +123,15 @@ export class ModalComponent implements OnInit {
         console.log('tän jälkee tulee');
         // console.log(localStorage.getItem('file'));
         img.setAttribute('src', URL.createObjectURL(this.file));
+        img.setAttribute('style', 'height: 180px; width: 256px; object-fit: cover;');
         // this.drawPreview(img)
         this.createPreviewDelete(img, img);
+        this.imagePreview = true;
     }
 
     createPreviewDelete(sibling, deletable) {
         const deleteButton = document.createElement('ion-button');
+        deleteButton.setAttribute('style', 'top: 32%; right: 5%; position: absolute; z-index: 9999;');
         const icon = document.createElement('ion-icon');
         deleteButton.appendChild(icon);
         icon.setAttribute('name', 'close');

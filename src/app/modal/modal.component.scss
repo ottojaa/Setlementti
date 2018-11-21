@@ -135,3 +135,11 @@ img {
   text-align:center;
   color:white;
 }
+ion-content{
+  #deletebutton{
+    top: 32% !important;
+    right: 4% !important;
+    position:absolute !important;
+    z-index: 9999;
+  }
+}

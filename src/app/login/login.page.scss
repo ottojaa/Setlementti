@@ -36,10 +36,11 @@ ion-button ion-icon {
 }
 
 .imgbox{
-  text-align: center;
+  display: flex;
+  height: 150px !important;
 }
 
 .logo{
-  height: 80% !important; 
+  height: 100% !important;
 }
 
