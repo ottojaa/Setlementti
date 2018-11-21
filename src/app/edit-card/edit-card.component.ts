@@ -3,7 +3,7 @@ import {
   ElementRef,
   ViewChild
 } from '@angular/core';
-import {NavController, ModalController, Events} from '@ionic/angular';
+import {NavController, ModalController, Events, AlertController} from '@ionic/angular';
 import {DataService} from '../services/data.service';
 import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
 import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from 'angularfire2/firestore';
@@ -58,9 +58,10 @@ export class EditCardComponent implements OnInit {
     expansionIndex;
     animationStates = [];
     cid;
+    cCollectionRef;
 
   constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-    private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events) { }
+    private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events, public alertController: AlertController) { }
 // tulevaisuudessa tulee tarkistaa, tallentuuko urlia vastaava filen id aina samaan indexinumeroon
     async pushSrcs(URLs, fileids) {
       if (URLs) {
@@ -95,6 +96,35 @@ export class EditCardComponent implements OnInit {
     }
     changeFile() {
 
+    }
+    deletePreview() {
+
+    }
+    deleteCertificate() {
+        this.cCollectionRef.delete().then(() => {
+this.closeModal();
+        });
+    }
+
+    async confirmDelete() {
+        const alert = await this.alertController.create({
+            message: '<strong>Really???</strong>',
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {
+                }
+              }, {
+                text: 'Yes',
+                handler: () => {
+                  this.deleteCertificate();
+                }
+              }
+            ]
+          });
+          await alert.present();
     }
     deleteFile(url) {
         console.log(url);
@@ -142,6 +172,7 @@ export class EditCardComponent implements OnInit {
     }*/
   async getMedia(cid) {
     const collectionRef: AngularFirestoreDocument<Certificate> = this.afs.doc(`certificates/${cid}/`);
+    this.cCollectionRef = collectionRef;
     collectionRef.ref.get()
         .then(doc => {
             if (!doc.exists) {

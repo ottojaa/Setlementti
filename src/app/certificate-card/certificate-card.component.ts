@@ -98,7 +98,6 @@ export class CertificateCardComponent implements OnInit {
     }
 
     editUpload() {
-      alert('Editoidaan, wuhuu!');
       this.presentEdit();
       this.closeModal();
     }
