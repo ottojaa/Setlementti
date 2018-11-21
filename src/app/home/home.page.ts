@@ -8,6 +8,7 @@ import {FormsModule} from '@angular/forms';
 import {NavController, AlertController} from '@ionic/angular';
 import {AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from 'angularfire2/firestore';
 import 'firebase/firestore';
+import {combineLatest} from 'rxjs';
 import {BehaviorSubject} from 'rxjs';
 import * as firebase from 'firebase';
 import {Observable} from 'rxjs';
@@ -79,17 +80,15 @@ export class HomePage implements OnInit {
 
     search($event) {
         this.identifier = 'in';
-        const query = $event.target.value;
+        this.data.searchterm = $event.target.value;
 
-        if (query !== '') {
-            this.data.startAt.next(query);
-            this.data.endAt.next(query + '\uf8ff');
+        if (this.data.searchterm !== '') {
+            this.data.startAt.next(this.data.searchterm);
+            this.data.endAt.next(this.data.searchterm + '\uf8ff');
             this.searchTrue = true;
         } else {
-            setTimeout(() => {
-                this.data.users = [];
-                console.log('nyt');
-            }, 400);
+            this.data.users = [];
+            console.log('nyt');
             this.searchTrue = false;
             this.identifier = 'out';
         }
@@ -225,11 +224,9 @@ export class HomePage implements OnInit {
             this.data.allusers = users;
             console.log(this.data.allusers);
         });
-        Observable.combineLatest(this.data.startobs, this.data.endobs).subscribe((value) => {
+        combineLatest(this.data.startobs, this.data.endobs).subscribe((value) => {
             this.data.getUsers(value[0], value[1]).subscribe((users) => {
-                setTimeout(() => {
-                    this.data.users = users;
-                }, 100);
+                this.data.users = users;
                 console.log(this.data.users);
             });
         });
