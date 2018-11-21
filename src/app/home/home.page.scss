@@ -21,6 +21,7 @@
 }
 .background{
   --ion-background-color: #379fff;
+  z-index: 1;
 }
 .white{
   background: white !important;
@@ -44,4 +45,16 @@
 
   overflow: visible;
   background: var(--ion-color-light);
+}
+#listhost{
+  position: relative;
+  display: block;
+}
+#userlist {
+  position: absolute;
+  z-index: 2;
+}
+#listlabel {
+background-color: whitesmoke;
+width: 325px;
 }

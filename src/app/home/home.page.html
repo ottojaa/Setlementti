@@ -8,18 +8,7 @@
                 <ion-icon name="log-out"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title>
-            Home
-        </ion-title>
-    </ion-toolbar>
-</ion-header>
-<ion-content padding class="background">
-    <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button (click)="presentModal()">
-            <ion-icon name="add"></ion-icon>
-        </ion-fab-button>
-    </ion-fab>
-    <ion-searchbar
+        <ion-searchbar
             value=""
             id="searchbar"
             placeholder="Search"
@@ -30,11 +19,19 @@
             (ionChange)="search($event)"
             showCancelButton="false">
     </ion-searchbar>
-    <ion-button *ngIf="identifier && !searchTrue" expand="full" (click)="showAllUsers()">Show All Users</ion-button>
+    </ion-toolbar>
+</ion-header>
+<ion-content padding class="background">
+    <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="presentModal()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+    <ion-button id="listhost" *ngIf="identifier && !searchTrue" expand="full" (click)="showAllUsers()">Show All Users</ion-button>
     <ion-button *ngIf="searchTrue" expand="full" (click)="cancelSearch()">Cancel Search</ion-button>
-    <ion-list [@slideInOut]="identifier">
-        <ion-item *ngFor="let user of data.users">
-            <ion-label>{{user?.nickName}} {{user?.email}}</ion-label>
+    <ion-list id="userlist" [@slideInOut]="identifier">
+        <ion-item id="listlabel" *ngFor="let user of data.users">
+            <ion-label >{{user?.nickName}} {{user?.email}}</ion-label>
         </ion-item>
         <div *ngIf="data?.users?.length < 1 && searchTrue">
             <p>No users found</p>
