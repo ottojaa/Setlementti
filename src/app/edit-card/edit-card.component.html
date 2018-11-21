@@ -7,9 +7,6 @@
     </ion-fab>
     <ion-grid class="grid">
         <ion-col>
-                <ion-button (click)="editUpload()">
-                        <ion-icon name="create"></ion-icon>
-                    </ion-button>
             <li>
                 <ion-card id="grey">
                     <ion-card-header>
@@ -24,25 +21,37 @@
                         </ion-card-title>
                     </ion-card-header>
                     <div *ngFor="let file of imageSources, let i = index;">
-                        <ion-card [@slideInOut]="animationStates[i]" class="other">
-                            <ion-card-content (click)="minimize(i)">
+                        <ion-row [@showHideButtons]="animationStates[i]">
+                            <ion-col col-6>
+                                <ion-button  full (click)="changeFile()">
+                                    <ion-icon name="create"></ion-icon>
+                                  </ion-button>
+                                </ion-col>
+                                <ion-col col-6>
+                                  <ion-button  full color="danger" (click)="deleteFile(file?.imgsrc)">
+                                      <ion-icon name="remove-circle"></ion-icon>
+                                    </ion-button>
+                                </ion-col>
+                              </ion-row>
+                        <ion-card class="other">
+                            <ion-card-content (click)="showButtons(i)">
                                 <img *ngIf="file?.imgsrc" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"/>
                             </ion-card-content>
                         </ion-card>
                     </div>
                     <div *ngFor="let file of videoSources, let i = index;">
-                        <ion-card [@slideInOut]="animationStates[i]" class="other">
-                            <ion-card-content>
-                                <video *ngIf="file?.videosrc" controls="controls" preload="metadata" autoplay="autoplay"
-                                       webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                        <ion-card class="other">
+                            <ion-card-content (click)="deleteOrChange()">
+                                <video *ngIf="file?.videosrc" controls="controls" preload="metadata"
+                                       webkit-playsinline="webkit-playsinline" class="videoPlayer" >
                                     <source [attr.src]="file?.videosrc" type="video/mp4"/>
                                 </video>
                             </ion-card-content>
                         </ion-card>
                     </div>
                     <div *ngFor="let file of audioSources, let i = index;">
-                        <ion-card [@slideInOut]="animationStates[i]" class="other">
-                            <ion-card-content>
+                        <ion-card class="other">
+                            <ion-card-content (click)="deleteOrChange()">
                                 <audio *ngIf="file?.audiosrc" controls>
                                     <source [attr.src]="file?.audiosrc" type="audio/mpeg">
                                 </audio>
