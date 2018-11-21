@@ -59,7 +59,17 @@ export class EditCardComponent implements OnInit {
     animationStates = [];
     cid;
     cCollectionRef;
+    files;
+    // Progress monitoring
+    percentage: Observable<number>;
+    snapshot: Observable<any>;
+    fileCount;
 
+    // Download URL
+    downloadURL: Observable<string>;
+
+    task: AngularFireUploadTask;
+    deletableURLs = [];
   constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
     private storage: AngularFireStorage, private afs: AngularFirestore, public events: Events, public alertController: AlertController) { }
 // tulevaisuudessa tulee tarkistaa, tallentuuko urlia vastaava filen id aina samaan indexinumeroon
@@ -94,16 +104,52 @@ export class EditCardComponent implements OnInit {
         this.pageData = [];
         this.modalController.dismiss();
     }
-    changeFile() {
 
+    checkDeleteType(url) {
+        if (url.includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
+                    return 'img';
+                }
+                if (url.includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
+                    return 'video';
+                }
+                if (url.includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
+                    return 'audio';
+                }
     }
-    deletePreview() {
 
+    deletePreview(url, id) {
+        const idClass = this.checkDeleteType(url);
+        document.getElementById('d' + idClass + id).remove();
+        document.getElementById(idClass + 'Buttonrow' + id).remove();
+        this.deletableURLs.push(url);
     }
+
+    // Koko taidon poisto
+
     deleteCertificate() {
         this.cCollectionRef.delete().then(() => {
 this.closeModal();
         });
+    }
+    async confirmChanges() {
+        const alert = await this.alertController.create({
+            message: '<strong>Save Changes?</strong>',
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {
+                }
+              }, {
+                text: 'Yes',
+                handler: () => {
+                  this.saveChanges();
+                }
+              }
+            ]
+          });
+          await alert.present();
     }
 
     async confirmDelete() {
@@ -128,10 +174,14 @@ this.closeModal();
     }
     deleteFile(url) {
         console.log(url);
+        console.log(this.pageData);
         const storage = firebase.storage();
         const storageRef = storage.ref();
         const idIndex = this.pageData.downloadURLs.indexOf(url);
+        console.log(this.pageData.downloadURLs[1]);
+        console.log(idIndex);
         const fileid = this.pageData.files[idIndex];
+        console.log(fileid);
         const fileRef: AngularFirestoreDocument<File> = this.afs.doc(`files/${fileid}/`);
         fileRef.ref.get()
             .then(doc => {
@@ -153,23 +203,142 @@ this.closeModal();
         });
         collectionRef.update({
             downloadURLs: this.pageData.downloadURLs.filter(downloadURL => downloadURL !== url)
-        }).then(() => { this.getMedia(this.cid); });
+        });
 
     }
-    /*// muuttujat ajan tasalle
-    updateMedia() {
-        const collectionRef: AngularFirestoreDocument<Certificate> = this.afs.doc(`certificates/${this.cid}/`);
-    collectionRef.ref.get()
-    .then(doc => {
-        if (!doc.exists) {
-            console.log('is not of existing');
-
-        } else {
-            this.pageData = doc.data();
-            this.pushSrcs(this.pageData.downloadURLs, this.pageData.files);
+//// Vaihdettujen filujen päivitys tietokantaan/storageen
+/* TÄTÄ RAKENNAN SEURAAVAKS
+    uploadChange(sentFile) {
+        let filetype;
+        if (sentFile.type.split('/')[0] === 'image') {
+            filetype = `images/${new Date().getTime()}_${sentFile.name}`;
         }
-    });
-    }*/
+        if (sentFile.type.split('/')[0] === 'video') {
+            filetype = `videos/${new Date().getTime()}_${sentFile.name}`;
+        }
+        if (sentFile.type.split('/')[0] === 'audio') {
+            filetype = `audios/${new Date().getTime()}_${sentFile.name}`;
+        }
+        const path = filetype;
+        console.log(String(path));
+        // Totally optional metadata
+        const customMetadata = { app: 'My AngularFire-powered PWA!' };
+
+        // The main task
+        this.task = this.storage.upload(path, sentFile, { customMetadata });
+
+        // Progress monitoring
+        this.percentage = this.task.percentageChanges();
+        console.log('haloo2');
+        this.snapshot = this.task.snapshotChanges().pipe(
+            tap(snap => {
+                if (snap.bytesTransferred === snap.totalBytes) {
+                    // Update firestore on completion
+                    console.log(this.data.user.uid);
+                    this.afs.collection('files').add({ path, size: snap.totalBytes, sender: this.data.user.uid }).then((docRef) => {
+                        console.log('Document written with ID: ', docRef.id);
+                        this.fileids.push(docRef.id);
+                        this.filesid = docRef.id;
+
+
+                    }).then(() => {
+                        console.log(this.filesid);
+                        // const filesRef = this.db.collection('files');
+                        console.log('haloo1');
+                        this.iCounter++;
+                    });
+
+                }
+            })
+        );
+
+        // The file's download URL
+        this.snapshot.pipe(finalize(() => {
+            this.downloadURL = this.storage.ref(path).getDownloadURL();
+            const storage = firebase.storage();
+            const storageRef = storage.ref();
+            storageRef.child(path).getDownloadURL().then( (url) => {
+                // Or inserted into an <img> element:
+                this.downloadURLs.push(url);
+                console.log(url + ' DOWNLOADURL');
+                this.db.doc('files/' + this.filesid).update({downloadURL: url});
+                if (this.iCounter === (this.inputsN - 1)) {
+                    this.createPost();
+                    console.log('CREATE POST');
+                    setTimeout(() => {
+
+                        this.closeModal();
+                        console.log('closeModal!');
+                    }, 1000);
+                }
+              }).catch(function(error) {
+                // Handle any errors
+              });
+
+
+        }
+            )).subscribe();
+    }
+
+    ///// */
+    changePreview(oldURL, id, type, event: FileList) {
+        const file = event.item(0);
+        this.files[this.fileCount] = file;
+        if (type === 'image/*') {
+            const El = document.getElementById('img' + id);
+            El.setAttribute('src', URL.createObjectURL(file));
+        }
+        if (type === 'video/*') {
+            const El = document.getElementById('video' + id);
+            El.setAttribute('src', URL.createObjectURL(file));
+        }
+        if (type === 'audio/*') {
+            const El = document.getElementById('audio' + id);
+            El.setAttribute('src', URL.createObjectURL(file));
+        }
+    }
+    checkFileType(url) {
+        if (url.includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
+            return 'image/*';
+        }
+        if (url.includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
+            return 'video/*';
+        }
+        if (url.includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
+            return 'audio/*';
+        }
+    }
+
+    changeFile(url, id) {
+        console.log(id);
+        const type = this.checkFileType(url);
+        const hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('class', 'file-input');
+        hiddenInput.setAttribute('type', 'file');
+        hiddenInput.setAttribute('accept', type);
+        hiddenInput.click();
+        hiddenInput.onchange = (e: any) => {
+            const file = e.target.files;
+            this.changePreview(url, id, type, file);
+        };
+    }
+
+    // Upload-napista tapahtuva tietojen lopullinen päivitys
+saveChanges() {
+    console.log(this.deletableURLs);
+    for (let i = 0; i < this.deletableURLs.length; i++) {
+        console.log('menikö?');
+    this.deleteFile(this.deletableURLs[i]);
+    // placeholder-close
+        if (i === (this.deletableURLs.length - 1)) {
+    setTimeout(() => {
+        this.closeModal();
+                }, 1000);
+    }
+    //
+}
+
+}
   async getMedia(cid) {
     const collectionRef: AngularFirestoreDocument<Certificate> = this.afs.doc(`certificates/${cid}/`);
     this.cCollectionRef = collectionRef;
@@ -196,6 +365,7 @@ ngOnInit() {
   this.inputTrue = false;
   this.title = '';
   this.query = '';
+  this.fileCount = 0;
 }
 
 }
