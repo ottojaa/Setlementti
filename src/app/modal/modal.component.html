@@ -8,9 +8,16 @@
     <ion-grid class="grid">
         <ion-col>
             <ion-list>
-                <ion-input clearInput placeholder="Otsikkosi" [(ngModel)]="title"></ion-input>
-                <ion-textarea id="previewSibling" clearInput placeholder="Kerro vielä tarkemmin!"
-                              [(ngModel)]="query"></ion-textarea>
+                <ion-item>
+                        <ion-label color="primary" position="floating">Otsikkosi</ion-label>
+                        <ion-input [(ngModel)]="title"></ion-input>
+                </ion-item>
+                
+                <ion-item>
+                        <ion-label color="primary" position="floating">Kerro lisää</ion-label>
+                        <ion-textarea id="previewSibling" [(ngModel)]="query"></ion-textarea>
+                </ion-item>
+                
 
                 <ion-row class="buttons">
                     <ion-button (click)="upload()">
