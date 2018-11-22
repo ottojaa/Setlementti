@@ -7,9 +7,9 @@
     </ion-fab>
     <ion-grid class="grid">
         <ion-col>
-                <ion-button (click)="editUpload()">
-                        <ion-icon name="create"></ion-icon>
-                    </ion-button>
+            <ion-button *ngIf="!editMode" (click)="toggleReadOnly()">
+                <ion-icon name="create"></ion-icon>
+            </ion-button>
             <li>
                 <ion-card id="grey">
                     <ion-card-header>
@@ -20,11 +20,15 @@
                             </ion-col>
                         </ion-row>
                         <ion-card-title>
-                            <h1>{{pageData?.title}} </h1>
+                            <ion-input class="input" spellcheck="false" [(ngModel)]="title" required
+                                       [readonly]="isReadOnly" [ngModelOptions]="{standalone:true}"></ion-input>
                         </ion-card-title>
                     </ion-card-header>
                     <div *ngFor="let file of imageSources, let i = index;">
                         <ion-card [@slideInOut]="animationStates[i]" class="other">
+                            <ion-button class="delete" *ngIf="editMode" (click)="confirmChanges(i, 'Delete?')">
+                                <ion-icon name="close"></ion-icon>
+                            </ion-button>
                             <ion-card-content (click)="minimize(i)">
                                 <img *ngIf="file?.imgsrc" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"/>
                             </ion-card-content>
@@ -32,6 +36,9 @@
                     </div>
                     <div *ngFor="let file of videoSources, let i = index;">
                         <ion-card [@slideInOut]="animationStates[i]" class="other">
+                            <ion-button class="delete" *ngIf="editMode" (click)="confirmChanges(i, 'Delete?')">
+                                <ion-icon name="close"></ion-icon>
+                            </ion-button>
                             <ion-card-content>
                                 <video *ngIf="file?.videosrc" controls="controls" preload="metadata" autoplay="autoplay"
                                        webkit-playsinline="webkit-playsinline" class="videoPlayer">
@@ -42,6 +49,9 @@
                     </div>
                     <div *ngFor="let file of audioSources, let i = index;">
                         <ion-card [@slideInOut]="animationStates[i]" class="other">
+                            <ion-button class="delete" *ngIf="editMode" (click)="confirmChanges(i, 'Delete?')">
+                                <ion-icon name="close"></ion-icon>
+                            </ion-button>
                             <ion-card-content>
                                 <audio *ngIf="file?.audiosrc" controls>
                                     <source [attr.src]="file?.audiosrc" type="audio/mpeg">
@@ -50,9 +60,18 @@
                         </ion-card>
                     </div>
                     <ion-card-content>
-                        <p> {{pageData?.text}}</p>
+                        <ion-textarea autosize spellcheck="false" class="input" required [readonly]="isReadOnly"
+                                      [(ngModel)]="text" [ngModelOptions]="{standalone:true}"></ion-textarea>
                     </ion-card-content>
                 </ion-card>
+                <div class="buttonz" [@buttons]="editMode">
+                    <ion-button *ngIf="editMode" color="primary" ion-button block
+                                (click)="updateCertificate(this.cid)">Save Changes
+                    </ion-button>
+                    <ion-button *ngIf="editMode" color="danger" ion-button block
+                                (click)="confirmDelete('Delete this document?')">Delete post
+                    </ion-button>
+                </div>
             </li>
         </ion-col>
 

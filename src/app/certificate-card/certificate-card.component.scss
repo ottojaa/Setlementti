@@ -7,3 +7,14 @@ li {
 .other{
   background: white;
 }
+textarea {
+  resize: both;
+}
+.delete {
+  position: absolute;
+  z-index: 3;
+}
+.buttonz{
+  display: flex;
+  justify-content: center;
+}

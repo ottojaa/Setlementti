@@ -371,10 +371,10 @@ export class EditCardComponent implements OnInit {
 
         if (this.fileCount < 1) {
             setTimeout(() => {
-
-                this.closeModal();
+                this.pageData = [];
+                this.nav.navigateForward('home');
                 console.log('closeModal!');
-            }, 1000);
+            }, 200);
         }
 
 

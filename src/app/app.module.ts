@@ -21,6 +21,7 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { CertificateCardComponent } from './certificate-card/certificate-card.component';
 import { EditCardComponent } from './edit-card/edit-card.component';
+import {AutosizeModule} from 'ngx-autosize';
 
 
 export const firebaseConfig = environment.firebaseConfig;
@@ -30,6 +31,7 @@ export const firebaseConfig = environment.firebaseConfig;
     entryComponents: [ModalComponent, CertificateCardComponent, EditCardComponent],
     imports: [
         BrowserModule,
+        AutosizeModule,
         IonicModule.forRoot(),
         AppRoutingModule,
         FormsModule,
