@@ -41,16 +41,16 @@
         <li *ngFor="let certificate of certificates | async; let i = index"
             (click)="presentCertificate(certificate.id)">
             <ion-card class="white">
-                <ion-card-header>
+                <ion-card-header id="cardHeader">
+                        <ion-card-title>
+                                <ion-text>
+                                    <h1>{{certificate.data.title}} </h1>
+                                </ion-text>
+                            </ion-card-title>
+                        </ion-card-header>
                     <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
                         <ion-img class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
                     </div>
-                    <ion-card-title>
-                        <ion-text>
-                            <h1>{{certificate.data.title}} </h1>
-                        </ion-text>
-                    </ion-card-title>
-                </ion-card-header>
             </ion-card>
         </li>
     </ul>

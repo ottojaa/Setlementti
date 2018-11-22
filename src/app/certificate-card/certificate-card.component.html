@@ -1,14 +1,14 @@
 <ion-content class="content">
 
     <ion-fab vertical="top" horizontal="end" slot="fixed">
-        <ion-fab-button (click)="closeModal()">
+        <ion-fab-button  (click)="closeModal()">
             <ion-icon name="close"></ion-icon>
         </ion-fab-button>
     </ion-fab>
     <ion-grid class="grid">
         <ion-col>
-            <ion-button *ngIf="!editMode" (click)="toggleReadOnly()">
-                <ion-icon name="create"></ion-icon>
+            <ion-button class="topButton" *ngIf="!editMode" (click)="toggleReadOnly()">
+                <ion-icon  name="create"></ion-icon>
             </ion-button>
             <li>
                 <ion-card id="grey">
@@ -29,9 +29,9 @@
                             <ion-button class="delete" *ngIf="editMode" (click)="confirmChanges(i, 'Delete?')">
                                 <ion-icon name="close"></ion-icon>
                             </ion-button>
-                            <ion-card-content (click)="minimize(i)">
-                                <img *ngIf="file?.imgsrc" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"/>
-                            </ion-card-content>
+                            <!-- <ion-card-content (click)="minimize(i)">-->
+                                <img *ngIf="file?.imgsrc" (click)="minimize(i)" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"/>
+                           <!--</ion-card-content>-->
                         </ion-card>
                     </div>
                     <div *ngFor="let file of videoSources, let i = index;">
