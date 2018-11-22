@@ -75,6 +75,7 @@ export class EditCardComponent implements OnInit {
     filesid: any;
     iCounter: number;
     downloadURLs = [];
+    deleteCounter = 0;
     constructor(private nav: NavController, private modalController: ModalController,
         public data: DataService, private storage: AngularFireStorage,
         private afs: AngularFirestore, public events: Events, public alertController: AlertController) { }
@@ -206,6 +207,15 @@ export class EditCardComponent implements OnInit {
         });
         collectionRef.update({
             downloadURLs: this.pageData.downloadURLs.filter(downloadURL => downloadURL !== url)
+        }).then(() => {
+            this.deleteCounter++;
+            if (this.deleteCounter === this.deletableURLs.length) {
+                setTimeout(() => {
+
+                    this.saveUploads();
+                }, 1000);
+
+            }
         });
 
     }
@@ -358,12 +368,25 @@ export class EditCardComponent implements OnInit {
             this.deleteFile(this.deletableURLs[i]);
         }
 
-        for (let i = 0; i < this.fileCount; i++) {
-            await this.uploadChange(this.files[i]);
+
+        if (this.fileCount < 1) {
+            setTimeout(() => {
+
+                this.closeModal();
+                console.log('closeModal!');
+            }, 1000);
         }
 
 
     }
+
+    async saveUploads() {
+        for (let i = 0; i < this.fileCount; i++) {
+            await this.uploadChange(this.files[i]);
+        }
+    }
+
+
     async getMedia(cid) {
         const collectionRef: AngularFirestoreDocument<Certificate> = this.afs.doc(`certificates/${cid}/`);
         this.cCollectionRef = collectionRef;
