@@ -10,14 +10,15 @@
 
 <ion-content padding class="background">
 
-
+    
     <form #formCtrl="ngForm">
+            <ion-card class="profileCard">  
         <ion-grid *ngIf="formCtrl.form.valid">
             <ion-row>
                 <ion-col size="4" class="image-container">
                     <label for="input1" class="file-label">
                         <img *ngIf="imageURL" id="preview" class="profile-image"  [src]=imageURL>
-                        <img class="profile-image" *ngIf="!imageURL" src="http://www.precision-spine.com/wp-content/uploads/2015/09/person-icon.png">
+                        <img class="profile-image" *ngIf="!imageURL" src="/../assets/icon/profile.png">
                         <ion-row>
                             <ion-col size="5">
                                 <ion-button color="success" *ngIf="uploadTrue" (click)="upload()" class="button1">
@@ -42,7 +43,7 @@
             </ion-row>
 
         </ion-grid>
-        <ion-list [@slideInOut]="editProfile">
+        <ion-list class="profileCard1" [@slideInOut]="editProfile">
             <ion-item>
                 <ion-label>Name</ion-label>
                 <ion-input class="input" [(ngModel)]="nickName" required [readonly]="isReadOnly"
@@ -59,7 +60,6 @@
                               pickerFormat="DD MMM YYYY" [(ngModel)]="dob" [disabled]="isReadOnly"
                               [ngModelOptions]="{standalone:true}"></ion-datetime>
             </ion-item>
-
         </ion-list>
         <ion-button *ngIf="editMode" expand="full" color="danger" [disabled]="!formCtrl.form.valid" ion-button block
                     (click)="updateUserDoc(this.data.user)">Save Changes
@@ -67,5 +67,6 @@
         <ion-button *ngIf="!editMode" expand="full" color="secondary" [disabled]="!formCtrl.form.valid" ion-button block
                     (click)="toggleReadOnly()">Edit profile
         </ion-button>
+    </ion-card>
     </form>
 </ion-content>
