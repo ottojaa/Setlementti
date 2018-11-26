@@ -1,7 +1,7 @@
 <ion-content class="content">
 
     <ion-fab vertical="top" horizontal="end" slot="fixed">
-        <ion-fab-button (click)="closeModal()">
+        <ion-fab-button class="topButton" (click)="closeModal()">
             <ion-icon name="close"></ion-icon>
         </ion-fab-button>
     </ion-fab>
@@ -10,12 +10,12 @@
             <ion-list>
                 <ion-item>
                         <ion-label color="primary" position="floating">Otsikkosi</ion-label>
-                        <ion-input [(ngModel)]="title"></ion-input>
+                        <ion-input maxlength="30" [(ngModel)]="title"></ion-input>
                 </ion-item>
                 
-                <ion-item lines="none">
+                <ion-item>
                         <ion-label color="primary" position="floating">Kerro lisää</ion-label>
-                        <ion-textarea id="previewSibling" [(ngModel)]="query"></ion-textarea>
+                        <ion-textarea  id="previewSibling" [(ngModel)]="query"></ion-textarea>
                 </ion-item>
                 
 
