@@ -34,12 +34,12 @@
             <ion-card class="white">
                 <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
                     <ion-row>
-                        <ion-col size="3">
+                        <ion-col size="4">
                             <ion-img class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
                         </ion-col>
-                        <ion-col size="9">
+                        <ion-col class="cerText" size="8">
                             <ion-text>
-                                <h1>{{certificate.data.title}} </h1>
+                                <h4>{{certificate.data.title}} </h4>
                             </ion-text>
                         </ion-col>
                     </ion-row>
