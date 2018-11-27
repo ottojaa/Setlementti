@@ -22,7 +22,6 @@
     <ion-button id="listhost" *ngIf="identifier && !searchTrue" expand="full" (click)="showAllUsers()">Show All Users</ion-button>
     <ion-button *ngIf="searchTrue" expand="full" (click)="cancelSearch()">Cancel Search</ion-button>
     <ion-button id="createCV" *ngIf="selection" expand="full" (click)="skillSelection()">Create CV</ion-button>
-    <ion-button *ngIf="selectTrue" expand="full" (click)="cancelSelection()">Close Selection</ion-button>
     <ion-list id="userlist" [@slideInOut]="identifier">
         <ion-item id="listlabel" *ngFor="let user of data.users">
             <ion-label>{{user?.nickName}} {{user?.email}}</ion-label>
@@ -32,25 +31,37 @@
         </div>
     </ion-list>
     <ion-list id="certificatelist" [@slideInOut]="selection">
+        <h1>Pick the skills for your CV</h1>
         <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
-            <h2>{{certificate.data.title}} </h2>
+            <ion-checkbox (ionChange)="cvQueue()"></ion-checkbox>
+            <h3>{{certificate.data.title}} </h3>
         </ion-item>
-        <div *ngIf="certificates?.length < 1 && selectTrue">
+        <ion-button (click)=goToCV()>Generate your CV</ion-button>
+        <div *ngIf="certificates?.length < 1">
             <p>Keksi skillejä, hupiukko</p>
         </div>
     </ion-list>
     <ul class="inline" *ngIf="!query">
         <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
             <ion-card class="white">
-                <ion-card-header id="cardHeader">
-                    <ion-card-title>
-                        <ion-text>
-                            <h1>{{certificate.data.title}} </h1>
-                        </ion-text>
-                    </ion-card-title>
-                </ion-card-header>
+                    <ion-card-header id="cardHeader">
+                            <ion-card-title>
+                                <ion-text>
+                                    <h1>{{certificate.data.title}} </h1>
+                                </ion-text>
+                            </ion-card-title>
+                        </ion-card-header>
                 <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
-                    <ion-img class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
+                    <ion-row>
+                        <ion-col size="4">
+                            <ion-img class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
+                        </ion-col>
+                        <ion-col class="cerText" size="8">
+                            <ion-text>
+                                <h1 class="text">{{certificate.data.title}} </h1>
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
                 </div>
             </ion-card>
         </li>

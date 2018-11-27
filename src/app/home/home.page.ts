@@ -109,14 +109,11 @@ export class HomePage implements OnInit {
     }
 
     skillSelection() {
+        this.selectTrue = true;
 this.selection = this.selection === 'out' ? 'in' : 'out';
-this.selectTrue = true;
+this.selectTrue = false;
     }
 
-    cancelSelection() {
-        this.selection = this.selection === 'out' ? 'in' : 'out';
-        this.selectTrue = false;
-    }
 
     // Kokeilu luoda mediat javascriptillä
     async getSrcURL(URLs) {
@@ -215,7 +212,6 @@ this.selectTrue = true;
 
 
     ngOnInit() {
-        this.selectTrue = false;
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}/`);
         userRef.ref.get()
@@ -244,5 +240,6 @@ this.selectTrue = true;
         });
         this.getCertificates();
         this.identifier = 'out';
+        this.selection = 'out';
     }
 }

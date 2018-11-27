@@ -1,11 +1,12 @@
-
-
 .grid{
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
   height: 100%;
   width: 80%;
+}
+.topButton{
+  margin-top: 15px;
 }
 .buttons{
   padding-top: 10%;
