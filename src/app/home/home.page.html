@@ -8,17 +8,9 @@
                 <ion-icon name="log-out"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-searchbar
-            value=""
-            id="searchbar"
-            placeholder="Search"
-            mode="md"
-            spellcheck="false"
-            color="light"
-            debounce="250"
-            (ionChange)="search($event)"
-            showCancelButton="false">
-    </ion-searchbar>
+        <ion-searchbar value="" id="searchbar" placeholder="Search" mode="md" spellcheck="false" color="light" debounce="250"
+            (ionChange)="search($event)" showCancelButton="false">
+        </ion-searchbar>
     </ion-toolbar>
 </ion-header>
 <ion-content padding class="background">
@@ -29,28 +21,37 @@
     </ion-fab>
     <ion-button id="listhost" *ngIf="identifier && !searchTrue" expand="full" (click)="showAllUsers()">Show All Users</ion-button>
     <ion-button *ngIf="searchTrue" expand="full" (click)="cancelSearch()">Cancel Search</ion-button>
+    <ion-button id="createCV" *ngIf="selection" expand="full" (click)="skillSelection()">Create CV</ion-button>
+    <ion-button *ngIf="selectTrue" expand="full" (click)="cancelSelection()">Close Selection</ion-button>
     <ion-list id="userlist" [@slideInOut]="identifier">
         <ion-item id="listlabel" *ngFor="let user of data.users">
-            <ion-label >{{user?.nickName}} {{user?.email}}</ion-label>
+            <ion-label>{{user?.nickName}} {{user?.email}}</ion-label>
         </ion-item>
         <div *ngIf="data?.users?.length < 1 && searchTrue">
             <p>No users found</p>
         </div>
     </ion-list>
+    <ion-list id="certificatelist" [@slideInOut]="selection">
+        <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
+            <h2>{{certificate.data.title}} </h2>
+        </ion-item>
+        <div *ngIf="certificates?.length < 1 && selectTrue">
+            <p>Keksi skillejä, hupiukko</p>
+        </div>
+    </ion-list>
     <ul class="inline" *ngIf="!query">
-        <li *ngFor="let certificate of certificates | async; let i = index"
-            (click)="presentCertificate(certificate.id)">
+        <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
             <ion-card class="white">
                 <ion-card-header id="cardHeader">
-                        <ion-card-title>
-                                <ion-text>
-                                    <h1>{{certificate.data.title}} </h1>
-                                </ion-text>
-                            </ion-card-title>
-                        </ion-card-header>
-                    <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
-                        <ion-img class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
-                    </div>
+                    <ion-card-title>
+                        <ion-text>
+                            <h1>{{certificate.data.title}} </h1>
+                        </ion-text>
+                    </ion-card-title>
+                </ion-card-header>
+                <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
+                    <ion-img class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
+                </div>
             </ion-card>
         </li>
     </ul>

@@ -50,15 +50,15 @@
   overflow: visible;
   background: var(--ion-color-light);
 }
-#listhost{
+#listhost, #createCV{
   position: relative;
   display: block;
 }
-#userlist {
+#userlist, #certificatelist {
   position: absolute;
   z-index: 2;
 }
-#listlabel {
+#listlabel, #clabel {
 background-color: whitesmoke;
 width: 325px;
 }

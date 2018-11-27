@@ -72,6 +72,8 @@ export class HomePage implements OnInit {
     users;
     identifier;
     searchTrue;
+    selection;
+    selectTrue;
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
                 public data: DataService, public navCtrl: NavController, private afs: AngularFirestore, private db: AngularFirestore) {
@@ -104,6 +106,16 @@ export class HomePage implements OnInit {
         this.data.users = [];
         (<HTMLInputElement>document.getElementById('searchbar')).value = '';
         this.identifier = this.identifier === 'out' ? 'in' : 'out';
+    }
+
+    skillSelection() {
+this.selection = this.selection === 'out' ? 'in' : 'out';
+this.selectTrue = true;
+    }
+
+    cancelSelection() {
+        this.selection = this.selection === 'out' ? 'in' : 'out';
+        this.selectTrue = false;
     }
 
     // Kokeilu luoda mediat javascriptillä
@@ -203,7 +215,7 @@ export class HomePage implements OnInit {
 
 
     ngOnInit() {
-
+        this.selectTrue = false;
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}/`);
         userRef.ref.get()
