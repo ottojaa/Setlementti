@@ -10,6 +10,20 @@ import 'firebase/firestore';
 import {combineLatest} from 'rxjs';
 import * as firebase from 'firebase';
 import {FriendlistComponent} from '../friendlist/friendlist.component';
+import {Component, OnInit} from '@angular/core';
+import {ModalController} from '@ionic/angular';
+import {ModalComponent} from '../modal/modal.component';
+import {CertificateCardComponent} from '../certificate-card/certificate-card.component';
+import {DataService} from '../services/data.service';
+import {AngularFireAuth} from 'angularfire2/auth';
+import {FormsModule} from '@angular/forms';
+import {NavController, AlertController} from '@ionic/angular';
+import {AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from 'angularfire2/firestore';
+import 'firebase/firestore';
+import {combineLatest} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
+import * as firebase from 'firebase';
+import {Observable} from 'rxjs';
 import 'rxjs/Rx';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
@@ -19,6 +33,13 @@ interface User {
     photoURL: string;
     description?: string;
     nickName: string;
+    mentor: boolean;
+}
+
+interface CV {
+    date: string;
+    owner: string;
+    certificates: [];
 }
 
 interface Certificate {
@@ -63,7 +84,10 @@ export class HomePage implements OnInit {
     title;
     inputTrue = false;
     certificatesCol: AngularFirestoreCollection<Certificate>;
+    cvCol: AngularFirestoreCollection<CV>;
+    fileDoc: AngularFirestoreDocument<File>;
     certificates: any;
+    CVs: any;
     users;
     searchTrue;
     receiver;
@@ -71,13 +95,15 @@ export class HomePage implements OnInit {
     showList = false;
     friendRequests: AngularFirestoreCollection<FriendRequest>;
     friendReqs;
+    selection;
+    selectTrue;
+    cvTrue;
+    mentor;
+    queue = [];
 
-    constructor(private fireAuth: AngularFireAuth,
-                public modalController: ModalController,
-                public data: DataService,
-                public navCtrl: NavController,
-                private afs: AngularFirestore,
-                public alertController: AlertController) {
+    constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
+                public data: DataService, public navCtrl: NavController, private afs: AngularFirestore, private db: AngularFirestore) {
+
 
     }
 
@@ -105,6 +131,7 @@ export class HomePage implements OnInit {
         this.data.users = [];
         (<HTMLInputElement>document.getElementById('searchbar')).value = '';
     }
+
     async confirmSend(index) {
         const alert = await this.alertController.create({
             message: '<strong>  Send request? </strong>',
@@ -126,6 +153,79 @@ export class HomePage implements OnInit {
         await alert.present();
     }
 
+    skillSelection() {
+        this.queue = [];
+        this.selectTrue = true;
+        this.selection = this.selection === 'out' ? 'in' : 'out';
+        this.selectTrue = false;
+    }
+
+    showCVs() {
+        this.cvTrue = true;
+        document.getElementById('skillList').setAttribute('style', 'display: none');
+        document.getElementById('cvList').setAttribute('style', 'display: block');
+    }
+
+    hideCVs() {
+        this.cvTrue = false;
+        document.getElementById('skillList').setAttribute('style', 'display: block');
+        document.getElementById('cvList').setAttribute('style', 'display: none');
+    }
+
+    cvQueue(id) {
+        this.queue.push(id);
+    }
+
+    goToCV() {
+        this.afs.collection('CVs').add({date: new Date(), owner: this.data.user.uid, certificates: this.queue}).then((docRef) => {
+            localStorage.setItem('CVid', docRef.id);
+        }).then(() => {
+            this.navCtrl.navigateForward('CV');
+
+        });
+    }
+
+    presentCV(CVid) {
+        localStorage.setItem('CVid', CVid);
+        this.navCtrl.navigateForward('CV');
+    }
+
+    // Kokeilu luoda mediat javascriptillä
+    async getSrcURL(URLs) {
+        if (URLs) {
+            for (let i = 0; i < URLs.length; i++) {
+                // this.afs.doc('files/' + files[i]);
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
+                    const img = document.createElement('img');
+                    img.setAttribute('src', URLs[i]);
+                    document.getElementById('id' + i).appendChild(img);
+                }
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
+                    const video = document.createElement('video');
+                    video.setAttribute('controls', '');
+                    video.setAttribute('style', 'max-height: 200px');
+                    const source = document.createElement('source');
+                    source.setAttribute('src', URLs[i]);
+                    document.getElementById('id' + i).appendChild(video);
+                }
+                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
+                    const audio = document.createElement('audio');
+                    audio.setAttribute('controls', '');
+                    audio.setAttribute('style', 'max-height: 200px');
+                    const source = document.createElement('source');
+                    source.setAttribute('src', URLs[i]);
+                    document.getElementById('id' + i).appendChild(audio);
+                }
+
+
+                console.log(this.fileDoc);
+                // fileUrls.push(this.fileDoc.downloadURL)
+            }
+        }
+
+
+    }
+
     friendRequest(index) {
         this.receiver = this.data.allusers[index].uid;
         console.log(this.receiver);
@@ -142,6 +242,16 @@ export class HomePage implements OnInit {
         this.certificates = this.certificatesCol.snapshotChanges().map(actions => {
             return actions.map(a => {
                 const data = a.payload.doc.data() as Certificate;
+                const id = a.payload.doc.id;
+                return {id, data};
+            });
+        });
+    }
+
+    getCVs() {
+        this.CVs = this.cvCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                const data = a.payload.doc.data() as CV;
                 const id = a.payload.doc.id;
                 return {id, data};
             });
@@ -188,7 +298,8 @@ export class HomePage implements OnInit {
             email: user.email || null,
             photoURL: 'https://i.redd.it/coiddgklw4301.jpg',
             nickName: 'Nickname',
-            description: 'Description'
+            description: 'Description',
+            mentor: user.mentor
         };
         // console.log(user.uid);
         // console.log(user.email);
@@ -203,8 +314,16 @@ export class HomePage implements OnInit {
             });
     }
 
-    ngOnInit() {
 
+    checkMentor() {
+        if (this.data.user.mentor === true) {
+            this.mentor = true;
+        } else {
+            this.mentor = false;
+        }
+    }
+
+    ngOnInit() {
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}/`);
         userRef.ref.get()
@@ -219,7 +338,9 @@ export class HomePage implements OnInit {
                     console.log(doc.data());
                 }
             });
-        this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid));
+        this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid)
+        );
+        this.cvCol = this.afs.collection('CVs', ref => ref.where('owner', '==', this.data.user.uid));
         this.data.getAllUsers().subscribe((users) => {
             this.data.allusers = users;
             console.log(this.data.allusers);
@@ -230,14 +351,22 @@ export class HomePage implements OnInit {
                 console.log(this.data.users);
             });
         });
+        this.checkMentor();
         this.getCertificates();
-        this.data.getFriendRequests().subscribe((requests => {
-            this.data.friendRequests = requests;
-            console.log(this.data.friendRequests);
-        }));
+            this.data.getFriendRequests().subscribe((requests => {
+                this.data.friendRequests = requests;
+                console.log(this.data.friendRequests);
+            }));
         this.data.getFriendList().subscribe((friends => {
             this.data.friendList = friends;
             console.log(this.data.friendList);
         }));
+        this.getCVs();
+        this.identifier = 'out';
+        this.selection = 'out';
     }
+
+    // Mentorin omat funktiot
+
+
 }

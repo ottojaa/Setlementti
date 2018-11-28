@@ -1,7 +1,7 @@
 * {
   list-style: none;
 }
-#cardHeader{
+.cardHeader{
   margin-top: -35px;
   margin-bottom: -25px;
   top: 50%;
@@ -85,11 +85,11 @@ h4{
   float: left;
   margin-left: 25px;
 }
-#listhost{
+#listhost, #createCV{
   position: relative;
   display: block;
 }
-#userlist {
+#userlist, #certificatelist {
   position: absolute;
   z-index: 2;
   max-height: 450px !important;
@@ -101,4 +101,8 @@ h4{
   background-color: whitesmoke;
   width: 325px;
   white-space: normal;
+}
+#listlabel, #clabel {
+background-color: whitesmoke;
+width: 325px;
 }
