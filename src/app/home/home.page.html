@@ -22,6 +22,8 @@
     <ion-button id="listhost" *ngIf="identifier && !searchTrue" expand="full" (click)="showAllUsers()">Show All Users</ion-button>
     <ion-button *ngIf="searchTrue" expand="full" (click)="cancelSearch()">Cancel Search</ion-button>
     <ion-button id="createCV" *ngIf="selection" expand="full" (click)="skillSelection()">Create CV</ion-button>
+    <ion-button id="CVs" *ngIf="!cvTrue" expand="full" (click)="showCVs()">CV List</ion-button>
+    <ion-button id="CVs" *ngIf="cvTrue" expand="full" (click)="hideCVs()">Skill List</ion-button>
     <ion-list id="userlist" [@slideInOut]="identifier">
         <ion-item id="listlabel" *ngFor="let user of data.users">
             <ion-label>{{user?.nickName}} {{user?.email}}</ion-label>
@@ -33,7 +35,7 @@
     <ion-list id="certificatelist" [@slideInOut]="selection">
         <h1>Pick the skills for your CV</h1>
         <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
-            <ion-checkbox (ionChange)="cvQueue()"></ion-checkbox>
+            <ion-checkbox (ionChange)="cvQueue(certificate.id)"></ion-checkbox>
             <h3>{{certificate.data.title}} </h3>
         </ion-item>
         <ion-button (click)=goToCV()>Generate your CV</ion-button>
@@ -41,10 +43,10 @@
             <p>Keksi skillejä, hupiukko</p>
         </div>
     </ion-list>
-    <ul class="inline" *ngIf="!query">
+    <ul id="skillList" class="inline" *ngIf="!query">
         <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
             <ion-card class="white">
-                    <ion-card-header id="cardHeader">
+                    <ion-card-header class="cardHeader">
                             <ion-card-title>
                                 <ion-text>
                                     <h1>{{certificate.data.title}} </h1>
@@ -66,4 +68,27 @@
             </ion-card>
         </li>
     </ul>
+    <ul id="cvList" class="inline" *ngIf="!query" style="display: none">
+            <li *ngFor="let CV of CVs | async; let i = index" (click)="presentCV(CV.id)">
+                <ion-card class="white">
+                        <ion-card-header class="cardHeader">
+                                <ion-card-title>
+                                    <ion-text>
+                                        <h1>{{CV.data.date}} </h1>
+                                    </ion-text>
+                                </ion-card-title>
+                            </ion-card-header>
+                        <ion-row>
+                            <ion-col size="4">
+                                    <ion-fab-button>CV</ion-fab-button>
+                            </ion-col>
+                            <ion-col class="cerText" size="8">
+                                <ion-text>
+                                    <h1 class="text">{{CV.data.owner}} </h1>
+                                </ion-text>
+                            </ion-col>
+                        </ion-row>
+                </ion-card>
+            </li>
+        </ul>
 </ion-content>

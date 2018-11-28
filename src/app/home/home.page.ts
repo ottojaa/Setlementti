@@ -1,19 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {ModalController} from '@ionic/angular';
-import {ModalComponent} from '../modal/modal.component';
-import {CertificateCardComponent} from '../certificate-card/certificate-card.component';
-import {DataService} from '../services/data.service';
-import {AngularFireAuth} from 'angularfire2/auth';
-import {FormsModule} from '@angular/forms';
-import {NavController, AlertController} from '@ionic/angular';
-import {AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from 'angularfire2/firestore';
+import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { ModalComponent } from '../modal/modal.component';
+import { CertificateCardComponent } from '../certificate-card/certificate-card.component';
+import { DataService } from '../services/data.service';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { FormsModule } from '@angular/forms';
+import { NavController, AlertController } from '@ionic/angular';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
 import 'firebase/firestore';
-import {combineLatest} from 'rxjs';
-import {BehaviorSubject} from 'rxjs';
+import { combineLatest } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import * as firebase from 'firebase';
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import 'rxjs/Rx';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 interface User {
     uid: string;
@@ -21,6 +21,12 @@ interface User {
     photoURL: string;
     description?: string;
     nickName: string;
+}
+
+interface CV {
+    date: string;
+    owner: string;
+    certificates: [];
 }
 
 interface Certificate {
@@ -67,16 +73,20 @@ export class HomePage implements OnInit {
     title;
     inputTrue = false;
     certificatesCol: AngularFirestoreCollection<Certificate>;
+    cvCol: AngularFirestoreCollection<CV>;
     fileDoc: AngularFirestoreDocument<File>;
     certificates: any;
+    CVs: any;
     users;
     identifier;
     searchTrue;
     selection;
     selectTrue;
+    cvTrue;
+    queue = [];
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
-                public data: DataService, public navCtrl: NavController, private afs: AngularFirestore, private db: AngularFirestore) {
+        public data: DataService, public navCtrl: NavController, private afs: AngularFirestore, private db: AngularFirestore) {
 
     }
 
@@ -109,11 +119,39 @@ export class HomePage implements OnInit {
     }
 
     skillSelection() {
+        this.queue = [];
         this.selectTrue = true;
-this.selection = this.selection === 'out' ? 'in' : 'out';
-this.selectTrue = false;
+        this.selection = this.selection === 'out' ? 'in' : 'out';
+        this.selectTrue = false;
+    }
+    showCVs() {
+        this.cvTrue = true;
+        document.getElementById('skillList').setAttribute('style', 'display: none');
+        document.getElementById('cvList').setAttribute('style', 'display: block');
     }
 
+    hideCVs() {
+        this.cvTrue = false;
+        document.getElementById('skillList').setAttribute('style', 'display: block');
+        document.getElementById('cvList').setAttribute('style', 'display: none');
+    }
+
+    cvQueue(id) {
+        this.queue.push(id);
+    }
+
+    goToCV() {
+        this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue }).then((docRef) => {
+            localStorage.setItem('CVid', docRef.id);
+        }).then(() => {
+            this.navCtrl.navigateForward('CV');
+
+        });
+    }
+    presentCV(CVid) {
+        localStorage.setItem('CVid', CVid);
+        this.navCtrl.navigateForward('CV');
+    }
 
     // Kokeilu luoda mediat javascriptillä
     async getSrcURL(URLs) {
@@ -158,7 +196,17 @@ this.selectTrue = false;
             return actions.map(a => {
                 const data = a.payload.doc.data() as Certificate;
                 const id = a.payload.doc.id;
-                return {id, data};
+                return { id, data };
+            });
+        });
+    }
+
+    getCVs() {
+        this.CVs = this.cvCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                const data = a.payload.doc.data() as CV;
+                const id = a.payload.doc.id;
+                return { id, data };
             });
         });
     }
@@ -166,7 +214,7 @@ this.selectTrue = false;
     async presentModal() {
         const modal = await this.modalController.create({
             component: ModalComponent,
-            componentProps: {value: 123}
+            componentProps: { value: 123 }
         });
         return await modal.present();
     }
@@ -175,7 +223,7 @@ this.selectTrue = false;
         localStorage.setItem('cid', id);
         const modal = await this.modalController.create({
             component: CertificateCardComponent,
-            componentProps: {value: 123}
+            componentProps: { value: 123 }
         });
         return await modal.present();
     }
@@ -228,6 +276,7 @@ this.selectTrue = false;
             });
         this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid)
         );
+        this.cvCol = this.afs.collection('CVs', ref => ref.where('owner', '==', this.data.user.uid));
         this.data.getAllUsers().subscribe((users) => {
             this.data.allusers = users;
             console.log(this.data.allusers);
@@ -239,6 +288,7 @@ this.selectTrue = false;
             });
         });
         this.getCertificates();
+        this.getCVs();
         this.identifier = 'out';
         this.selection = 'out';
     }
