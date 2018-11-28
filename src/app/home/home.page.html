@@ -4,12 +4,16 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-buttons slot="end">
+            <ion-button (click)="presentFriendlist()">
+                <ion-icon name="add"></ion-icon>
+            </ion-button>
             <ion-button (click)="signOut()">Sign out
                 <ion-icon name="log-out"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-searchbar value="" id="searchbar" placeholder="Search" mode="md" spellcheck="false" color="light" debounce="250"
-            (ionChange)="search($event)" showCancelButton="false">
+        <ion-searchbar value="" id="searchbar" placeholder="Search" mode="md" spellcheck="false" color="light"
+                       debounce="50"
+                       (ionChange)="search($event)" showCancelButton="false">
         </ion-searchbar>
     </ion-toolbar>
 </ion-header>
@@ -19,18 +23,37 @@
             <ion-icon name="add"></ion-icon>
         </ion-fab-button>
     </ion-fab>
-    <ion-button id="listhost" *ngIf="identifier && !searchTrue" expand="full" (click)="showAllUsers()">Show All Users</ion-button>
+    <ion-button id="listhost" *ngIf="!searchTrue" expand="full" (click)="showAllUsers()">Show All Users
+    </ion-button>
     <ion-button *ngIf="searchTrue" expand="full" (click)="cancelSearch()">Cancel Search</ion-button>
-    <ion-list id="userlist" [@slideInOut]="identifier">
-        <ion-item id="listlabel" *ngFor="let user of data.users">
-            <ion-label>{{user?.nickName}} {{user?.email}}</ion-label>
+    <ion-list id="userlist" *ngIf="showList">
+        <ion-item class="listlabel" *ngFor="let user of data.users, let i = index">
+            <ion-label>
+                <ion-grid class="searchbox">
+                    <ion-row align-items-start style="overflow: hidden">
+                        <ion-col size="2">
+                            <ion-img class="max smaller" src="https://i.imgur.com/VTxG4SH.jpg"></ion-img>
+                        </ion-col>
+                        <ion-col size="7" offset="1" align-self-center class="ellipsis">
+                            <h5>{{user?.nickName}}</h5>
+                            <p style="color: #02020294;">{{user?.email}}</p>
+                        </ion-col>
+                        <ion-col size="2" align-self-center>
+                            <ion-button (click)="confirmSend(i)" class="addbutton" icon-only>
+                                <ion-icon name="add"></ion-icon>
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-label>
         </ion-item>
-        <div *ngIf="data?.users?.length < 1 && searchTrue">
-            <p>No users found</p>
-        </div>
+        <ion-item class="listlabel" *ngIf="data?.users?.length < 1 && searchTrue">
+            <ion-label>No users found</ion-label>
+        </ion-item>
     </ion-list>
     <ul class="inline" *ngIf="!query">
-        <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
+        <li *ngFor="let certificate of certificates | async; let i = index"
+            (click)="presentCertificate(certificate.id)">
             <ion-card class="white">
                 <div *ngIf="certificate?.data?.downloadURLs?.length > 0">
                     <ion-row>

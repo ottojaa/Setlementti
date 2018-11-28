@@ -4,17 +4,22 @@
 .avatar {
   width: 100px !important;
   height: 100px !important;
+  max-width: 100px;
+
 }
 
 .profile-image {
+  overflow: hidden;
   width: 100px;
   height: 100px;
   border-radius: 50%;
+  text-align: left;
+  object-fit: cover;
   margin: auto;
 }
 .profileCard{
   background-color: white;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
@@ -39,6 +44,9 @@
 .image-container > input{
   display: none;
 }
+#preview{
+  max-width: none;
+}
 .profile-details{
   text-align: right !important;
 }
@@ -59,4 +67,7 @@
 }
 .button2{
   font-size: 12px;
+}
+ion-button{
+  --margin-bottom: 0px;
 }

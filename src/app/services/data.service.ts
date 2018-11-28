@@ -21,6 +21,8 @@ export class DataService {
     users;
     allusers;
     currentTime;
+    friendList;
+    friendRequests;
 
     startobs = this.startAt.asObservable();
     endobs = this.endAt.asObservable();
@@ -29,6 +31,16 @@ export class DataService {
 
 
     constructor(private afs: AngularFirestore, private db: AngularFireDatabase) {
+    }
+    getFriendRequests() {
+        return this.afs.collection('users')
+            .doc(this.user.uid)
+            .collection('friends', ref => ref.where('approved', '==', false)).valueChanges();
+    }
+    getFriendList() {
+        return this.afs.collection('users')
+            .doc(this.user.uid)
+            .collection('friends', ref => ref.where('approved', '==', true)).valueChanges();
     }
 
     getUsers(start, end) {

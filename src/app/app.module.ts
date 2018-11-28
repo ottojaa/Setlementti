@@ -22,13 +22,14 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { CertificateCardComponent } from './certificate-card/certificate-card.component';
 import { EditCardComponent } from './edit-card/edit-card.component';
 import {AutosizeModule} from 'ngx-autosize';
+import { FriendlistComponent } from './friendlist/friendlist.component';
 
 
 export const firebaseConfig = environment.firebaseConfig;
 
 @NgModule({
-    declarations: [AppComponent, ModalComponent, CertificateCardComponent, EditCardComponent],
-    entryComponents: [ModalComponent, CertificateCardComponent, EditCardComponent],
+    declarations: [AppComponent, ModalComponent, CertificateCardComponent, EditCardComponent, FriendlistComponent],
+    entryComponents: [ModalComponent, CertificateCardComponent, EditCardComponent, FriendlistComponent],
     imports: [
         BrowserModule,
         AutosizeModule,

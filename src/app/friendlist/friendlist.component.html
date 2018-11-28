@@ -1,0 +1,50 @@
+<ion-content padding>
+    <ion-list id="friendRequests">
+        <ion-text color="primary">
+            <h2>Friend Requests</h2>
+        </ion-text>
+        <ion-item *ngFor="let request of data?.friendRequests, let i = index">
+            <ion-label>
+                <ion-grid class="searchbox">
+                    <ion-row align-items-start style="overflow: hidden">
+                        <ion-col size="6" align-self-center class="ellipsis">
+                            <p>{{request?.senderEmail}}</p>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="6">
+                            <p>{{request?.sender}}</p>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-label>
+        </ion-item>
+        <ion-item class="listlabel" *ngIf="data?.friendRequests?.length < 1">
+            <ion-label>No incoming requests</ion-label>
+        </ion-item>
+    </ion-list>
+    <ion-list id="friendList">
+        <ion-text color="secondary">
+            <h2>Friendlist</h2>
+        </ion-text>
+        <ion-item *ngFor="let request of data?.friendList, let i = index">
+            <ion-label>
+                <ion-grid class="searchbox">
+                    <ion-row align-items-start style="overflow: hidden">
+                        <ion-col size="6" align-self-center class="ellipsis">
+                            <p>{{request?.senderEmail}}</p>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="6">
+                            <p>{{request?.sender}}</p>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-label>
+        </ion-item>
+        <ion-item *ngIf="data?.friendList?.length < 1">
+            <ion-label>You have no friends lmao</ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

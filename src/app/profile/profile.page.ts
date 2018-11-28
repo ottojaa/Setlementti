@@ -79,7 +79,7 @@ export class ProfilePage implements OnInit {
 
     defineUpload(event) {
         this.inputField = false;
-        console.log(this.previewURL);
+        console.log(this.imageURL);
         this.file = event.target.files[0];
         this.storage.upload(`users/${this.data.user.uid}/previewPic`, this.file);
         const img = document.getElementById('preview');

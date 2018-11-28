@@ -4,14 +4,12 @@ import {ModalComponent} from '../modal/modal.component';
 import {CertificateCardComponent} from '../certificate-card/certificate-card.component';
 import {DataService} from '../services/data.service';
 import {AngularFireAuth} from 'angularfire2/auth';
-import {FormsModule} from '@angular/forms';
 import {NavController, AlertController} from '@ionic/angular';
 import {AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from 'angularfire2/firestore';
 import 'firebase/firestore';
 import {combineLatest} from 'rxjs';
-import {BehaviorSubject} from 'rxjs';
 import * as firebase from 'firebase';
-import {Observable} from 'rxjs';
+import {FriendlistComponent} from '../friendlist/friendlist.component';
 import 'rxjs/Rx';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
@@ -33,12 +31,10 @@ interface Certificate {
     cid: string;
 }
 
-interface File {
-    path: string;
-    size: string;
+interface FriendRequest {
     sender: string;
-    downloadURL: string;
-
+    senderEmail: string;
+    approved: boolean;
 }
 
 @Component({
@@ -57,8 +53,8 @@ interface File {
                 height: '0',
                 width: '*'
             })),
-            transition('in => out', animate('200ms ease-out')),
-            transition('out => in', animate('200ms ease-out'))
+            transition('in => out', animate('0ms ease-out')),
+            transition('out => in', animate('0ms ease-out'))
         ])
     ]
 })
@@ -67,19 +63,25 @@ export class HomePage implements OnInit {
     title;
     inputTrue = false;
     certificatesCol: AngularFirestoreCollection<Certificate>;
-    fileDoc: AngularFirestoreDocument<File>;
     certificates: any;
     users;
-    identifier;
     searchTrue;
+    receiver;
+    sender;
+    showList = false;
+    friendRequests: AngularFirestoreCollection<FriendRequest>;
+    friendReqs;
 
-    constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
-                public data: DataService, public navCtrl: NavController, private afs: AngularFirestore, private db: AngularFirestore) {
+    constructor(private fireAuth: AngularFireAuth,
+                public modalController: ModalController,
+                public data: DataService,
+                public navCtrl: NavController,
+                private afs: AngularFirestore,
+                public alertController: AlertController) {
 
     }
 
     search($event) {
-        this.identifier = 'in';
         this.data.searchterm = $event.target.value;
 
         if (this.data.searchterm !== '') {
@@ -90,56 +92,48 @@ export class HomePage implements OnInit {
             this.data.users = [];
             console.log('nyt');
             this.searchTrue = false;
-            this.identifier = 'out';
         }
 
     }
 
     showAllUsers() {
         this.data.users = this.data.allusers;
-        this.identifier = this.identifier === 'out' ? 'in' : 'out';
+        this.showList = !this.showList;
     }
 
     cancelSearch() {
         this.data.users = [];
         (<HTMLInputElement>document.getElementById('searchbar')).value = '';
-        this.identifier = this.identifier === 'out' ? 'in' : 'out';
+    }
+    async confirmSend(index) {
+        const alert = await this.alertController.create({
+            message: '<strong>  Send request? </strong>',
+            buttons: [
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                    }
+                }, {
+                    text: 'Yes',
+                    handler: () => {
+                        this.friendRequest(index);
+                    }
+                }
+            ]
+        });
+        await alert.present();
     }
 
-    // Kokeilu luoda mediat javascriptillä
-    async getSrcURL(URLs) {
-        if (URLs) {
-            for (let i = 0; i < URLs.length; i++) {
-                // this.afs.doc('files/' + files[i]);
-                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
-                    const img = document.createElement('img');
-                    img.setAttribute('src', URLs[i]);
-                    document.getElementById('id' + i).appendChild(img);
-                }
-                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
-                    const video = document.createElement('video');
-                    video.setAttribute('controls', '');
-                    video.setAttribute('style', 'max-height: 200px');
-                    const source = document.createElement('source');
-                    source.setAttribute('src', URLs[i]);
-                    document.getElementById('id' + i).appendChild(video);
-                }
-                if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
-                    const audio = document.createElement('audio');
-                    audio.setAttribute('controls', '');
-                    audio.setAttribute('style', 'max-height: 200px');
-                    const source = document.createElement('source');
-                    source.setAttribute('src', URLs[i]);
-                    document.getElementById('id' + i).appendChild(audio);
-                }
-
-
-                console.log(this.fileDoc);
-                // fileUrls.push(this.fileDoc.downloadURL)
-            }
-        }
-
-
+    friendRequest(index) {
+        this.receiver = this.data.allusers[index].uid;
+        console.log(this.receiver);
+        this.afs.collection('users').doc(this.receiver).collection('friends').add({
+            sender: this.data.user.uid,
+            senderEmail: this.data.user.email,
+            approved: false
+        });
     }
 
     getCertificates() {
@@ -152,6 +146,14 @@ export class HomePage implements OnInit {
                 return {id, data};
             });
         });
+    }
+
+    async presentFriendlist() {
+        const modal = await this.modalController.create({
+            component: FriendlistComponent,
+            componentProps: {value: 123}
+        });
+        return await modal.present();
     }
 
     async presentModal() {
@@ -201,7 +203,6 @@ export class HomePage implements OnInit {
             });
     }
 
-
     ngOnInit() {
 
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
@@ -218,8 +219,7 @@ export class HomePage implements OnInit {
                     console.log(doc.data());
                 }
             });
-        this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid)
-        );
+        this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid));
         this.data.getAllUsers().subscribe((users) => {
             this.data.allusers = users;
             console.log(this.data.allusers);
@@ -231,6 +231,13 @@ export class HomePage implements OnInit {
             });
         });
         this.getCertificates();
-        this.identifier = 'out';
+        this.data.getFriendRequests().subscribe((requests => {
+            this.data.friendRequests = requests;
+            console.log(this.data.friendRequests);
+        }));
+        this.data.getFriendList().subscribe((friends => {
+            this.data.friendList = friends;
+            console.log(this.data.friendList);
+        }));
     }
 }
