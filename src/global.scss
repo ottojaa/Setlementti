@@ -10,4 +10,7 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-$image: #450A65;
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+}
