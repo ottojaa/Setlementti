@@ -21,6 +21,7 @@ interface User {
     photoURL: string;
     description?: string;
     nickName: string;
+    mentor: boolean;
 }
 
 interface CV {
@@ -83,6 +84,7 @@ export class HomePage implements OnInit {
     selection;
     selectTrue;
     cvTrue;
+    mentor;
     queue = [];
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
@@ -243,7 +245,8 @@ export class HomePage implements OnInit {
             email: user.email || null,
             photoURL: 'https://i.redd.it/coiddgklw4301.jpg',
             nickName: 'Nickname',
-            description: 'Description'
+            description: 'Description',
+            mentor: user.mentor
         };
         // console.log(user.uid);
         // console.log(user.email);
@@ -258,6 +261,13 @@ export class HomePage implements OnInit {
             });
     }
 
+    checkMentor() {
+        if (this.data.user.mentor === true) {
+        this.mentor = true;
+        } else {
+        this.mentor = false;
+        }
+    }
 
     ngOnInit() {
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
@@ -287,9 +297,14 @@ export class HomePage implements OnInit {
                 console.log(this.data.users);
             });
         });
+        this.checkMentor();
         this.getCertificates();
         this.getCVs();
         this.identifier = 'out';
         this.selection = 'out';
     }
+
+    // Mentorin omat funktiot
+
+
 }

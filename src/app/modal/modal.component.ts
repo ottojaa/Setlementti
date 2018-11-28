@@ -6,16 +6,24 @@ import {
 import { NavController, ModalController, Events } from '@ionic/angular';
 import { DataService } from '../services/data.service';
 import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection  } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 import { tap } from 'rxjs/operators';
 import { finalize } from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import * as firebase from 'firebase/app';
-
 require('firebase/auth');
 import { HttpClient } from '@angular/common/http';
 import { stringify } from '@angular/core/src/render3/util';
+
+interface User {
+    uid: string;
+    email: string;
+    photoURL: string;
+    description?: string;
+    nickName: string;
+    mentor: boolean;
+}
 
 @Component({
     selector: 'app-modal',
@@ -35,7 +43,21 @@ import { stringify } from '@angular/core/src/render3/util';
             })),
             transition('in => out', animate('400ms ease-in-out')),
             transition('out => in', animate('400ms ease-in-out'))
-        ])
+        ]),
+            trigger('slide', [
+                state('in', style({
+                    overflow: 'hidden',
+                    height: '*',
+                    width: '*'
+                })),
+                state('out', style({
+                    overflow: 'hidden',
+                    height: '0',
+                    width: '*'
+                })),
+                transition('in => out', animate('200ms ease-out')),
+                transition('out => in', animate('200ms ease-out'))
+            ])
     ],
     styleUrls: ['./modal.component.scss']
 })
@@ -78,6 +100,11 @@ export class ModalComponent implements OnInit {
      */
     // private _CONTEXT : any;
     downloadURLs;
+    identifier;
+    userCol: AngularFirestoreCollection<User>;
+    mentors;
+    mentorTrue;
+    mentorArray;
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
         private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
@@ -301,7 +328,8 @@ export class ModalComponent implements OnInit {
             files: this.fileids,
             downloadURLs: this.downloadURLs,
             author: this.data.user.uid,
-            date: new Date()
+            date: new Date(),
+            sharedTo: this.mentorArray
         }).then((docRef) => {
             console.log('Document written with ID: ', docRef.id);
             const cid = docRef.id;
@@ -348,12 +376,50 @@ export class ModalComponent implements OnInit {
         this.title = '';
         this.query = '';
         this.downloadURLs = [];
+        this.mentorArray = [];
         this.fileids = [];
         this.files = [];
         this.fileCounter = 0;
         this.inputsN = 1;
         this.uploadFiles = 'out';
+        this.identifier = 'out';
         this.iCounter = 0;
+        this.mentorTrue = false;
+        this.userCol = this.db.collection('users', ref => ref.where('mentor', '==', true));
+        this.getMentors();
     }
 
+// päivityksiä
+
+
+
+
+
+    getMentors() {
+        this.mentors = this.userCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                const data = a.payload.doc.data() as User;
+                const id = a.payload.doc.id;
+                return { id, data };
+            });
+        });
+    }
+
+    pickMentors() {
+        if ( this.mentorTrue === false) {
+        this.mentorTrue = true;
+        } else {
+            this.mentorTrue = false;
+        }
+        this.identifier = this.identifier === 'out' ? 'in' : 'out';
+    }
+
+    pickMentor(uid) {
+        if (this.mentorArray.includes(uid)) {
+            const index = this.mentorArray.indexOf(uid);
+            this.mentorArray.splice(index, 1);
+        } else {
+        this.mentorArray.push(uid);
+        }
+    }
 }

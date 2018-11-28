@@ -20,6 +20,8 @@
                 
 
                 <ion-row class="buttons">
+                    <h3>Share with mentors</h3>
+                    <ion-checkbox (ionChange)="pickMentors()"></ion-checkbox>
                     <ion-button (click)="upload()">
                         <ion-icon name="attach"></ion-icon>
                     </ion-button>
@@ -27,6 +29,15 @@
                         <ion-icon name="send"></ion-icon>
                     </ion-button>
                 </ion-row>
+                <ion-list id="userlist" [@slide]="identifier">
+                        <ion-item id="listlabel" *ngFor="let mentor of mentors | async; let i = index">
+                                <ion-checkbox (ionChange)="pickMentor(mentor.data.uid)"></ion-checkbox>
+                            <ion-label>{{mentor.data.nickName}} {{mentor.data.email}}</ion-label>
+                        </ion-item>
+                      <!--  <div *ngIf="mentors?.length < 1 && mentorTrue">
+                            <p>No mentors found</p>
+                        </div>-->
+                    </ion-list>
             </ion-list>
             <ion-item [@slideInOut]="uploadFiles" class="dropzone"
                       dropZone
