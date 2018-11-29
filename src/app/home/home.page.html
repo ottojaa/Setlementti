@@ -22,7 +22,7 @@
     <ion-list id="userlist" *ngIf="showList">
         <ion-item class="listlabel" *ngFor="let user of data.users, let i = index">
             <ion-label>
-                <ion-grid class="searchbox">
+                <ion-grid fix class="searchbox">
                     <ion-row align-items-start style="overflow: hidden">
                         <ion-col size="2">
                             <ion-img class="max smaller" src="https://i.imgur.com/VTxG4SH.jpg"></ion-img>
@@ -52,18 +52,21 @@
         </ion-fab-button>
     </ion-fab>
     <div *ngIf="!mentor">
-        <ion-toolbar>
-            <ion-buttons slot="secondary">
-                <ion-button id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV</ion-button>
-                <ion-button id="CVs" *ngIf="!cvTrue" (click)="showCVs()">CV List</ion-button>
-                <ion-button id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
-            </ion-buttons>
-            <ion-buttons slot="primary">
-                <ion-button (click)="presentFriendlist()">
-                    Show friendlist
+        <ion-grid>
+            <ion-row align-items-center class="buttonRow">
+                    <ion-col col-4>
+                            <ion-button class="topButton" (click)="presentFriendlist()">Friend list</ion-button>
+                        </ion-col>
+                <ion-col col-4>
+                <ion-button class="topButton" id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV
                 </ion-button>
-            </ion-buttons>
-        </ion-toolbar>
+            </ion-col>
+            <ion-col col-4>
+                <ion-button class="topButton" id="CVs" *ngIf="!cvTrue" (click)="showCVs()">CV List</ion-button>
+                <ion-button class="topButton" id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
+        </ion-col>
+            </ion-row>
+        </ion-grid>
         <ion-list id="certificatelist" [@slideInOut]="selection">
             <h1>Pick the skills for your CV</h1>
             <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
