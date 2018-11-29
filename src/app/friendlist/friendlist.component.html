@@ -1,5 +1,9 @@
 <ion-content padding>
-    <ion-button (click)="closeModal()">Close modal</ion-button>
+        <ion-fab vertical="top" horizontal="end" slot="fixed">
+                <ion-fab-button class="topButton" (click)="closeModal()">
+                    <ion-icon name="close"></ion-icon>
+                </ion-fab-button>
+                </ion-fab>
     <ion-list id="friendRequests">
         <ion-text color="primary">
             <h2>Friend Requests</h2>

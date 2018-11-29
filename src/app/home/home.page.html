@@ -46,27 +46,17 @@
     </ion-list>
 </ion-header>
 <ion-content padding class="background">
-    <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button (click)="presentModal()">
-            <ion-icon name="add"></ion-icon>
-        </ion-fab-button>
+        <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button><ion-icon name="arrow-dropleft"></ion-icon></ion-fab-button>
+        <ion-fab-list side="start">
+        <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
+        <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
+        <ion-button  id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV</ion-button>
+        <ion-button  id="CVs" *ngIf="!cvTrue" (click)="showCVs()">CV List</ion-button>
+        <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
+    </ion-fab-list>
     </ion-fab>
     <div *ngIf="!mentor">
-        <ion-grid>
-            <ion-row align-items-center class="buttonRow">
-                    <ion-col col-4>
-                            <ion-button class="topButton" (click)="presentFriendlist()">Friend list</ion-button>
-                        </ion-col>
-                <ion-col col-4>
-                <ion-button class="topButton" id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV
-                </ion-button>
-            </ion-col>
-            <ion-col col-4>
-                <ion-button class="topButton" id="CVs" *ngIf="!cvTrue" (click)="showCVs()">CV List</ion-button>
-                <ion-button class="topButton" id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
-        </ion-col>
-            </ion-row>
-        </ion-grid>
         <ion-list id="certificatelist" [@slideInOut]="selection">
             <h1>Pick the skills for your CV</h1>
             <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
