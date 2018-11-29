@@ -18,6 +18,7 @@ interface Certificate {
     title: string;
     cid: string;
     downloadURLs: {};
+    sharedTo: [];
 }
 
 @Component({
@@ -51,6 +52,20 @@ interface Certificate {
             })),
             transition('in => out', animate('400ms ease-in-out')),
             transition('out => in', animate('400ms ease-in-out'))
+        ]),
+        trigger('slide', [
+            state('in', style({
+                overflow: 'hidden',
+                height: '*',
+                width: '*'
+            })),
+            state('out', style({
+                overflow: 'hidden',
+                height: '0',
+                width: '*'
+            })),
+            transition('in => out', animate('200ms ease-out')),
+            transition('out => in', animate('200ms ease-out'))
         ])
     ],
     styleUrls: ['./certificate-card.component.scss']
@@ -72,7 +87,11 @@ export class CertificateCardComponent implements OnInit {
     editMode = false;
     isReadOnly = true;
     animationStates = [];
-
+    mentors;
+    mentorTrue;
+    mentorArray;
+    friends;
+    identifier;
     constructor(private nav: NavController,
                 private modalController: ModalController,
                 public data: DataService,
@@ -166,6 +185,7 @@ export class CertificateCardComponent implements OnInit {
             files: this.pageData.files,
             downloadURLs: this.pageData.downloadURLs,
             cid: this.cid,
+            sharedTo: this.mentorArray,
         };
         console.log(this.pageData);
         return modalRef.set(data);
@@ -216,6 +236,7 @@ export class CertificateCardComponent implements OnInit {
             files: this.pageData.files,
             downloadURLs: this.pageData.downloadURLs,
             cid: cid,
+            sharedTo: this.mentorArray
         };
         this.toggleReadOnly();
         return modalRef.set(data);
@@ -261,7 +282,61 @@ export class CertificateCardComponent implements OnInit {
         this.inputTrue = false;
         this.title = '';
         this.query = '';
+        this.mentorTrue = false;
+        this.mentorArray = [];
+        this.identifier = 'out';
+        this.approved();
+
     }
+
+    // päivityksiä
+   approved() {
+    const clientRef = this.afs.doc(`users/${this.data.user.uid}/`);
+    const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
+    console.log(this.data.allusers);
+    this.friends = mentorCol.snapshotChanges().map(actions => {
+        return actions.map(a => {
+            for (let i = 0; i < this.data.allusers.length; i++) {
+            const id = a.payload.doc.id;
+            if (this.data.allusers[i].uid === id) {
+                const data = this.data.allusers[i];
+            return {id, data};
+            }
+            }
+        });
+    });
+}
+
+
+
+
+/*getMentors() {
+    this.mentors = this.userCol.snapshotChanges().map(actions => {
+        return actions.map(a => {
+            const data = a.payload.doc.data() as User;
+            const id = a.payload.doc.id;
+            return { id, data };
+        });
+    });
+}*/
+
+pickMentors() {
+    if ( this.mentorTrue === false) {
+    this.mentorTrue = true;
+    } else {
+        this.mentorTrue = false;
+    }
+    this.identifier = this.identifier === 'out' ? 'in' : 'out';
+}
+
+pickMentor(uid) {
+    if (this.mentorArray.includes(uid)) {
+        const index = this.mentorArray.indexOf(uid);
+        this.mentorArray.splice(index, 1);
+    } else {
+    this.mentorArray.push(uid);
+    }
+}
 
 }
 

@@ -65,6 +65,10 @@
                     </ion-card-content>
                 </ion-card>
                 <div class="buttonz" [@buttons]="editMode">
+                    <div *ngIf="editMode">
+                        <h3>Share with mentors</h3>
+                        <ion-checkbox (ionChange)="pickMentors()"></ion-checkbox>
+                    </div>
                     <ion-button *ngIf="editMode" color="primary" ion-button block
                                 (click)="updateCertificate(this.cid)">Save Changes
                     </ion-button>
@@ -72,6 +76,17 @@
                                 (click)="confirmDelete('Delete this document?')">Delete post
                     </ion-button>
                 </div>
+                <ion-list id="userlist" [@slide]="identifier">
+                    
+                        <ion-item id="listlabel" *ngFor="let mentor of friends | async; let i = index">
+                                <ion-checkbox (ionChange)="pickMentor(mentor.data.uid)"></ion-checkbox>
+                            <ion-label>{{mentor.data.nickName}} {{mentor.data.email}}</ion-label>
+                        </ion-item>
+                      <!--  <div *ngIf="mentors?.length < 1 && mentorTrue">
+                            <p>No mentors found</p>
+                        </div>-->
+                    
+                    </ion-list>
             </li>
         </ion-col>
 

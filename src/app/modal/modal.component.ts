@@ -105,6 +105,7 @@ export class ModalComponent implements OnInit {
     mentors;
     mentorTrue;
     mentorArray;
+    friends;
 
     constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
         private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
@@ -386,16 +387,32 @@ export class ModalComponent implements OnInit {
         this.iCounter = 0;
         this.mentorTrue = false;
         this.userCol = this.db.collection('users', ref => ref.where('mentor', '==', true));
-        this.getMentors();
+        this.approved();
+       // this.getMentors();
     }
 
 // päivityksiä
+   approved() {
+        const clientRef = this.db.doc(`users/${this.data.user.uid}/`);
+        const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
+        console.log(this.data.allusers);
+        this.friends = mentorCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                for (let i = 0; i < this.data.allusers.length; i++) {
+                const id = a.payload.doc.id;
+                if (this.data.allusers[i].uid === id) {
+                    const data = this.data.allusers[i];
+                return {id, data};
+                }
+                }
+            });
+        });
+    }
 
 
 
 
-
-    getMentors() {
+    /*getMentors() {
         this.mentors = this.userCol.snapshotChanges().map(actions => {
             return actions.map(a => {
                 const data = a.payload.doc.data() as User;
@@ -403,7 +420,7 @@ export class ModalComponent implements OnInit {
                 return { id, data };
             });
         });
-    }
+    }*/
 
     pickMentors() {
         if ( this.mentorTrue === false) {

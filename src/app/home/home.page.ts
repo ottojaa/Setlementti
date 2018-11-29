@@ -48,6 +48,10 @@ interface FriendRequest {
     approved: boolean;
 }
 
+interface Friend {
+    id: string;
+}
+
 @Component({
     selector: 'app-home',
     templateUrl: 'home.page.html',
@@ -75,6 +79,7 @@ export class HomePage implements OnInit {
     inputTrue = false;
     certificatesCol: AngularFirestoreCollection<Certificate>;
     cvCol: AngularFirestoreCollection<CV>;
+    clientCol: AngularFirestoreCollection<Friend>;
     fileDoc: AngularFirestoreDocument<File>;
     certificates: any;
     CVs: any;
@@ -89,6 +94,7 @@ export class HomePage implements OnInit {
     selectTrue;
     cvTrue;
     mentor;
+    friends: any;
     queue = [];
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
@@ -307,6 +313,7 @@ export class HomePage implements OnInit {
 
 
     checkMentor() {
+        console.log(this.data.user);
         if (this.data.user.mentor === true) {
             this.mentor = true;
         } else {
@@ -328,6 +335,8 @@ export class HomePage implements OnInit {
                     console.log('on olemassa, elä tee!');
                     console.log(doc.data());
                 }
+            }).then(() => {
+                this.checkMentor();
             });
         this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid)
         );
@@ -335,6 +344,7 @@ export class HomePage implements OnInit {
         this.data.getAllUsers().subscribe((users) => {
             this.data.allusers = users;
             console.log(this.data.allusers);
+            this.getClients();
         });
         combineLatest(this.data.startobs, this.data.endobs).subscribe((value) => {
             this.data.getUsers(value[0], value[1]).subscribe((users) => {
@@ -342,7 +352,6 @@ export class HomePage implements OnInit {
                 console.log(this.data.users);
             });
         });
-        this.checkMentor();
         this.getCertificates();
             this.data.getFriendRequests().subscribe((requests => {
                 this.data.friendRequests = requests;
@@ -354,9 +363,26 @@ export class HomePage implements OnInit {
         }));
         this.getCVs();
         this.selection = 'out';
+
     }
 
     // Mentorin omat funktiot
 
+    getClients() {
+        const mentorRef = this.afs.doc(`users/${this.data.user.uid}/`);
+        this.clientCol = mentorRef.collection('friends', ref => ref.where('approved', '==', true));
+        console.log(this.data.allusers);
+        this.friends = this.clientCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                for (let i = 0; i < this.data.allusers.length; i++) {
+                const id = a.payload.doc.id;
+                if (this.data.allusers[i].uid === id) {
+                    const data = this.data.allusers[i];
+                return {id, data};
+                }
+                }
+            });
+        });
+    }
 
 }
