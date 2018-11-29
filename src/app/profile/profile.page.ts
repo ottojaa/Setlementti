@@ -83,7 +83,6 @@ export class ProfilePage implements OnInit {
         this.file = event.target.files[0];
         this.storage.upload(`users/${this.data.user.uid}/previewPic`, this.file);
         const img = document.getElementById('preview');
-        img.setAttribute('src', URL.createObjectURL(this.file));
         console.log(this.file);
         this.uploadTrue = true;
     }
@@ -119,23 +118,16 @@ export class ProfilePage implements OnInit {
                     this.imageURL = url;
                     this.lastURL = this.imageURL;
                     console.log(this.imageURL);
+                    this.setProfilePicURL();
                 }
             });
         }
         this.cdRef.detectChanges();
     }
 
-    async setPreviewReference() {
-        if (this.storage.ref(`users/${this.data.user.uid}/previewPic`)) {
-            this.previkkaURL = this.storage.ref(`users/${this.data.user.uid}/previewPic`).getDownloadURL().subscribe(url => {
-                if (url) {
-                    console.log('aseta uusi imageurli');
-                    this.previewURL = url;
-                    console.log(this.previewURL);
-                }
-            });
-        }
-        this.cdRef.detectChanges();
+    async setProfilePicURL() {
+        const pictureRef = this.afs.collection('users').doc(this.data.user.uid);
+        return pictureRef.update({photoURL: this.imageURL});
     }
 
     updateUserDoc(user) {
@@ -178,7 +170,6 @@ export class ProfilePage implements OnInit {
             this.dob = new Date(this.data.user.birthdate).toISOString();
         }
         this.editProfile = 'out';
-        this.setReference();
         console.log(this.dob);
     }
 

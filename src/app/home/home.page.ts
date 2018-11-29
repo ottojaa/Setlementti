@@ -99,7 +99,7 @@ export class HomePage implements OnInit {
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
                 public data: DataService, public navCtrl: NavController,
-                 private afs: AngularFirestore, public alertController: AlertController) {
+                private afs: AngularFirestore, public alertController: AlertController) {
 
 
     }
@@ -111,10 +111,12 @@ export class HomePage implements OnInit {
             this.data.startAt.next(this.data.searchterm);
             this.data.endAt.next(this.data.searchterm + '\uf8ff');
             this.searchTrue = true;
+            this.showList = true;
         } else {
             this.data.users = [];
             console.log('nyt');
             this.searchTrue = false;
+            this.showList = false;
         }
 
     }
@@ -219,18 +221,36 @@ export class HomePage implements OnInit {
                 // fileUrls.push(this.fileDoc.downloadURL)
             }
         }
+    }
 
+    async showAlert(message) {
 
+        const alert = await this.alertController.create({
+            message: message
+        });
+        await alert.present();
+        setTimeout(() => {
+            alert.dismiss();
+        }, 2000);
     }
 
     friendRequest(index) {
         this.receiver = this.data.allusers[index].uid;
-        console.log(this.receiver);
-        this.afs.collection('users').doc(this.receiver).collection('friends').add({
-            sender: this.data.user.uid,
-            senderEmail: this.data.user.email,
-            approved: false
-        });
+        const friends = this.data.friendList;
+        const requests = this.data.friendRequests;
+        if (requests.filter(f => f.sender === this.receiver).length > 0
+            || friends.filter(e => e.sender === this.receiver).length > 0) {
+            this.showAlert('Already requested or friends with');
+        }
+        if (this.receiver === this.data.user.uid) {
+            this.showAlert('You can\'t request yourself silly');
+        } else {
+            this.afs.collection('users').doc(this.receiver).collection('friends').add({
+                sender: this.data.user.uid,
+                senderEmail: this.data.user.email,
+                approved: false
+            });
+        }
     }
 
     getCertificates() {
@@ -286,6 +306,7 @@ export class HomePage implements OnInit {
     }
 
     private createUserDoc(user) {
+        console.log('höm?');
         console.log(this.data.user);
 
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
@@ -296,7 +317,7 @@ export class HomePage implements OnInit {
             photoURL: 'https://i.redd.it/coiddgklw4301.jpg',
             nickName: 'Nickname',
             description: 'Description',
-            mentor: user.mentor
+            mentor: false
         };
         // console.log(user.uid);
         // console.log(user.email);
@@ -336,8 +357,8 @@ export class HomePage implements OnInit {
                     console.log(doc.data());
                 }
             }).then(() => {
-                this.checkMentor();
-            });
+            this.checkMentor();
+        });
         this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.user.uid)
         );
         this.cvCol = this.afs.collection('CVs', ref => ref.where('owner', '==', this.data.user.uid));
@@ -353,10 +374,10 @@ export class HomePage implements OnInit {
             });
         });
         this.getCertificates();
-            this.data.getFriendRequests().subscribe((requests => {
-                this.data.friendRequests = requests;
-                console.log(this.data.friendRequests);
-            }));
+        this.data.getFriendRequests().subscribe((requests => {
+            this.data.friendRequests = requests;
+            console.log(this.data.friendRequests);
+        }));
         this.data.getFriendList().subscribe((friends => {
             this.data.friendList = friends;
             console.log(this.data.friendList);
@@ -375,11 +396,11 @@ export class HomePage implements OnInit {
         this.friends = this.clientCol.snapshotChanges().map(actions => {
             return actions.map(a => {
                 for (let i = 0; i < this.data.allusers.length; i++) {
-                const id = a.payload.doc.id;
-                if (this.data.allusers[i].uid === id) {
-                    const data = this.data.allusers[i];
-                return {id, data};
-                }
+                    const id = a.payload.doc.id;
+                    if (this.data.allusers[i].uid === id) {
+                        const data = this.data.allusers[i];
+                        return {id, data};
+                    }
                 }
             });
         });

@@ -32,11 +32,13 @@ export class DataService {
 
     constructor(private afs: AngularFirestore, private db: AngularFireDatabase) {
     }
+
     getFriendRequests() {
         return this.afs.collection('users')
             .doc(this.user.uid)
             .collection('friends', ref => ref.where('approved', '==', false)).valueChanges();
     }
+
     getFriendList() {
         return this.afs.collection('users')
             .doc(this.user.uid)
@@ -50,5 +52,44 @@ export class DataService {
     getAllUsers() {
         return this.afs.collection('users', ref => ref.orderBy('nickName')).valueChanges();
     }
+
+    // Yritys saada firestore jättämään hakija pois hakutuloksista (firestoressa ei ole != operaattoria nii meni vähän turhan säädöks)
+
+    /*getUsers(start, end) {
+
+        const userCollection = [];
+        const users = this.afs.collection('users', ref => ref
+            .where('senderEmail', '<', this.user.email)
+            .orderBy('senderEmail').startAt(start).endAt(end)).valueChanges();
+        users.forEach((user => {
+            userCollection.push(user.data());
+        }));
+        const usersCombined = this.afs.collection('users', ref => ref
+            .where('senderEmail', '<', this.user.email)
+            .orderBy('senderEmail').startAt(start).endAt(end)).valueChanges();
+        usersCombined.forEach((user => {
+            userCollection.push(user.data());
+        }));
+        console.log(userCollection);
+        return userCollection;
+    }
+
+    getAllUsers() {
+        const userCollection = [];
+        const users = this.afs.collection('users', ref => ref
+            .where('senderEmail', '>', this.user.email)
+            .orderBy('senderEmail')).valueChanges();
+        users.forEach((user => {
+            userCollection.push(user.data());
+        }));
+        const usersCombined = this.afs.collection('users', ref => ref
+            .where('senderEmail', '>', this.user.email)
+            .orderBy('senderEmail')).valueChanges();
+        usersCombined.forEach((user => {
+            userCollection.push(user.data());
+        }));
+        console.log(userCollection);
+        return userCollection;
+    }*/
 }
 
