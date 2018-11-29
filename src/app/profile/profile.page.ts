@@ -18,6 +18,7 @@ interface User {
     nickName: string;
     birthdate: any;
     age: any;
+    mentor: boolean;
 }
 
 @Component({
@@ -83,6 +84,7 @@ export class ProfilePage implements OnInit {
         this.file = event.target.files[0];
         this.storage.upload(`users/${this.data.user.uid}/previewPic`, this.file);
         const img = document.getElementById('preview');
+        img.setAttribute('src', URL.createObjectURL(this.file));
         console.log(this.file);
         this.uploadTrue = true;
     }
@@ -143,7 +145,8 @@ export class ProfilePage implements OnInit {
             nickName: this.nickName,
             description: this.description,
             birthdate: new Date(this.dob).getTime(),
-            age: this.realAge
+            age: this.realAge,
+            mentor: user.mentor
         };
         console.log(data.age);
         this.toggleReadOnly();

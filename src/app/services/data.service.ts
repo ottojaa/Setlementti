@@ -50,7 +50,8 @@ export class DataService {
     }
 
     getAllUsers() {
-        return this.afs.collection('users', ref => ref.orderBy('nickName')).valueChanges();
+        return this.afs.collection('users', ref => ref
+            .orderBy('nickName')).valueChanges();
     }
 
     // Yritys saada firestore jättämään hakija pois hakutuloksista (firestoressa ei ole != operaattoria nii meni vähän turhan säädöks)
