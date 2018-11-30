@@ -24,12 +24,14 @@ interface User {
     description?: string;
     nickName: string;
     mentor: boolean;
+    CV: string;
 }
 
 interface CV {
-    date: string;
+    date: any;
     owner: string;
-    certificates: [];
+    certificates: {};
+    CVid: string;
 }
 
 interface Certificate {
@@ -176,12 +178,28 @@ export class HomePage implements OnInit {
     }
 
     goToCV() {
-        this.afs.collection('CVs').add({date: new Date(), owner: this.data.user.uid, certificates: this.queue}).then((docRef) => {
+        console.log(this.data.user.CV);
+        if (this.data.user.CV) {
+            const CVref: AngularFirestoreDocument<CV> = this.afs.doc(`CVs/${this.data.user.CV}`);
+            const data: CV = {
+                date: new Date(),
+                owner: this.data.user.uid,
+                certificates: this.queue,
+                CVid: this.data.user.CV
+            };
+            CVref.set(data).then(() => {
+                this.navCtrl.navigateForward('CV');
+            });
+        } else {
+        this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue }).then((docRef) => {
             localStorage.setItem('CVid', docRef.id);
+            this.afs.doc(`CVs/${docRef.id}`).update({ CVid: docRef.id });
+            this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
         }).then(() => {
             this.navCtrl.navigateForward('CV');
 
         });
+    }
     }
 
     presentCV(CVid) {
@@ -317,7 +335,8 @@ export class HomePage implements OnInit {
             photoURL: 'https://i.redd.it/coiddgklw4301.jpg',
             nickName: 'Nickname',
             description: 'Description',
-            mentor: false
+            mentor: false,
+            CV: ''
         };
         // console.log(user.uid);
         // console.log(user.email);

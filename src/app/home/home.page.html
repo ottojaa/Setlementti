@@ -51,7 +51,9 @@
         <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
         <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
         <ion-button  id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV</ion-button>
-        <ion-button  id="CVs" *ngIf="!cvTrue" (click)="showCVs()">CV List</ion-button>
+       <div *ngFor="let CV of CVs | async; let i = index" >
+        <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">CV List</ion-button>
+       </div>
         <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
     </ion-fab-list>
     </ion-fab>

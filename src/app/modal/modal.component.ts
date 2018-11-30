@@ -15,6 +15,7 @@ import * as firebase from 'firebase/app';
 require('firebase/auth');
 import { HttpClient } from '@angular/common/http';
 import { stringify } from '@angular/core/src/render3/util';
+import { Certificate } from 'tls';
 
 interface User {
     uid: string;
@@ -23,6 +24,12 @@ interface User {
     description?: string;
     nickName: string;
     mentor: boolean;
+}
+
+interface Friend {
+    approved: boolean;
+    sender: string;
+    senderEmail: string;
 }
 
 @Component({
@@ -335,7 +342,6 @@ export class ModalComponent implements OnInit {
             console.log('Document written with ID: ', docRef.id);
             const cid = docRef.id;
             this.db.doc('certificates/' + cid).update({cid: cid});
-
         });
     }
     }
@@ -399,8 +405,8 @@ export class ModalComponent implements OnInit {
         this.friends = mentorCol.snapshotChanges().map(actions => {
             return actions.map(a => {
                 for (let i = 0; i < this.data.allusers.length; i++) {
-                const id = a.payload.doc.id;
-                if (this.data.allusers[i].uid === id) {
+                const id = a.payload.doc.data() as Friend;
+                if (this.data.allusers[i].uid === id.sender) {
                     const data = this.data.allusers[i];
                 return {id, data};
                 }

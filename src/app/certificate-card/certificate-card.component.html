@@ -78,13 +78,14 @@
                 </div>
                 <ion-list id="userlist" [@slide]="identifier">
                     
-                        <ion-item id="listlabel" *ngFor="let mentor of friends | async; let i = index">
-                                <ion-checkbox (ionChange)="pickMentor(mentor.data.uid)"></ion-checkbox>
-                            <ion-label>{{mentor.data.nickName}} {{mentor.data.email}}</ion-label>
-                        </ion-item>
-                      <!--  <div *ngIf="mentors?.length < 1 && mentorTrue">
+                    <ion-item id="listlabel" *ngFor="let mentor of friends | async; let i = index">
+                        <ion-checkbox *ngIf="mentor" (ionChange)="pickMentor(mentor?.data?.uid)"></ion-checkbox>
+                        <ion-label>{{mentor?.data?.nickName}} {{mentor?.data?.email}}</ion-label>
+                        <div *ngIf="friends.length < 1">
                             <p>No mentors found</p>
-                        </div>-->
+                        </div>
+                    </ion-item>
+                        
                     
                     </ion-list>
             </li>
