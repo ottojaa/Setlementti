@@ -188,10 +188,15 @@ export class HomePage implements OnInit {
                 CVid: this.data.user.CV
             };
             CVref.set(data).then(() => {
+                // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
+                localStorage.setItem('owner', JSON.stringify(this.data.user));
+                localStorage.setItem('CVid', this.data.user.CV);
                 this.navCtrl.navigateForward('CV');
             });
         } else {
         this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue }).then((docRef) => {
+            // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
+            localStorage.setItem('owner', JSON.stringify(this.data.user));
             localStorage.setItem('CVid', docRef.id);
             this.afs.doc(`CVs/${docRef.id}`).update({ CVid: docRef.id });
             this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
@@ -203,6 +208,8 @@ export class HomePage implements OnInit {
     }
 
     presentCV(CVid) {
+        // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
+        localStorage.setItem('owner', JSON.stringify(this.data.user));
         localStorage.setItem('CVid', CVid);
         this.navCtrl.navigateForward('CV');
     }
