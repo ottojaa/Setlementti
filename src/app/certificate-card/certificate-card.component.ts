@@ -21,6 +21,20 @@ interface Certificate {
     sharedTo: [];
 }
 
+interface User {
+    uid: string;
+    email: string;
+    photoURL: string;
+    description?: string;
+    nickName: string;
+    mentor: boolean;
+}
+
+interface Friend {
+    approved: boolean;
+    sender: string;
+    senderEmail: string;
+}
 @Component({
     selector: 'app-certificate-card',
     templateUrl: './certificate-card.component.html',
@@ -238,6 +252,7 @@ export class CertificateCardComponent implements OnInit {
             cid: cid,
             sharedTo: this.mentorArray
         };
+        this.identifier = 'out';
         this.toggleReadOnly();
         return modalRef.set(data);
     }
@@ -293,12 +308,11 @@ export class CertificateCardComponent implements OnInit {
    approved() {
     const clientRef = this.afs.doc(`users/${this.data.user.uid}/`);
     const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
-    console.log(this.data.allusers);
     this.friends = mentorCol.snapshotChanges().map(actions => {
         return actions.map(a => {
             for (let i = 0; i < this.data.allusers.length; i++) {
-            const id = a.payload.doc.id;
-            if (this.data.allusers[i].uid === id) {
+            const id = a.payload.doc.data() as Friend;
+            if (this.data.allusers[i].uid === id.sender) {
                 const data = this.data.allusers[i];
             return {id, data};
             }

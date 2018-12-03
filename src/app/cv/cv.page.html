@@ -1,9 +1,49 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>NICE CV YOU HAVE THERE</ion-title>
-  </ion-toolbar>
+    <ion-title></ion-title>
 </ion-header>
 
 <ion-content padding>
-
+  <ion-row>
+    {{owner.nickName}} <span  class="right">NICE CV YOU HAVE THERE</span>
+  </ion-row>
+  <ion-row>
+      {{owner.age}} <span  class="right">NICE CV YOU HAVE THERE</span>
+    </ion-row>
+    <ion-row>
+        {{owner.description}} <span  class="right">NICE CV YOU HAVE THERE</span>
+      </ion-row>
+      <!--<ion-row>
+          {{owner.email}} <span  class="right">{{CV.date}}</span>
+        </ion-row>-->
+    <ion-grid *ngFor="let element of certificates">
+  <ion-item id="clabel" *ngFor="let certificate of element | async; let k = index">
+    <h3>{{certificate.data.title}} </h3>
+    <!--Arrayn elementti kerrallaan-->
+    <div *ngFor="let file of imageSources; let i = index">
+        <ion-card  class="other">
+                <img *ngIf="file?.imgsrc && i < certificate.urlLength.img" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"/>
+        </ion-card>
+    </div>
+    
+    <div *ngFor="let file of videoSources; let i = index">
+        <ion-card  class="other">
+            <ion-card-content>
+                <video *ngIf="file?.videosrc && i < certificate.urlLength.video" controls="controls" preload="metadata" autoplay="autoplay"
+                       webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                    <source [attr.src]="file?.videosrc" type="video/mp4"/>
+                </video>
+            </ion-card-content>
+        </ion-card>
+    </div>
+    <div *ngFor="let file of audioSources; let i = index">
+        <ion-card  class="other">
+            <ion-card-content>
+                <audio *ngIf="file?.audiosrc && i < certificate.urlLength.audio" controls>
+                    <source [attr.src]="file?.audiosrc" type="audio/mpeg">
+                </audio>
+            </ion-card-content>
+        </ion-card>
+    </div>
+</ion-item>
+</ion-grid>
 </ion-content>
