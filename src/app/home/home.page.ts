@@ -88,6 +88,7 @@ export class HomePage implements OnInit {
     users;
     searchTrue;
     receiver;
+    receiverData;
     sender;
     showList = false;
     friendRequests: AngularFirestoreCollection<FriendRequest>;
@@ -194,17 +195,17 @@ export class HomePage implements OnInit {
                 this.navCtrl.navigateForward('CV');
             });
         } else {
-        this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue }).then((docRef) => {
-            // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
-            localStorage.setItem('owner', JSON.stringify(this.data.user));
-            localStorage.setItem('CVid', docRef.id);
-            this.afs.doc(`CVs/${docRef.id}`).update({ CVid: docRef.id });
-            this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
-        }).then(() => {
-            this.navCtrl.navigateForward('CV');
+            this.afs.collection('CVs').add({date: new Date(), owner: this.data.user.uid, certificates: this.queue}).then((docRef) => {
+                // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
+                localStorage.setItem('owner', JSON.stringify(this.data.user));
+                localStorage.setItem('CVid', docRef.id);
+                this.afs.doc(`CVs/${docRef.id}`).update({CVid: docRef.id});
+                this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
+            }).then(() => {
+                this.navCtrl.navigateForward('CV');
 
-        });
-    }
+            });
+        }
     }
 
     presentCV(CVid) {
@@ -261,19 +262,36 @@ export class HomePage implements OnInit {
 
     friendRequest(index) {
         this.receiver = this.data.allusers[index].uid;
+        this.receiverData = this.data.allusers[index];
+        console.log(this.receiverData);
         const friends = this.data.friendList;
         const requests = this.data.friendRequests;
+        const sent = this.data.sentRequests;
+        console.log(this.data.sentRequests, this.data.friendRequests, this.data.friendList);
         if (requests.filter(f => f.sender === this.receiver).length > 0
-            || friends.filter(e => e.sender === this.receiver).length > 0) {
+            || friends.filter(e => e.sender === this.receiver).length > 0
+            || sent.filter(g => g.sender === this.receiver).length > 0) {
             this.showAlert('Already requested or friends with');
+            return;
         }
         if (this.receiver === this.data.user.uid) {
             this.showAlert('You can\'t request yourself silly');
+            return;
         } else {
+            console.log('miksi?');
             this.afs.collection('users').doc(this.receiver).collection('friends').add({
                 sender: this.data.user.uid,
                 senderEmail: this.data.user.email,
-                approved: false
+                approved: false,
+                senderNickname: this.data.user.nickName,
+                senderPhotoURL: this.data.user.photoURL
+            });
+            this.afs.collection('users').doc(this.data.user.uid).collection('friends').add({
+                receiverEmail: this.receiverData.email,
+                receiverPhotoURL: this.receiverData.photoURL,
+                receiverNickname: this.receiverData.nickName,
+                receiver: this.receiver,
+                pending: true
             });
         }
     }
@@ -339,7 +357,7 @@ export class HomePage implements OnInit {
         const data: User = {
             uid: user.uid,
             email: user.email || null,
-            photoURL: 'https://i.redd.it/coiddgklw4301.jpg',
+            photoURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0O0BcfpQpLH0uB58WXFCYAGuWjp4IhcPO63_caGFGMOrK_9qG',
             nickName: 'Nickname',
             description: 'Description',
             mentor: false,
@@ -408,7 +426,12 @@ export class HomePage implements OnInit {
             this.data.friendList = friends;
             console.log(this.data.friendList);
         }));
+        this.data.getSentRequests().subscribe((sent => {
+            this.data.sentRequests = sent;
+            console.log(this.data.sentRequests);
+        }));
         this.getCVs();
+        this.data.profilePicture = this.data.user.photoURL;
         this.selection = 'out';
 
     }

@@ -17,8 +17,7 @@
             <ion-row>
                 <ion-col size="4" class="image-container">
                     <label for="input1" class="file-label">
-                        <img *ngIf="data.user.photoURL" class="profile-image"  [src]=data.user.photoURL>
-                        <img  id="preview" class="profile-image" *ngIf="!data.user.photoURL" src="/../assets/icon/profile.png">
+                        <img  *ngIf="data?.user?.photoURL" id="profilepic" class="profile-image"  [src]=data.user.photoURL>
                         <ion-row>
                             <ion-col size="5">
                                 <ion-button color="success" *ngIf="uploadTrue" (click)="upload()" class="button1">

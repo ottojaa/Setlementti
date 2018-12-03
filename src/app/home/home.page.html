@@ -45,17 +45,17 @@
     </ion-list>
 </ion-header>
 <ion-content padding class="background">
-        <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button><ion-icon name="arrow-dropleft"></ion-icon></ion-fab-button>
+    <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button><ion-icon name="arrow-dropleft"></ion-icon></ion-fab-button>
         <ion-fab-list side="start">
-        <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
-        <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
-        <ion-button  id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV</ion-button>
-       <div *ngFor="let CV of CVs | async; let i = index" >
-        <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">YOUR CV</ion-button>
-       </div>
-        <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
-    </ion-fab-list>
+            <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
+            <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
+            <ion-button  id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV</ion-button>
+            <div *ngFor="let CV of CVs | async; let i = index" >
+                <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">YOUR CV</ion-button>
+            </div>
+            <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
+        </ion-fab-list>
     </ion-fab>
     <div *ngIf="!mentor">
         <ion-list id="certificatelist" [@slideInOut]="selection">
@@ -80,16 +80,16 @@
                             </ion-col>
                             <ion-col class="cerText" size="8">
                                 <ion-text>
-                                    <h1 class="textHeader">{{certificate.data.title}} </h1>   
+                                    <h1 class="textHeader">{{certificate.data.title}} </h1>
                                 </ion-text>
 
-                                <!--Placeholders--> 
+                                <!--Placeholders-->
                                 <div class="rating">
-                                        <ion-icon name="star"></ion-icon>
-                                        <ion-icon name="star"></ion-icon>
-                                        <ion-icon name="star"></ion-icon>
-                                        <ion-icon name="star"></ion-icon>
-                                        <ion-icon name="star"></ion-icon>
+                                    <ion-icon name="star"></ion-icon>
+                                    <ion-icon name="star"></ion-icon>
+                                    <ion-icon name="star"></ion-icon>
+                                    <ion-icon name="star"></ion-icon>
+                                    <ion-icon name="star"></ion-icon>
                                 </div>
                                 <ion-text>
                                     <span class="textDesc">12/10/2018</span>

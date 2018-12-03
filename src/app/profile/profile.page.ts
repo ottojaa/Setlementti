@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFireStorage} from 'angularfire2/storage';
 import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
-import {LoadingController} from '@ionic/angular';
+import {AlertController, LoadingController} from '@ionic/angular';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import {DataService} from '../services/data.service';
@@ -17,6 +17,7 @@ interface User {
     description?: string;
     nickName: string;
     birthdate: any;
+    photoURL: any;
     age: any;
     mentor: boolean;
 }
@@ -53,8 +54,7 @@ export class ProfilePage implements OnInit {
     file;
     downloadURL;
     imageURL;
-    previewURL;
-    previkkaURL;
+    profilePicture;
     lastURL;
     editProfile;
     uploadTrue = false;
@@ -68,7 +68,8 @@ export class ProfilePage implements OnInit {
                 private data: DataService,
                 private storage: AngularFireStorage,
                 public loadingController: LoadingController,
-                private cdRef: ChangeDetectorRef) {
+                private cdRef: ChangeDetectorRef,
+                private alertController: AlertController) {
     }
 
     toggleReadOnly() {
@@ -82,18 +83,19 @@ export class ProfilePage implements OnInit {
         this.inputField = false;
         console.log(this.imageURL);
         this.file = event.target.files[0];
-        this.storage.upload(`users/${this.data.user.uid}/previewPic`, this.file);
-        const img = document.getElementById('preview');
+        const img = document.getElementById('profilepic');
         img.setAttribute('src', URL.createObjectURL(this.file));
         console.log(this.file);
         this.uploadTrue = true;
     }
 
     upload() {
-        this.storage.upload(`users/${this.data.user.uid}/profilePic`, this.file);
+        this.storage.upload(`users/${this.data.user.uid}/profilePic.jpg`, this.file);
+        this.presentLoading();
         setTimeout(() => {
             this.setReference();
-        }, 400);
+            this.showAlert();
+        }, 4000);
         this.uploadTrue = false;
         this.enableInput();
     }
@@ -105,19 +107,38 @@ export class ProfilePage implements OnInit {
     }
 
     cancel() {
-        const img = document.getElementById('preview');
-        img.setAttribute('src', this.lastURL);
+        const img = document.getElementById('profilepic');
+        img.setAttribute('src', this.data.user.photoURL);
         console.log(this.imageURL);
         this.uploadTrue = false;
         this.enableInput();
     }
+    async presentLoading() {
+        const loading = await this.loadingController.create({
+            spinner: 'crescent',
+            message: 'Updating...',
+            duration: 3000,
+        });
+        return await loading.present();
+    }
+    async showAlert() {
+
+        const alert = await this.alertController.create({
+            message: 'Updated succesfully!'
+        });
+        await alert.present();
+        setTimeout(() => {
+            alert.dismiss();
+        }, 2000);
+    }
 
     async setReference() {
-        if (this.storage.ref(`users/${this.data.user.uid}/profilePic`)) {
-            this.downloadURL = this.storage.ref(`users/${this.data.user.uid}/profilePic`).getDownloadURL().subscribe(url => {
+        if (this.storage.ref(`users/${this.data.user.uid}/profilePic.jpg`)) {
+            this.downloadURL = this.storage.ref(`users/${this.data.user.uid}/profilePic.jpg`).getDownloadURL().subscribe(url => {
                 if (url) {
                     console.log('aseta uusi imageurli');
                     this.imageURL = url;
+                    this.data.user.photoURL = url;
                     this.lastURL = this.imageURL;
                     console.log(this.imageURL);
                     this.setProfilePicURL();
@@ -142,11 +163,12 @@ export class ProfilePage implements OnInit {
         const data: User = {
             uid: user.uid,
             email: user.email || null,
+            photoURL: user.photoURL,
             nickName: this.nickName,
             description: this.description,
             birthdate: new Date(this.dob).getTime(),
             age: this.realAge,
-            mentor: user.mentor
+            mentor: false
         };
         console.log(data.age);
         this.toggleReadOnly();
