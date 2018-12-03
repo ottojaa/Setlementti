@@ -22,8 +22,8 @@
                             </ion-col>
                         </ion-row>
                         <ion-card-title>
-                            <ion-input style="color: white;" class="input" spellcheck="false" [(ngModel)]="title" required [readonly]="isReadOnly"
-                                [ngModelOptions]="{standalone:true}"></ion-input>
+                            <ion-input style="color: white;" class="input" spellcheck="false" [(ngModel)]="title"
+                                required [readonly]="isReadOnly" [ngModelOptions]="{standalone:true}"></ion-input>
                         </ion-card-title>
                     </ion-card-header>
                     <div *ngFor="let file of imageSources, let i = index;">
@@ -62,21 +62,24 @@
                         </ion-card>
                     </div>
                     <ion-card-content>
-                        <ion-textarea style="color: white;" autosize spellcheck="false" class="input" required [readonly]="isReadOnly"
-                            [(ngModel)]="text" [ngModelOptions]="{standalone:true}"></ion-textarea>
+                        <ion-textarea style="color: white;" autosize spellcheck="false" class="input" required
+                            [readonly]="isReadOnly" [(ngModel)]="text" [ngModelOptions]="{standalone:true}"></ion-textarea>
                     </ion-card-content>
                 </ion-card>
                 <div class="buttonz" [@buttons]="editMode">
-                    <ion-button *ngIf="editMode" color="primary" ion-button block (click)="updateCertificate(this.cid)">Save
-                        Changes
-                    </ion-button>
-                    <ion-button *ngIf="editMode" color="danger" ion-button block (click)="confirmDelete('Delete this document?')">Delete
-                        post
-                    </ion-button>
+
+                    <ion-col col-6>
+                        <ion-button expand="block" id="save" *ngIf="editMode"  color="primary" ion-button block (click)="updateCertificate(this.cid)">Tallenna
+                        </ion-button>
+                    </ion-col>
+                    <ion-col col-6>
+                        <ion-button expand="block" id="del" *ngIf="editMode" color="danger" ion-button block (click)="confirmDelete('Delete this document?')">Poista
+                        </ion-button>
+                    </ion-col>
                 </div>
 
                 <div *ngIf="editMode">
-                    <ion-item>
+                    <ion-item class="share">
                         <ion-label style="color: white;">Jaa Mentorille</ion-label>
                         <ion-checkbox (ionChange)="pickMentors()"></ion-checkbox>
                     </ion-item>

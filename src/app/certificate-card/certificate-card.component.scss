@@ -1,11 +1,19 @@
+* {
+  //font-family: 'Rubik', sans-serif;
+  //font-family: 'Work Sans', sans-serif;
+}
+
+
 .topButton{
   margin-top: 15px;
 }
 li {
   list-style: none;
 }
+
 #grey{
   background: #33a6d4;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .other{
   background: #0f619c;
@@ -20,9 +28,12 @@ textarea {
 .buttonz{
   display: flex;
   justify-content: center;
+  margin-left: 30px;
+  margin-right: 30px;
 }
 .content{
   --background: #0f619c;
+
 }
 .max{
   overflow: hidden;
@@ -42,3 +53,18 @@ textarea {
   background: #33a6d4;
   color: white;
 }
+
+.share{
+  text-align: center;
+}
+
+#del{
+  text-transform: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#save{
+  text-transform: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+

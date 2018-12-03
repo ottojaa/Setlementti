@@ -1,11 +1,13 @@
+
 $red: #CD5C5C;
 $green: #32CD32;
 $dark: #379fff;
 
 * {
   list-style: none;
+  //font-family: 'Rubik', sans-serif;
+  font-family: 'Work Sans', sans-serif;
 }
-
 
 
 .cardHeader{
@@ -121,6 +123,7 @@ h4{
 }
 
 .rating{
+  color: #ffffff;
   margin-left: 10px;
   font-size: 120%;
   opacity: 50%;
