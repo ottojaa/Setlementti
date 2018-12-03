@@ -24,7 +24,7 @@
                 <ion-grid fix class="searchbox">
                     <ion-row align-items-start style="overflow: hidden">
                         <ion-col size="2">
-                            <ion-img class="max smaller" src="https://i.imgur.com/VTxG4SH.jpg"></ion-img>
+                            <ion-img class="max smaller" [src]=user?.photoURL></ion-img>
                         </ion-col>
                         <ion-col size="7" offset="1" align-self-center class="ellipsis">
                             <h5>{{user?.nickName}}</h5>

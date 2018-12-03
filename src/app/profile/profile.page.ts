@@ -116,7 +116,6 @@ export class ProfilePage implements OnInit {
     async presentLoading() {
         const loading = await this.loadingController.create({
             spinner: 'crescent',
-            message: 'Updating...',
             duration: 3000,
         });
         return await loading.present();

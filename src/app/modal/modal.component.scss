@@ -145,3 +145,18 @@ ion-content{
     z-index: 9999;
   }
 }
+.max{
+  //max-height:300px;
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  text-align: left;
+  object-fit: cover;
+  margin: 10%;
+}
+.smaller{
+  width: 30px;
+  height: 30px;
+  --padding-start: 4px;
+}

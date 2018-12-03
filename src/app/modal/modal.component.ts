@@ -40,13 +40,13 @@ interface Friend {
             state('in', style({
                 overflow: 'hidden',
                 height: '*',
-                width: '100%'
+                width: '*'
             })),
             state('out', style({
                 opacity: '0',
                 overflow: 'hidden',
-                height: '*',
-                width: '0'
+                height: '0',
+                width: '*'
             })),
             transition('in => out', animate('400ms ease-in-out')),
             transition('out => in', animate('400ms ease-in-out'))

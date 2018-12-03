@@ -5,10 +5,10 @@ li {
   list-style: none;
 }
 #grey{
-  background: #9bd7ed;
+  background: #33a6d4;
 }
 .other{
-  background: white;
+  background: #0f619c;
 }
 textarea {
   resize: both;
@@ -20,4 +20,25 @@ textarea {
 .buttonz{
   display: flex;
   justify-content: center;
+}
+.content{
+  --background: #0f619c;
+}
+.max{
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  text-align: left;
+  object-fit: cover;
+  margin: 10%;
+}
+.smaller{
+  width: 40px;
+  height: 40px;
+  --padding-start: 4px;
+}
+#listlabel{
+  background: #33a6d4;
+  color: white;
 }
