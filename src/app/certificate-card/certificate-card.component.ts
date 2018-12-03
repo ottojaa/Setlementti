@@ -300,6 +300,7 @@ export class CertificateCardComponent implements OnInit {
         this.mentorTrue = false;
         this.mentorArray = [];
         this.identifier = 'out';
+        console.log(this.data.friendList);
         this.approved();
 
     }
@@ -311,9 +312,10 @@ export class CertificateCardComponent implements OnInit {
     this.friends = mentorCol.snapshotChanges().map(actions => {
         return actions.map(a => {
             for (let i = 0; i < this.data.allusers.length; i++) {
-            const id = a.payload.doc.data() as Friend;
+            const id = a.payload.doc.data();
             if (this.data.allusers[i].uid === id.sender) {
                 const data = this.data.allusers[i];
+                console.log(id);
             return {id, data};
             }
             }
