@@ -217,7 +217,6 @@ checkCV() {
                 this.navCtrl.navigateForward('CV');
             });
         } else {
-<<<<<<< HEAD
         this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue}).then((docRef) => {
             // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
             localStorage.setItem('owner', JSON.stringify(this.data.user));
@@ -227,16 +226,6 @@ checkCV() {
         }).then(() => {
             this.skillSelection();
             this.navCtrl.navigateForward('CV');
-=======
-            this.afs.collection('CVs').add({date: new Date(), owner: this.data.user.uid, certificates: this.queue}).then((docRef) => {
-                // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
-                localStorage.setItem('owner', JSON.stringify(this.data.user));
-                localStorage.setItem('CVid', docRef.id);
-                this.afs.doc(`CVs/${docRef.id}`).update({CVid: docRef.id});
-                this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
-            }).then(() => {
-                this.navCtrl.navigateForward('CV');
->>>>>>> c7465ab886d389ced994ef5b28c79e96ea078898
 
             });
         }
@@ -462,17 +451,14 @@ checkCV() {
             this.data.friendList = friends;
             console.log(this.data.friendList);
         }));
-<<<<<<< HEAD
-        this.checkCV();
-=======
         this.data.getSentRequests().subscribe((sent => {
             this.data.sentRequests = sent;
             console.log(this.data.sentRequests);
         }));
->>>>>>> c7465ab886d389ced994ef5b28c79e96ea078898
         this.getCVs();
         this.data.profilePicture = this.data.user.photoURL;
         this.selection = 'out';
+        this.checkCV();
 
     }
 
