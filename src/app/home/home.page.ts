@@ -193,8 +193,10 @@ export class HomePage implements OnInit {
     }
 checkCV() {
     if (this.data.user.CV) {
+        console.log('CV on olemassa');
         this.cvExists = true;
     } else {
+        console.log('CV ei oo olemassa');
         this.cvExists = false;
     }
 }
@@ -457,9 +459,9 @@ checkCV() {
         }));
         this.getCVs();
         this.data.profilePicture = this.data.user.photoURL;
+        console.log(this.data.user.CV);
         this.selection = 'out';
         this.checkCV();
-
     }
 
     // Mentorin omat funktiot
