@@ -9,19 +9,16 @@
         <ion-col>
             <ion-list>
                 <ion-item>
-                        <ion-label color="primary" position="floating">Otsikkosi</ion-label>
-                        <ion-input maxlength="30" [(ngModel)]="title"></ion-input>
+                    <ion-label color="primary" position="floating">Otsikkosi</ion-label>
+                    <ion-input maxlength="30" [(ngModel)]="title"></ion-input>
                 </ion-item>
-                
+
                 <ion-item>
-                        <ion-label color="primary" position="floating">Kerro lisää</ion-label>
-                        <ion-textarea  id="previewSibling" [(ngModel)]="query"></ion-textarea>
+                    <ion-label color="primary" position="floating">Kerro lisää</ion-label>
+                    <ion-textarea id="previewSibling" [(ngModel)]="query"></ion-textarea>
                 </ion-item>
-                
 
                 <ion-row class="buttons">
-                    <h3>Share with mentors</h3>
-                    <ion-checkbox (ionChange)="pickMentors()"></ion-checkbox>
                     <ion-button (click)="upload()">
                         <ion-icon name="attach"></ion-icon>
                     </ion-button>
@@ -39,15 +36,12 @@
                     </ion-item>
                 </ion-list>
             </ion-list>
-            <ion-item [@slideInOut]="uploadFiles" class="dropzone"
-                      dropZone
-                      (hovered)="toggleHover($event)"
-                      (dropped)="startUpload($event)"
-                      [class.hovering]="isHovering">
+            <ion-item [@slideInOut]="uploadFiles" class="dropzone" dropZone (hovered)="toggleHover($event)" (dropped)="startUpload($event)"
+                [class.hovering]="isHovering">
 
 
                 <input id="fileinput" class="file-input" type="file" (change)="defineUpload($event.target.files)"
-                       accept="image/*">
+                    accept="image/*">
                 <label for="fileinput" icon-only ion-button class="center">
                     <ion-row align-items-start>
                         <ion-col>
@@ -60,9 +54,8 @@
                         </ion-col>
                     </ion-row>
                 </label>
-                <input id="fileinputAudio" class="file-input" type="file"
-                       (change)="defineUpload($event.target.files)"
-                       accept="audio/*">
+                <input id="fileinputAudio" class="file-input" type="file" (change)="defineUpload($event.target.files)"
+                    accept="audio/*">
                 <label for="fileinputAudio" icon-only ion-button class="center">
                     <ion-row align-items-start>
                         <ion-col>
@@ -75,9 +68,8 @@
                         </ion-col>
                     </ion-row>
                 </label>
-                <input id="fileinputVideo" class="file-input" type="file"
-                       (change)="defineUpload($event.target.files)"
-                       accept="video/*">
+                <input id="fileinputVideo" class="file-input" type="file" (change)="defineUpload($event.target.files)"
+                    accept="video/*">
                 <label for="fileinputVideo" icon-only ion-button class="center">
                     <ion-row align-items-start>
                         <ion-col>
@@ -90,9 +82,8 @@
                         </ion-col>
                     </ion-row>
                 </label>
-                <input id="fileinputOther" class="file-input" type="file"
-                       (change)="defineUpload($event.target.files)"
-                       accept="application/pdf">
+                <input id="fileinputOther" class="file-input" type="file" (change)="defineUpload($event.target.files)"
+                    accept="application/pdf">
                 <label for="fileinputOther" icon-only ion-button class="center">
                     <ion-row align-items-start>
                         <ion-col>
@@ -108,14 +99,18 @@
             </ion-item>
             <ion-item [@slideInOut]="!uploadFiles" *ngIf="percentage | async as pct">
 
-                <progress class="progress is-info"
-                          [value]="pct"
-                          max="100">
+                <progress class="progress is-info" [value]="pct" max="100">
                 </progress>
 
                 {{ pct | number }}%
 
             </ion-item>
+
+            <ion-item >
+                <ion-label>Jaa Mentorille</ion-label>
+                <ion-checkbox (ionChange)="pickMentors()"></ion-checkbox>
+              </ion-item>
+              
         </ion-col>
 
     </ion-grid>

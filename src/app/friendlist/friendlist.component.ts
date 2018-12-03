@@ -26,6 +26,8 @@ interface FriendRequest {
 export class FriendlistComponent implements OnInit {
 
     friendRef;
+    userRef;
+    receiverData;
 
     constructor(private nav: NavController,
                 private modalController: ModalController,
@@ -40,8 +42,10 @@ export class FriendlistComponent implements OnInit {
         this.modalController.dismiss();
     }
 
-    testButton(index) {
-        console.log(this.data.friendRequests[0].sender);
+    acceptFriendRequest(index) {
+        console.log(index);
+        console.log(this.data.friendRequests[index].sender);
+        this.receiverData = this.data.allusers[index];
         this.friendRef = this.afs.collection('users')
             .doc(this.data.user.uid)
             .collection('friends', ref => ref.where('sender', '==', this.data.friendRequests[index].sender)).ref
@@ -49,13 +53,38 @@ export class FriendlistComponent implements OnInit {
             .then(snapshot => {
                 snapshot.forEach(doc => {
                     console.log(doc.id, '=>', doc.data());
-                    this.afs.collection('users').doc(this.data.user.uid).collection('friends').doc(doc.id).update({approved: true});
+                    this.afs.collection('users')
+                        .doc(this.data.user.uid)
+                        .collection('friends')
+                        .doc(doc.id)
+                        .update({approved: true});
                 });
             });
+        console.log(this.data.friendRequests[index]);
+        this.userRef = this.afs.collection('users')
+            .doc(this.data.friendRequests[index].sender)
+            .collection('friends', ref => ref.where('receiver', '==', this.data.user.uid)).ref
+            .get()
+            .then(snapshot =>  {
+                snapshot.forEach(doc => {
+                    console.log(doc.id, '=>', doc.data());
+                    this.afs.collection('users')
+                        .doc(this.data.friendRequests[index].sender)
+                        .collection('friends')
+                        .doc(doc.id)
+                        .update({pending: false, approved: true});
+                });
+        });
     }
 
     ngOnInit() {
-        console.log(this.data.friendRequests[0].sender);
+        console.log(this.data.friendList);
+        console.log(this.data.friendRequests);
+        console.log(this.data.sentRequests);
+        if (this.data.friendRequests[0]) {
+            console.log(this.data.friendRequests[0].sender);
+        }
+        console.log(this.data.user.uid);
     }
 
 }

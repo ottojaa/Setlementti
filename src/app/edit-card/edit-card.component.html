@@ -17,63 +17,66 @@
                             </ion-col>
                         </ion-row>
                         <ion-card-title>
-                            <h1>{{pageData?.title}} </h1>
+                            <ion-item>
+                                <h1>{{pageData?.title}} </h1>
+                            </ion-item>
                         </ion-card-title>
                     </ion-card-header>
                     <div *ngFor="let file of imageSources, let i = index;">
                         <ion-row [@showHideButtons]="animationStates[i]" id="imgButtonrow{{i}}">
                             <ion-col col-6>
-                                <ion-button  full (click)="changeFile(file?.imgsrc, i)">
+                                <ion-button full (click)="changeFile(file?.imgsrc, i)">
                                     <ion-icon name="create"></ion-icon>
-                                  </ion-button>
-                                </ion-col>
-                                <ion-col col-6>
-                                  <ion-button  full color="danger" (click)="deletePreview(file?.imgsrc, i)" >
-                                      <ion-icon name="remove-circle"></ion-icon>
-                                    </ion-button>
-                                </ion-col>
-                              </ion-row>
+                                </ion-button>
+                            </ion-col>
+                            <ion-col col-6>
+                                <ion-button full color="danger" (click)="deletePreview(file?.imgsrc, i)">
+                                    <ion-icon name="remove-circle"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                        </ion-row>
                         <ion-card class="other">
                             <ion-card-content (click)="showButtons(i)" id="dimg{{i}}">
-                                <img *ngIf="file?.imgsrc" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive" id="img{{i}}"/>
+                                <img *ngIf="file?.imgsrc" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"
+                                    id="img{{i}}" />
                             </ion-card-content>
                         </ion-card>
                     </div>
                     <div *ngFor="let file of videoSources, let i = index;">
-                            <ion-row [@showHideButtons]="animationStates[i]" id="videoButtonrow{{i}}">
-                                    <ion-col col-6 id="cvideoCol{{i}}">
-                                        <ion-button  full (click)="changeFile(file?.videosrc, i)">
-                                            <ion-icon name="create"></ion-icon>
-                                          </ion-button>
-                                        </ion-col>
-                                        <ion-col col-6 >
-                                          <ion-button  full color="danger" (click)="deletePreview(file?.videosrc, i)" >
-                                              <ion-icon name="remove-circle"></ion-icon>
-                                            </ion-button>
-                                        </ion-col>
-                                      </ion-row>
+                        <ion-row [@showHideButtons]="animationStates[i]" id="videoButtonrow{{i}}">
+                            <ion-col col-6 id="cvideoCol{{i}}">
+                                <ion-button full (click)="changeFile(file?.videosrc, i)">
+                                    <ion-icon name="create"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                            <ion-col col-6>
+                                <ion-button full color="danger" (click)="deletePreview(file?.videosrc, i)">
+                                    <ion-icon name="remove-circle"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                        </ion-row>
                         <ion-card class="other">
                             <ion-card-content (click)="showButtons(i)">
                                 <video *ngIf="file?.videosrc" controls="controls" preload="metadata" id="dvideo{{i}}"
-                                       webkit-playsinline="webkit-playsinline" class="videoPlayer" >
-                                    <source [attr.src]="file?.videosrc" type="video/mp4" id="video{{i}}"/>
+                                    webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                                    <source [attr.src]="file?.videosrc" type="video/mp4" id="video{{i}}" />
                                 </video>
                             </ion-card-content>
                         </ion-card>
                     </div>
                     <div *ngFor="let file of audioSources, let i = index;">
-                            <ion-row [@showHideButtons]="animationStates[i]" id="audioButtonrow{{i}}">
-                                    <ion-col col-6>
-                                        <ion-button  full (click)="changeFile(file?.audiosrc, i)">
-                                            <ion-icon name="create"></ion-icon>
-                                          </ion-button>
-                                        </ion-col>
-                                        <ion-col col-6>
-                                          <ion-button  full color="danger" (click)="deletePreview(file?.audiosrc, i)">
-                                              <ion-icon name="remove-circle"></ion-icon>
-                                            </ion-button>
-                                        </ion-col>
-                                      </ion-row>
+                        <ion-row [@showHideButtons]="animationStates[i]" id="audioButtonrow{{i}}">
+                            <ion-col col-6>
+                                <ion-button full (click)="changeFile(file?.audiosrc, i)">
+                                    <ion-icon name="create"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                            <ion-col col-6>
+                                <ion-button full color="danger" (click)="deletePreview(file?.audiosrc, i)">
+                                    <ion-icon name="remove-circle"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                        </ion-row>
                         <ion-card class="other">
                             <ion-card-content (click)="showButtons(i)">
                                 <audio *ngIf="file?.audiosrc" controls id="daudio{{i}}">
@@ -83,15 +86,17 @@
                         </ion-card>
                     </div>
                     <ion-card-content>
-                        <p> {{pageData?.text}}</p>
+                        <ion-item>
+                            <p> {{pageData?.text}}</p>
+                        </ion-item>
                     </ion-card-content>
                 </ion-card>
                 <ion-button (click)="confirmChanges()">
                     Save Changes
-                  </ion-button>
-                <ion-button  full color="danger" (click)="confirmDelete()">
+                </ion-button>
+                <ion-button full color="danger" (click)="confirmDelete()">
                     DELETE
-                  </ion-button>
+                </ion-button>
             </li>
             <ul class="inline">
 

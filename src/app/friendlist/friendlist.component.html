@@ -12,17 +12,18 @@
             <ion-label>
                 <ion-grid class="searchbox">
                     <ion-row align-items-start style="overflow: hidden">
-                        <ion-col size="6" align-self-center class="ellipsis">
+                        <ion-col size="2">
+                            <ion-img class="max smaller" [src]=request?.senderPhotoURL></ion-img>
+                        </ion-col>
+                        <ion-col size="8" align-self-center class="ellipsis">
+                            <h4>{{request?.senderNickname}}</h4>
                             <p>{{request?.senderEmail}}</p>
                         </ion-col>
-                    </ion-row>
-                    <ion-row>
-                        <ion-col size="6">
-                            <p>{{request?.sender}}</p>
+                        <ion-col size="2">
+                            <ion-button (click)="acceptFriendRequest(i)">
+                                <ion-icon name="checkmark"></ion-icon>
+                            </ion-button>
                         </ion-col>
-                        <ion-button (click)="testButton(i)">
-                            <ion-icon name="checkmark"></ion-icon>
-                        </ion-button>
                     </ion-row>
                 </ion-grid>
             </ion-label>
@@ -31,21 +32,54 @@
             <ion-label>No incoming requests</ion-label>
         </ion-item>
     </ion-list>
+    <ion-list id="sentRequests">
+        <ion-text color="primary">
+            <h2>Requests sent by you</h2>
+        </ion-text>
+        <ion-item *ngFor="let request of data?.sentRequests, let i = index">
+            <ion-label>
+                <ion-grid class="searchbox">
+                    <ion-row align-items-start style="overflow: hidden">
+                        <ion-col size="3">
+                            <ion-img class="max smaller" [src]=request?.receiverPhotoURL></ion-img>
+                        </ion-col>
+                        <ion-col size="9" align-self-center class="ellipsis">
+                            <p>{{request?.receiverNickname}}</p>
+                            <p>{{request?.receiverEmail}}</p>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-label>
+        </ion-item>
+        <ion-item class="listlabel" *ngIf="data?.sentRequests?.length < 1">
+            <ion-label>No sent requests pending</ion-label>
+        </ion-item>
+    </ion-list>
     <ion-list id="friendList">
         <ion-text color="secondary">
             <h2>Friendlist</h2>
         </ion-text>
         <ion-item *ngFor="let request of data?.friendList, let i = index">
             <ion-label>
-                <ion-grid class="searchbox">
+                <ion-grid class="searchbox" *ngIf="request?.receiver">
                     <ion-row align-items-start style="overflow: hidden">
-                        <ion-col size="6" align-self-center class="ellipsis">
-                            <p>{{request?.senderEmail}}</p>
+                        <ion-col size="3">
+                            <ion-img class="max smaller" [src]=request?.receiverPhotoURL></ion-img>
+                        </ion-col>
+                        <ion-col size="9" align-self-center class="ellipsis">
+                            <p>{{request?.receiverNickname}}</p>
+                            <p>{{request?.receiverEmail}}</p>
                         </ion-col>
                     </ion-row>
-                    <ion-row>
-                        <ion-col size="6">
-                            <p>{{request?.sender}}</p>
+                </ion-grid>
+                <ion-grid class="searchbox" *ngIf="request?.sender">
+                    <ion-row align-items-start style="overflow: hidden">
+                        <ion-col size="3">
+                            <ion-img class="max smaller" [src]=request?.senderPhotoURL></ion-img>
+                        </ion-col>
+                        <ion-col size="9" align-self-center class="ellipsis">
+                            <p>{{request?.senderNickname}}</p>
+                            <p>{{request?.senderEmail}}</p>
                         </ion-col>
                     </ion-row>
                 </ion-grid>
