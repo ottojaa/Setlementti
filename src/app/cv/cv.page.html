@@ -2,29 +2,39 @@
     <ion-title></ion-title>
 </ion-header>
 
-<ion-content padding>
-  <ion-row>
-    {{owner.nickName}} <span  class="right">MY CV tms.</span>
+<ion-content>
+
+        <ion-list style="margin-top:50px">
+                <ion-item>
+                    <ion-img class="profilePic" [src]="data.user.photoURL"></ion-img>
+                  <ion-label>
+                    <h2>{{owner.nickName}}</h2>
+                    <h3>{{owner.age}}</h3>
+                    <h3>{{owner.email}}</h3>
+                    <h3>{{owner.description}}</h3>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+<!--
+  <ion-row style="margin-top:50px">
+  Name: {{owner.nickName}} <span  class="right"></span>
   </ion-row>
   <ion-row>
-      {{owner.age}} <span  class="right"></span>
+    Age: {{owner.age}} <span  class="right"></span>
     </ion-row>
     <ion-row>
-        {{owner.description}} <span  class="right"></span>
+     {{owner.description}} <span  class="right"></span>
       </ion-row>
       <ion-row>
-          {{owner.email}} <span *ngIf="CV"  class="right">{{CV.date}}</span>
-        </ion-row>
+          E-mail: {{owner.email}} <span *ngIf="CV"  class="right">{{CV.date}}</span>
+        </ion-row> -->
+        
     <ion-grid *ngFor="let element of certificates">
   <ion-item id="clabel" *ngFor="let certificate of element | async; let k = index">
-    <h3>{{certificate.data.title}} </h3>
     <!--Arrayn elementti kerrallaan-->
     <div *ngFor="let file of certificate.data.imgurls; let i = index">
-        <ion-card  class="other">
-                <img *ngIf="file" src="{{file}}" alt="ei toimi" class="img-responsive"/>
-        </ion-card>
+                <img *ngIf="file" src="{{file}}" alt="ei toimi" class="skillPic"/> 
     </div>
-    
     <div *ngFor="let file of certificate.data.videourls; let i = index">
         <ion-card  class="other">
             <ion-card-content>
@@ -35,6 +45,7 @@
             </ion-card-content>
         </ion-card>
     </div>
+
     <div *ngFor="let file of certificate.data.audiourls; let i = index">
         <ion-card  class="other">
             <ion-card-content>
@@ -44,6 +55,13 @@
             </ion-card-content>
         </ion-card>
     </div>
+    <ion-list>
+        <ion-label>
+    <h2>{{certificate.data.title}} </h2>
+    <h3>{{certificate.data.title}} </h3>
+    <h3>{{certificate.data.title}} </h3>
+</ion-label>
+</ion-list>
 </ion-item>
 </ion-grid>
 </ion-content>
