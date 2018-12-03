@@ -99,19 +99,21 @@ h4{
   font-size: 120%;
   margin-top: 5px;
   color: black;
-  margin-left: 20px;
+  margin-left: 10px;
   text-transform: uppercase; 
 }
 
 .textDesc{
+  margin-top: 0px;
   font-size: 100%;
-  color: black;
-  margin-left: 20px;
+  margin-left: 10px;
+  opacity: 50%;
 }
 
 .rating{
-  margin-left: 20px;
+  margin-left: 10px;
   font-size: 120%;
+  opacity: 50%;
 }
 
 #listhost, #createCV{

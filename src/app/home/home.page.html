@@ -15,7 +15,7 @@
             </ion-button>
         </ion-buttons>
         <ion-searchbar value="" id="searchbar" placeholder="Search" mode="md" spellcheck="false" color="light"
-                       (ionChange)="search($event)" showCancelButton="false">
+            (ionChange)="search($event)" showCancelButton="false">
         </ion-searchbar>
     </ion-toolbar>
     <ion-list id="userlist" *ngIf="showList">
@@ -46,15 +46,21 @@
 </ion-header>
 <ion-content padding class="background">
     <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button><ion-icon name="arrow-dropleft"></ion-icon></ion-fab-button>
+        <ion-fab-button>
+            <ion-icon name="arrow-dropleft"></ion-icon>
+        </ion-fab-button>
         <ion-fab-list side="start">
-            <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
-            <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
-            <ion-button  id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV</ion-button>
-            <div *ngFor="let CV of CVs | async; let i = index" >
-                <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">YOUR CV</ion-button>
+            <ion-fab-button (click)="presentModal()" class="fabButton" color="primary">
+                <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary">
+                <ion-icon name="contacts"></ion-icon>
+            </ion-fab-button>
+            <ion-button id="createCV" *ngIf="selection" (click)="skillSelection()">Create CV</ion-button>
+            <div *ngFor="let CV of CVs | async; let i = index">
+                <ion-button id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">YOUR CV</ion-button>
             </div>
-            <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
+            <ion-button id="CVs" *ngIf="cvTrue" (click)="hideCVs()">Skill List</ion-button>
         </ion-fab-list>
     </ion-fab>
     <div *ngIf="!mentor">
@@ -84,15 +90,13 @@
                                 </ion-text>
 
                                 <!--Placeholders-->
-                                <div class="rating">
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
+                                <div>
+                                <ion-text>
+                                    <h2 class="rating">Kiitettävä</h2>
+                                </ion-text>
                                 </div>
                                 <ion-text>
-                                    <span class="textDesc">12/10/2018</span>
+                                    <h2 class="textDesc">12/10/2018</h2>
                                 </ion-text>
                             </ion-col>
                         </ion-row>
