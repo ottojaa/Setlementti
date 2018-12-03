@@ -1,10 +1,23 @@
+$red: #CD5C5C;
+$green: #32CD32;
+$dark: #379fff;
+
 * {
   list-style: none;
 }
+
+
+
 .cardHeader{
   margin-top: -35px;
   margin-bottom: -25px;
   top: 50%;
+}
+
+.logbox{
+  background-color: $red;
+  border-radius: 4px;
+
 }
 .inline{
   padding-inline-start: 0px !important;
@@ -77,22 +90,28 @@ h4{
   overflow: visible;
   background: var(--ion-color-light);
 }
-.uppercase {
-  margin: 10px;
-
-  text-transform: capitalize !important;
-}
 .stay {
 
   overflow: visible;
   background: var(--ion-color-light);
 }
-.text{
-  font-size: 135%;
-  margin-top: -0px;
+.textHeader{
+  font-size: 120%;
+  margin-top: 5px;
   color: black;
-  float: left;
-  margin-left: 25px;
+  margin-left: 20px;
+  text-transform: uppercase; 
+}
+
+.textDesc{
+  font-size: 100%;
+  color: black;
+  margin-left: 20px;
+}
+
+.rating{
+  margin-left: 20px;
+  font-size: 120%;
 }
 
 #listhost, #createCV{

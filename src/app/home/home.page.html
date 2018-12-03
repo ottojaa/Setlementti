@@ -5,12 +5,12 @@
         </ion-buttons>
         <ion-buttons slot="end">
             <ion-button id="listhost" *ngIf="!searchTrue" (click)="showAllUsers()">
-                <ion-icon name="list"></ion-icon>
+                <ion-icon name="people"></ion-icon>
             </ion-button>
             <ion-button *ngIf="searchTrue" (click)="cancelSearch()">
                 <ion-icon name="close"></ion-icon>
             </ion-button>
-            <ion-button (click)="signOut()">Sign out
+            <ion-button class="logbox" (click)="signOut()">
                 <ion-icon name="log-out"></ion-icon>
             </ion-button>
         </ion-buttons>
@@ -78,7 +78,19 @@
                             </ion-col>
                             <ion-col class="cerText" size="8">
                                 <ion-text>
-                                    <h1 class="text">{{certificate.data.title}} </h1>
+                                    <h1 class="textHeader">{{certificate.data.title}} </h1>   
+                                </ion-text>
+
+                                <!--Placeholders--> 
+                                <div class="rating">
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                </div>
+                                <ion-text>
+                                    <span class="textDesc">12/10/2018</span>
                                 </ion-text>
                             </ion-col>
                         </ion-row>
