@@ -267,10 +267,12 @@ export class HomePage implements OnInit {
         const friends = this.data.friendList;
         const requests = this.data.friendRequests;
         const sent = this.data.sentRequests;
-        console.log(this.data.sentRequests, this.data.friendRequests, this.data.friendList);
+        console.log(this.data.sentRequests);
+        console.log(this.data.friendRequests);
+        console.log(this.data.friendList);
         if (requests.filter(f => f.sender === this.receiver).length > 0
             || friends.filter(e => e.sender === this.receiver).length > 0
-            || sent.filter(g => g.sender === this.receiver).length > 0) {
+            || sent.filter(e => e.receiver === this.receiver).length > 0) {
             this.showAlert('Already requested or friends with');
             return;
         }
