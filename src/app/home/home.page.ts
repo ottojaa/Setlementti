@@ -30,8 +30,8 @@ interface User {
 interface CV {
     date: any;
     owner: string;
-    certificates: {};
     CVid: string;
+    certificates: {};
 }
 
 interface Certificate {
@@ -98,6 +98,8 @@ export class HomePage implements OnInit {
     mentor;
     friends: any;
     queue = [];
+    cURLs = new Object;
+    cvExists;
 
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
                 public data: DataService, public navCtrl: NavController,
@@ -155,6 +157,7 @@ export class HomePage implements OnInit {
     }
 
     skillSelection() {
+        this.cURLs = [];
         this.queue = [];
         this.selectTrue = true;
         this.selection = this.selection === 'out' ? 'in' : 'out';
@@ -174,33 +177,53 @@ export class HomePage implements OnInit {
     }
 
     cvQueue(id) {
+        /*if (this.cURLs.hasOwnProperty(id)) {
+            delete this.cURLs[id];
+        } else {
+        this.cURLs[id] urls;
+        }*/
+        if (this.queue.includes(id)) {
+            const index = this.queue.indexOf(id);
+            this.queue.splice(index, 1);
+        } else {
         this.queue.push(id);
+        }
+        console.log(this.cURLs);
     }
-
+checkCV() {
+    if (this.data.user.CV) {
+        this.cvExists = true;
+    } else {
+        this.cvExists = false;
+    }
+}
     goToCV() {
+        this.cvExists = true;
         console.log(this.data.user.CV);
         if (this.data.user.CV) {
             const CVref: AngularFirestoreDocument<CV> = this.afs.doc(`CVs/${this.data.user.CV}`);
             const data: CV = {
                 date: new Date(),
                 owner: this.data.user.uid,
-                certificates: this.queue,
-                CVid: this.data.user.CV
+                CVid: this.data.user.CV,
+                certificates: this.queue
             };
             CVref.set(data).then(() => {
                 // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
                 localStorage.setItem('owner', JSON.stringify(this.data.user));
                 localStorage.setItem('CVid', this.data.user.CV);
+                this.skillSelection();
                 this.navCtrl.navigateForward('CV');
             });
         } else {
-        this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue }).then((docRef) => {
+        this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue}).then((docRef) => {
             // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
             localStorage.setItem('owner', JSON.stringify(this.data.user));
             localStorage.setItem('CVid', docRef.id);
             this.afs.doc(`CVs/${docRef.id}`).update({ CVid: docRef.id });
             this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
         }).then(() => {
+            this.skillSelection();
             this.navCtrl.navigateForward('CV');
 
         });
@@ -408,6 +431,7 @@ export class HomePage implements OnInit {
             this.data.friendList = friends;
             console.log(this.data.friendList);
         }));
+        this.checkCV();
         this.getCVs();
         this.selection = 'out';
 

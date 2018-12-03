@@ -32,6 +32,9 @@ interface Certificate {
   title: string;
   downloadURLs: [];
   cid: string;
+  imgurls;
+  videourls;
+  audiourls;
 }
 
 
@@ -50,10 +53,6 @@ export class CVPage implements OnInit {
   imageSources = new Array();
   videoSources = new Array();
   audioSources = new Array();
-  i = 0;
-  v = 0;
-  a = 0;
-  urlLength = {img: this.i, video: this.v, audio: this.a};
   constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
     public data: DataService, public navCtrl: NavController,
     private afs: AngularFirestore, public alertController: AlertController) { }
@@ -80,53 +79,43 @@ export class CVPage implements OnInit {
       this.cCol = this.afs.collection('certificates', ref => ref.where('cid', '==', cvData.certificates[i]));
       this.certificates[i] = this.cCol.snapshotChanges().map(actions => {
         return actions.map(a => {
-          this.i = 0;
-            this.v = 0;
-            this.a = 0;
-            this.urlLength = {img: this.i, video: this.v, audio: this.a};
           const data = a.payload.doc.data() as Certificate;
           const id = a.payload.doc.id;
           // for (let i = 0; i < data.downloadURLs.length)
-
-          this.pushSrcs(data.downloadURLs).then(() => {
-          });
-          const urlLength = this.urlLength;
-         
-          console.log(urlLength);
-          return { id, data, urlLength };
+          console.log(data);
+          data.imgurls = this.sortURLs(data.downloadURLs, 1);
+          data.videourls = this.sortURLs(data.downloadURLs, 2);
+          data.audiourls = this.sortURLs(data.downloadURLs, 3);
+          return { id, data };
         });
       });
     }
   }
 
-getLength() {
-}
-
-  async pushSrcs(URLs) {
-
-    if (URLs) {
-console.log(URLs);
-      for (let i = 0; i < URLs.length; i++) {
+  sortURLs(URLs, type) {
+    const urlsToReturn = [];
+    for (let i = 0; i < URLs.length; i++) {
+      if (type === 1) {
         if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/images')) {
-          this.imageSources.push({ 'imgsrc': URLs[i]});
-          this.i++;
-          this.urlLength.img = this.i;
-
-        }
-        if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
-          this.videoSources.push({ 'videosrc': URLs[i]});
-          this.v++;
-          this.urlLength.video = this.v;
-        }
-        if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
-          this.audioSources.push({ 'audiosrc': URLs[i]});
-          this.a++;
-          this.urlLength.audio = this.a;
+          urlsToReturn.push(URLs[i]);
 
         }
       }
+      if (type === 2) {
+        if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/videos')) {
+          urlsToReturn.push(URLs[i]);
+        }
+      }
+      if (type === 3) {
+        if (URLs[i].includes('https://firebasestorage.googleapis.com/v0/b/osaamisen-nayttaminen.appspot.com/o/audios')) {
+          urlsToReturn.push(URLs[i]);
 
+        }
+      }
+      if (i === (URLs.length - 1)) {
+        return urlsToReturn;
+      }
     }
   }
-
 }
+

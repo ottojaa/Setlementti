@@ -4,41 +4,41 @@
 
 <ion-content padding>
   <ion-row>
-    {{owner.nickName}} <span  class="right">NICE CV YOU HAVE THERE</span>
+    {{owner.nickName}} <span  class="right">MY CV tms.</span>
   </ion-row>
   <ion-row>
-      {{owner.age}} <span  class="right">NICE CV YOU HAVE THERE</span>
+      {{owner.age}} <span  class="right"></span>
     </ion-row>
     <ion-row>
-        {{owner.description}} <span  class="right">NICE CV YOU HAVE THERE</span>
+        {{owner.description}} <span  class="right"></span>
       </ion-row>
-      <!--<ion-row>
-          {{owner.email}} <span  class="right">{{CV.date}}</span>
-        </ion-row>-->
+      <ion-row>
+          {{owner.email}} <span *ngIf="CV"  class="right">{{CV.date}}</span>
+        </ion-row>
     <ion-grid *ngFor="let element of certificates">
   <ion-item id="clabel" *ngFor="let certificate of element | async; let k = index">
     <h3>{{certificate.data.title}} </h3>
     <!--Arrayn elementti kerrallaan-->
-    <div *ngFor="let file of imageSources; let i = index">
+    <div *ngFor="let file of certificate.data.imgurls; let i = index">
         <ion-card  class="other">
-                <img *ngIf="file?.imgsrc && i < certificate.urlLength.img" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive"/>
+                <img *ngIf="file" src="{{file}}" alt="ei toimi" class="img-responsive"/>
         </ion-card>
     </div>
     
-    <div *ngFor="let file of videoSources; let i = index">
+    <div *ngFor="let file of certificate.data.videourls; let i = index">
         <ion-card  class="other">
             <ion-card-content>
-                <video *ngIf="file?.videosrc && i < certificate.urlLength.video" controls="controls" preload="metadata" autoplay="autoplay"
+                <video *ngIf="file" controls="controls" preload="metadata" autoplay="autoplay"
                        webkit-playsinline="webkit-playsinline" class="videoPlayer">
-                    <source [attr.src]="file?.videosrc" type="video/mp4"/>
+                    <source [attr.src]="file" type="video/mp4"/>
                 </video>
             </ion-card-content>
         </ion-card>
     </div>
-    <div *ngFor="let file of audioSources; let i = index">
+    <div *ngFor="let file of certificate.data.audiourls; let i = index">
         <ion-card  class="other">
             <ion-card-content>
-                <audio *ngIf="file?.audiosrc && i < certificate.urlLength.audio" controls>
+                <audio *ngIf="file" controls>
                     <source [attr.src]="file?.audiosrc" type="audio/mpeg">
                 </audio>
             </ion-card-content>
