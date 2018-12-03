@@ -38,7 +38,10 @@ export class DataService {
     getFriendRequests() {
         return this.afs.collection('users')
             .doc(this.user.uid)
-            .collection('friends', ref => ref.where('approved', '==', false)).valueChanges();
+            .collection('friends', ref => ref
+                .where('sentByYou', '==', false)
+                .where('approved', '==', false))
+            .valueChanges();
     }
 
     getFriendList() {
@@ -46,19 +49,22 @@ export class DataService {
             .doc(this.user.uid)
             .collection('friends', ref => ref.where('approved', '==', true)).valueChanges();
     }
+
     getSentRequests() {
         return this.afs.collection('users')
             .doc(this.user.uid)
-            .collection('friends', ref => ref.where('pending', '==', true)).valueChanges();
+            .collection('friends', ref => ref
+                .where('sentByYou', '==', true)
+                .where('approved', '==', false))
+            .valueChanges();
     }
 
     getUsers(start, end) {
-        return this.afs.collection('users', ref => ref.orderBy('nickName').startAt(start).endAt(end)).valueChanges();
+        return this.afs.collection('users', ref => ref.startAt(start).endAt(end)).valueChanges();
     }
 
     getAllUsers() {
-        return this.afs.collection('users', ref => ref
-            .orderBy('nickName')).valueChanges();
+        return this.afs.collection('users', ref => ref).valueChanges();
     }
 
     // Yritys saada firestore jättämään hakija pois hakutuloksista (firestoressa ei ole != operaattoria nii meni vähän turhan säädöks)

@@ -38,11 +38,15 @@ $dark: #379fff;
   height: 100%;
 }
 .background{
-  --ion-background-color: #379fff;
+  --ion-background-color: #196296;
   z-index: 0;
 }
+.ion-content{
+  --padding-top: 0px;
+}
 .white{
-  background: white !important;
+  background: #33a6d4;
+  color: #000000;
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -53,8 +57,11 @@ $dark: #379fff;
 
 .sc-ion-card-ios-h {
  margin: 10px 10px;
+  background: #c8edffc9;
 }
-
+#boxshadow{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
 .max{
   //max-height:300px;
   overflow: hidden;
@@ -98,7 +105,7 @@ h4{
 .textHeader{
   font-size: 120%;
   margin-top: 5px;
-  color: black;
+  color: #ffffff;
   margin-left: 10px;
   text-transform: uppercase; 
 }

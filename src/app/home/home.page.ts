@@ -295,8 +295,10 @@ checkCV() {
         console.log(this.data.sentRequests);
         console.log(this.data.friendRequests);
         console.log(this.data.friendList);
-        if (requests.filter(f => f.sender === this.receiver).length > 0
+        if (requests.filter(f => f.receiver === this.receiver).length > 0
+            || requests.filter(f => f.sender === this.receiver).length > 0
             || friends.filter(e => e.sender === this.receiver).length > 0
+            || friends.filter(e => e.receiver === this.receiver).length > 0
             || sent.filter(e => e.receiver === this.receiver).length > 0) {
             this.showAlert('Already requested or friends with');
             return;
@@ -305,20 +307,22 @@ checkCV() {
             this.showAlert('You can\'t request yourself silly');
             return;
         } else {
-            console.log('miksi?');
+            console.log(this.data.sentRequests);
             this.afs.collection('users').doc(this.receiver).collection('friends').add({
                 sender: this.data.user.uid,
                 senderEmail: this.data.user.email,
                 approved: false,
                 senderNickname: this.data.user.nickName,
-                senderPhotoURL: this.data.user.photoURL
+                senderPhotoURL: this.data.user.photoURL,
+                sentByYou: false
             });
             this.afs.collection('users').doc(this.data.user.uid).collection('friends').add({
                 receiverEmail: this.receiverData.email,
                 receiverPhotoURL: this.receiverData.photoURL,
                 receiverNickname: this.receiverData.nickName,
                 receiver: this.receiver,
-                pending: true
+                approved: false,
+                sentByYou: true
             });
         }
     }
@@ -448,6 +452,7 @@ checkCV() {
         this.data.getFriendRequests().subscribe((requests => {
             this.data.friendRequests = requests;
             console.log(this.data.friendRequests);
+            console.log(this.receiver);
         }));
         this.data.getFriendList().subscribe((friends => {
             this.data.friendList = friends;
