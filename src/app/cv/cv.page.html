@@ -29,39 +29,39 @@
           E-mail: {{owner.email}} <span *ngIf="CV"  class="right">{{CV.date}}</span>
         </ion-row> -->
         
-    <ion-grid *ngFor="let element of certificates">
+    <ion-grid  *ngFor="let element of certificates">
   <ion-item id="clabel" *ngFor="let certificate of element | async; let k = index">
     <!--Arrayn elementti kerrallaan-->
-    <div *ngFor="let file of certificate.data.imgurls; let i = index">
+    <ion-list>
+    <div class="mediaContainer" *ngFor="let file of certificate.data.imgurls; let i = index">
                 <img *ngIf="file" src="{{file}}" alt="ei toimi" class="skillPic"/> 
     </div>
+</ion-list>
     <div *ngFor="let file of certificate.data.videourls; let i = index">
-        <ion-card  class="other">
-            <ion-card-content>
-                <video *ngIf="file" controls="controls" preload="metadata" autoplay="autoplay"
+        <ion-list>
+            <div class="mediaContainer">
+                <video width="100%" *ngIf="file" controls="controls" preload="metadata" autoplay="autoplay"
                        webkit-playsinline="webkit-playsinline" class="videoPlayer">
                     <source [attr.src]="file" type="video/mp4"/>
                 </video>
-            </ion-card-content>
-        </ion-card>
+            </div>
+            </ion-list>
     </div>
-
     <div *ngFor="let file of certificate.data.audiourls; let i = index">
-        <ion-card  class="other">
-            <ion-card-content>
-                <audio *ngIf="file" controls>
+            <ion-list>
+                <audio class="mediaContainer" *ngIf="file" controls>
                     <source [attr.src]="file" type="audio/mpeg">
                 </audio>
-            </ion-card-content>
-        </ion-card>
+            </ion-list>
     </div>
+    <div>
     <ion-list>
         <ion-label>
-    <h2>{{certificate.data.title}} </h2>
-    <h3>{{certificate.data.title}} </h3>
-    <h3>{{certificate.data.title}} </h3>
+    <h2 text-wrap>{{certificate.data.title}} </h2>
+    <p text-wrap>{{certificate.data.text}}</p>
 </ion-label>
 </ion-list>
+</div>
 </ion-item>
 </ion-grid>
 </ion-content>
