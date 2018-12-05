@@ -29,7 +29,6 @@ const routes: Routes = [
     },
   { path: 'CV', loadChildren: './cv/cv.module#CVPageModule' },
   { path: 'client-profile', loadChildren: './client-profile/client-profile.module#ClientProfilePageModule' },
-  { path: 'mentor-card', loadChildren: './mentor-card/mentor-card.module#MentorCardPageModule' },
 
 
 ];
