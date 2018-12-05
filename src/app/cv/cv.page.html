@@ -4,7 +4,13 @@
 
 <ion-content>
 
-        <ion-list style="margin-top:50px">
+   
+    <ion-fab horizontal="end" class="exit">
+        <ion-back-button defaultHref="home"></ion-back-button>
+    </ion-fab>
+    
+      
+        <ion-list style="margin-top:25px">
                 <ion-item>
                     <ion-img class="profilePic" [src]="owner.photoURL"></ion-img>
                   <ion-label>

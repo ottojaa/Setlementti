@@ -53,7 +53,7 @@
         <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
         <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
         <ion-button  id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection()">Create CV</ion-button>
-        <ion-button  id="createCV" *ngIf="selection && cvExists" (click)="skillSelection()">Modify Your CV</ion-button>
+        <ion-button  id="createCV" *ngIf="selection && cvExists" (click)="skillSelection()">Edit CV</ion-button>
        <div *ngFor="let CV of CVs | async; let i = index" >
         <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">YOUR CV</ion-button>
        </div>
@@ -61,15 +61,19 @@
     </ion-fab-list>
     </ion-fab>
     <div *ngIf="!mentor">
-        <ion-list id="certificatelist" [@slideInOut]="selection">
-            <h1>Pick the skills for your CV</h1>
-            
+        
+        <ion-list class="cvlist" id="certificatelist" [@slideInOut]="selection">
+                <ion-card class="cvListCard">
+                        <ion-fab horizontal="end" class="exit">
+                                <ion-button id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
+                            </ion-fab>
+            <h1>Pick skills for CV</h1>
             <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
                 <ion-checkbox (ionChange)="cvQueue(certificate.id)"></ion-checkbox>
-                <h3>{{certificate.data.title}} </h3>
+                <h3 text-wrap>{{certificate.data.title}} </h3>
             </ion-item>
             <ion-item class="share">
-                <ion-label style="color: white;">Jaa Mentorille</ion-label>
+                <ion-label>Share to mentors</ion-label>
                 <ion-checkbox class="checkboxCV" (ionChange)="pickMentors()"></ion-checkbox>
             </ion-item>
             <ion-list id="userlist" [@slide]="identifier">
@@ -105,6 +109,7 @@
             <div *ngIf="certificates?.length < 1">
                 <p>Don't you have skills? Go figure some out!</p>
             </div>
+        </ion-card>
         </ion-list>
         <ul id="skillList" class="inline" *ngIf="!query">
             <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
