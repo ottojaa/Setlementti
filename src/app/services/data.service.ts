@@ -25,6 +25,8 @@ export class DataService {
     friendRequests;
     sentRequests;
     profilePicture;
+    client;
+    clientCertificate;
 
     startobs = this.startAt.asObservable();
     endobs = this.endAt.asObservable();
@@ -66,6 +68,10 @@ export class DataService {
     getAllUsers() {
         return this.afs.collection('users', ref => ref).valueChanges();
     }
+
+   /* getClient(index) {
+        return this.afs.collection('friends', ref => ref.where('approved', '==', true)).valueChanges();
+    }*/
 
     // Yritys saada firestore jättämään hakija pois hakutuloksista (firestoressa ei ole != operaattoria nii meni vähän turhan säädöks)
 

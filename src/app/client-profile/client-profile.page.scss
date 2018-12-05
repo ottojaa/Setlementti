@@ -1,0 +1,245 @@
+.background{
+    --ion-background-color: #379fff;
+  }
+  .avatar {
+    width: 100px !important;
+    height: 100px !important;
+    max-width: 100px;
+  
+  }
+  
+  .profile-image {
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    text-align: left;
+    object-fit: cover;
+    margin: auto;
+  }
+  .profileCard{
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  
+  .profileCard1{
+    background-color: white;
+  }
+  
+  .image-container{
+    max-width: 150px;
+  }
+  .input{
+    text-align: right !important;
+  }
+  
+  .file-label{
+    position: relative;
+    margin: auto;
+    width: 50%;
+    height: 50%;
+    --padding-start: 0 !important;
+  }
+  .image-container > input{
+    display: none;
+  }
+  #preview{
+    max-width: none;
+  }
+  .profile-details{
+    text-align: right !important;
+  }
+  .file-label .buttonz{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transition: all 0.3s ease-in;
+  }
+  .file-label .buttonz:hover{
+    opacity: 1;
+  
+  }
+  .button1{
+    font-size: 11px;
+  }
+  .button2{
+    font-size: 12px;
+  }
+  ion-button{
+    --margin-bottom: 0px;
+  }
+
+/* Homen cardit */
+
+  $red: #CD5C5C;
+  $green: #32CD32;
+  $dark: #379fff;
+  
+  * {
+    list-style: none;
+    //font-family: 'Rubik', sans-serif;
+    font-family: 'Work Sans', sans-serif;
+  }
+  
+  
+  .cardHeader{
+    margin-top: -35px;
+    margin-bottom: -25px;
+    top: 50%;
+  }
+  
+  .logbox{
+    background-color: $red;
+    border-radius: 4px;
+  
+  }
+  .inline{
+    padding-inline-start: 0px !important;
+    text-align: center;
+  }
+  .row{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100%;
+    height: 100%;
+  }
+  .ion-card-subtitle{
+    display: flex !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    width: 100%;
+    height: 100%;
+  }
+  .background{
+    --ion-background-color: #196296;
+    z-index: 0;
+  }
+  .ion-content{
+    --padding-top: 0px;
+  }
+  .white{
+    background: #33a6d4;
+    color: #000000;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  ::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .sc-ion-card-ios-h {
+   margin: 10px 10px;
+    background: #c8edffc9;
+  }
+  #boxshadow{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  .max{
+    //max-height:300px;
+    overflow: hidden;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    text-align: left;
+    object-fit: cover;
+    margin: 10%;
+  }
+  .searchbox{
+    width: 100%;
+  }
+  .smaller{
+    width: 40px;
+    height: 40px;
+    --padding-start: 4px;
+  }
+  .addbutton{
+    font-size: 12px;
+  }
+  .ellipsis{
+    text-overflow: ellipsis !important;
+  }
+  h4{
+    color: #379fff;
+  }
+  
+  .cerText{
+    text-align: left;
+  }
+  
+  .item{
+  
+    z-index: 10000 !important;
+    overflow: visible;
+    background: var(--ion-color-light);
+  }
+  .stay {
+  
+    overflow: visible;
+    background: var(--ion-color-light);
+  }
+  .textHeader{
+    font-size: 120%;
+    margin-top: 5px;
+    color: #ffffff;
+    margin-left: 10px;
+    text-transform: uppercase; 
+  }
+  
+  .textDesc{
+    margin-top: 0px;
+    font-size: 100%;
+    margin-left: 10px;
+    opacity: 50%;
+  }
+  
+  .rating{
+    color: #ffffff;
+    margin-left: 10px;
+    font-size: 120%;
+    opacity: 50%;
+  }
+  
+  #listhost, #createCV{
+    position: relative;
+    display: block;
+  }
+  #userlist{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: none;
+    z-index: 2;
+    max-height: 450px !important;
+    overflow-y: auto !important;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  #certificatelist{
+    flex-wrap: wrap;
+    background: none;
+    z-index: 2;
+    max-height: 450px !important;
+    overflow-y: auto !important;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  .listlabel {
+    background-color: whitesmoke;
+    width: 325px;
+    white-space: normal;
+  }
+  #listlabel, #clabel {
+  background-color: whitesmoke;
+  width: 325px;
+  }
+  .scroll-bar-indicator
+  {
+    display: none;
+  }
+  

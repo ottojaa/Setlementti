@@ -32,6 +32,7 @@ interface CV {
     owner: string;
     CVid: string;
     certificates: {};
+    sharedTo: string;
 }
 
 interface Certificate {
@@ -72,6 +73,20 @@ interface Friend {
             })),
             transition('in => out', animate('0ms ease-out')),
             transition('out => in', animate('0ms ease-out'))
+        ]),
+        trigger('slide', [
+            state('in', style({
+                overflow: 'hidden',
+                height: '*',
+                width: '*'
+            })),
+            state('out', style({
+                overflow: 'hidden',
+                height: '0',
+                width: '*'
+            })),
+            transition('in => out', animate('200ms ease-out')),
+            transition('out => in', animate('200ms ease-out'))
         ])
     ]
 })
@@ -101,7 +116,9 @@ export class HomePage implements OnInit {
     queue = [];
     cURLs = new Object;
     cvExists;
-
+    mentorArray;
+    mentorTrue = false;
+    identifier;
     constructor(private fireAuth: AngularFireAuth, public modalController: ModalController,
                 public data: DataService, public navCtrl: NavController,
                 private afs: AngularFirestore, public alertController: AlertController) {
@@ -209,23 +226,27 @@ checkCV() {
                 date: new Date(),
                 owner: this.data.user.uid,
                 CVid: this.data.user.CV,
-                certificates: this.queue
+                certificates: this.queue,
+                sharedTo: this.mentorArray
             };
             CVref.set(data).then(() => {
                 // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
                 localStorage.setItem('owner', JSON.stringify(this.data.user));
                 localStorage.setItem('CVid', this.data.user.CV);
+                this.identifier = 'out';
                 this.skillSelection();
                 this.navCtrl.navigateForward('CV');
             });
         } else {
-        this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue}).then((docRef) => {
+        this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue,
+            sharedTo: this.mentorArray}).then((docRef) => {
             // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
             localStorage.setItem('owner', JSON.stringify(this.data.user));
             localStorage.setItem('CVid', docRef.id);
             this.afs.doc(`CVs/${docRef.id}`).update({ CVid: docRef.id });
             this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
         }).then(() => {
+            this.identifier = 'out';
             this.skillSelection();
             this.navCtrl.navigateForward('CV');
 
@@ -314,7 +335,10 @@ checkCV() {
                 approved: false,
                 senderNickname: this.data.user.nickName,
                 senderPhotoURL: this.data.user.photoURL,
-                sentByYou: false
+                sentByYou: false,
+                senderDescription: this.data.user.description,
+                senderAge: this.data.user.age,
+                senderCV: this.data.user.CV
             });
             this.afs.collection('users').doc(this.data.user.uid).collection('friends').add({
                 receiverEmail: this.receiverData.email,
@@ -322,7 +346,10 @@ checkCV() {
                 receiverNickname: this.receiverData.nickName,
                 receiver: this.receiver,
                 approved: false,
-                sentByYou: true
+                sentByYou: true,
+                receiverDescription: this.receiverData.description,
+                receiverAge: this.receiverData.age,
+                receiverCV: this.receiverData.CV
             });
         }
     }
@@ -417,6 +444,29 @@ checkCV() {
         }
     }
 
+    pickMentor(uid) {
+        if (this.mentorArray.includes(uid)) {
+            const index = this.mentorArray.indexOf(uid);
+            this.mentorArray.splice(index, 1);
+        } else {
+        this.mentorArray.push(uid);
+        }
+    }
+
+    pickMentors() {
+        if (this.mentorTrue === false) {
+            this.mentorTrue = true;
+        } else {
+            /*const check = document.querySelectorAll('checkboxCV');
+            for (let i = 0; i < (check.length - 1); i++) {
+            check[i].click();
+            }*/
+            this.mentorArray = [];
+            this.mentorTrue = false;
+        }
+        this.identifier = this.identifier === 'out' ? 'in' : 'out';
+    }
+
     ngOnInit() {
         this.data.user = firebase.auth().currentUser;   // asettaa data-serviceen userin arvoks json-objektin josta voi poimii arvoi
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.data.user.uid}/`);
@@ -440,7 +490,6 @@ checkCV() {
         this.data.getAllUsers().subscribe((users) => {
             this.data.allusers = users;
             console.log(this.data.allusers);
-            this.getClients();
         });
         combineLatest(this.data.startobs, this.data.endobs).subscribe((value) => {
             this.data.getUsers(value[0], value[1]).subscribe((users) => {
@@ -466,12 +515,45 @@ checkCV() {
         this.data.profilePicture = this.data.user.photoURL;
         console.log(this.data.user.CV);
         this.selection = 'out';
+        this.identifier = 'out';
+        this.mentorArray = [];
         this.checkCV();
     }
 
     // Mentorin omat funktiot
 
-    getClients() {
+    presentClient(number) {
+const data = this.data.friendList[number];
+console.log(this.data.friendList);
+console.log(data);
+this.data.client = {};
+if (data.sender != null) {
+this.data.client.photoURL = data.senderPhotoURL;
+this.data.client.nickName = data.senderNickname;
+this.data.client.uid = data.sender;
+this.data.client.approved = data.approved;
+this.data.client.sentByYou = data.sentByYou;
+this.data.client.description = data.senderDescription;
+this.data.client.age = data.senderAge;
+this.data.client.email = data.senderEmail;
+this.data.client.CV = data.senderCV;
+} else {
+    this.data.client.photoURL = data.receiverPhotoURL;
+this.data.client.nickName = data.receiverNickname;
+this.data.client.uid = data.receiver;
+this.data.client.approved = data.approved;
+this.data.client.sentByYou = data.sentByYou;
+this.data.client.description = data.receiverDescription;
+this.data.client.age = data.receiverAge;
+this.data.client.email = data.receiverEmail;
+this.data.client.CV = data.receiverCV;
+}
+
+
+
+this.navCtrl.navigateForward('client-profile');
+    }
+    /*getClients() {
         const mentorRef = this.afs.doc(`users/${this.data.user.uid}/`);
         this.clientCol = mentorRef.collection('friends', ref => ref.where('approved', '==', true));
         console.log(this.data.allusers);
@@ -486,6 +568,6 @@ checkCV() {
                 }
             });
         });
-    }
+    } */
 
 }

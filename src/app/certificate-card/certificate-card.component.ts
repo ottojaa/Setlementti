@@ -340,6 +340,8 @@ pickMentors() {
     if ( this.mentorTrue === false) {
     this.mentorTrue = true;
     } else {
+        
+        this.mentorArray = [];
         this.mentorTrue = false;
     }
     this.identifier = this.identifier === 'out' ? 'in' : 'out';

@@ -61,7 +61,7 @@ $dark: #379fff;
  margin: 10px 10px;
   background: #c8edffc9;
 }
-#boxshadow{
+#boxshadow, #boxshadow2{
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .max{
@@ -166,4 +166,11 @@ width: 325px;
 .scroll-bar-indicator
 {
   display: none;
+}
+
+
+#listlabel{
+  background: #33a6d4;
+  color: white;
+  z-index: 500;
 }

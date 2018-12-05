@@ -63,10 +63,44 @@
     <div *ngIf="!mentor">
         <ion-list id="certificatelist" [@slideInOut]="selection">
             <h1>Pick the skills for your CV</h1>
+            
             <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
                 <ion-checkbox (ionChange)="cvQueue(certificate.id)"></ion-checkbox>
                 <h3>{{certificate.data.title}} </h3>
             </ion-item>
+            <ion-item class="share">
+                <ion-label style="color: white;">Jaa Mentorille</ion-label>
+                <ion-checkbox class="checkboxCV" (ionChange)="pickMentors()"></ion-checkbox>
+            </ion-item>
+            <ion-list id="userlist" [@slide]="identifier">
+                <ion-item id="listlabel" *ngFor="let mentor of data?.friendList; let i = index">
+                    <ion-row align-self-center style="width: 100%;" *ngIf="mentor?.receiver">
+                        <ion-col size="3" align-self-center>
+                            <ion-checkbox *ngIf="mentor" (ionChange)="pickMentor(mentor?.receiver)"></ion-checkbox>
+                        </ion-col>
+                        <ion-col size="2" align-self-center>
+                            <ion-img class="max smaller" [src]=mentor?.receiverPhotoURL></ion-img>
+                        </ion-col>
+                        <ion-col size="5" align-self-center>
+                            <ion-label>{{mentor?.receiverNickname}}</ion-label>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row align-self-center style="width: 100%;" *ngIf="mentor?.sender">
+                        <ion-col size="3" align-self-center>
+                            <ion-checkbox *ngIf="mentor" (ionChange)="pickMentor(mentor?.sender)"></ion-checkbox>
+                        </ion-col>
+                        <ion-col size="2" align-self-center>
+                            <ion-img class="max smaller" [src]=mentor?.senderPhotoURL></ion-img>
+                        </ion-col>
+                        <ion-col size="5" align-self-center>
+                            <ion-label>{{mentor?.senderNickname}}</ion-label>
+                        </ion-col>
+                    </ion-row>
+                    <div *ngIf="data?.friendList.length < 1">
+                        <p>No mentors found</p>
+                    </div>
+                </ion-item>
+            </ion-list>
             <ion-button (click)=goToCV()>Generate your CV</ion-button>
             <div *ngIf="certificates?.length < 1">
                 <p>Don't you have skills? Go figure some out!</p>
@@ -130,21 +164,24 @@
             <h1>Current Clients</h1>
         </ion-header>
         <ul class="inline" *ngIf="!query">
-            <li *ngFor="let friend of friends | async; let i = index" (click)="presentClient(friend.id)">
+            <li *ngFor="let friend of data.friendList let i = index" (click)="presentClient(i)">
                 <ion-card class="white">
-                    <ion-card-header class="cardHeader">
-                        <ion-card-title>
-                            <ion-text>
-                                <h1>{{friend?.data?.nickName}} </h1>
-                            </ion-text>
-                        </ion-card-title>
-                    </ion-card-header>
-                    <div *ngIf="friend?.data?.photoURL">
+                    <div>
                         <ion-row>
-                            <ion-col size="4">
-                                <ion-img class="max" [src]="friend?.data?.photoURL"></ion-img>
+                            <ion-col size="5" >
+                                <ion-img *ngIf="friend.senderPhotoURL" id="boxshadow" class="max" [src]="friend.senderPhotoURL"></ion-img>
+                                <ion-img *ngIf="friend.receiverPhotoURL" id="boxshadow2" class="max" [src]="friend.receiverPhotoURL"></ion-img>
+                           
                             </ion-col>
-                            <ion-col class="cerText" size="8">
+                            <ion-col class="cerText" size="7" align-self-center>
+                                <ion-text>
+                                    <h4 class="textHeader" style="text-transform: none">{{friend.receiverNickname}} </h4>
+                                    <h4 class="textHeader" style="text-transform: none">{{friend.senderNickname}} </h4>
+                                </ion-text>
+                                <ion-text>
+                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{ friend.receiverEmail}}</h5>
+                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{ friend.senderEmail}}</h5>
+                                </ion-text>
                             </ion-col>
                         </ion-row>
                     </div>

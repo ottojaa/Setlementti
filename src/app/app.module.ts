@@ -23,13 +23,14 @@ import { CertificateCardComponent } from './certificate-card/certificate-card.co
 import { EditCardComponent } from './edit-card/edit-card.component';
 import {AutosizeModule} from 'ngx-autosize';
 import { FriendlistComponent } from './friendlist/friendlist.component';
+import { MentorCardComponent } from './mentor-card/mentor-card.component';
 
 
 export const firebaseConfig = environment.firebaseConfig;
 
 @NgModule({
-    declarations: [AppComponent, ModalComponent, CertificateCardComponent, EditCardComponent, FriendlistComponent],
-    entryComponents: [ModalComponent, CertificateCardComponent, EditCardComponent, FriendlistComponent],
+    declarations: [AppComponent, ModalComponent, CertificateCardComponent, EditCardComponent, FriendlistComponent, MentorCardComponent],
+    entryComponents: [ModalComponent, CertificateCardComponent, EditCardComponent, FriendlistComponent, MentorCardComponent],
     imports: [
         BrowserModule,
         AutosizeModule,
