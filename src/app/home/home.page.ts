@@ -206,10 +206,10 @@ export class HomePage implements OnInit {
         } else {
         this.queue.push(id);
         }
-        console.log(this.cURLs);
+        console.log(this.queue);
     }
 checkCV() {
-    if (this.data.user.CV) {
+    if (this.data.user.CV.length > 3) {
         console.log('CV on olemassa');
         this.cvExists = true;
     } else {
@@ -220,7 +220,8 @@ checkCV() {
     goToCV() {
         this.cvExists = true;
         console.log(this.data.user.CV);
-        if (this.data.user.CV) {
+        if (this.data.user.CV.length > 3) {
+            console.log('päivitetään CV');
             const CVref: AngularFirestoreDocument<CV> = this.afs.doc(`CVs/${this.data.user.CV}`);
             const data: CV = {
                 date: new Date(),
@@ -238,6 +239,7 @@ checkCV() {
                 this.navCtrl.navigateForward('CV');
             });
         } else {
+            console.log('luodaan uusi CV');
         this.afs.collection('CVs').add({ date: new Date(), owner: this.data.user.uid, certificates: this.queue,
             sharedTo: this.mentorArray}).then((docRef) => {
             // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
@@ -478,6 +480,7 @@ checkCV() {
 
                 } else {
                     this.data.user = doc.data();
+                    this.checkCV();
                     console.log('on olemassa, elä tee!');
                     console.log(doc.data());
                 }
@@ -517,7 +520,6 @@ checkCV() {
         this.selection = 'out';
         this.identifier = 'out';
         this.mentorArray = [];
-        this.checkCV();
     }
 
     // Mentorin omat funktiot

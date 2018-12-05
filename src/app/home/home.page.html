@@ -55,7 +55,7 @@
         <ion-button  id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection()">Create CV</ion-button>
         <ion-button  id="createCV" *ngIf="selection && cvExists" (click)="skillSelection()">Edit CV</ion-button>
        <div *ngFor="let CV of CVs | async; let i = index" >
-        <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">YOUR CV</ion-button>
+        <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">Your CV</ion-button>
        </div>
         <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
     </ion-fab-list>
