@@ -1,8 +1,9 @@
 .right {
-    text-align: right;
+  text-align: right;
 }
-.profilePic{
-    overflow: hidden;
+
+.profilePic {
+  overflow: hidden;
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -11,21 +12,82 @@
   margin-bottom: 10px;
   margin-right: 10px;
 }
-.skillPic{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+
+.skillPic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.mediaContainer{
-    width:150px;
-    margin-right: 5px;
-    margin-left:-15px;
+
+.mediaContainer {
+  width: 150px;
+  margin-right: 5px;
+  margin-left: -15px;
 }
-video{
-    object-fit: cover;
+
+.mediaContainer:nth-of-type(3) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.exit{
-    margin-top: 15px;
-    margin-right:10px;
-    position:fixed;
+
+video {
+  object-fit: cover;
+}
+
+.width {
+  width: 100%;
+  margin-bottom: 2em;
+}
+
+.icon {
+
+  font-size: 26px;
+}
+
+.exit {
+  margin-top: 15px;
+  margin-right: 10px;
+  position: fixed;
+}
+
+.wordwrap {
+  white-space: pre-wrap; /* CSS3 */
+  white-space: -moz-pre-wrap; /* Firefox */
+  white-space: -pre-wrap; /* Opera <7 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* IE */
+}
+
+#clabel {
+  width: 100%;
+}
+
+.max {
+  //max-height:300px;
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
+  text-align: left;
+  object-fit: cover;
+  margin: 8%;
+  --padding-start: 4px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 4px 12px 0 rgba(0, 0, 0, 0.19);
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+}
+
+.sc-ion-chip-md-h {
+  border-radius: 2px;
+}
+
+.nomargin {
+  margin-top: 7px;
+}
+
+.hover:hover {
+  cursor: pointer;
 }

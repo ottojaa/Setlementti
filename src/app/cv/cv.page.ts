@@ -42,12 +42,45 @@ interface Certificate {
   selector: 'app-cv',
   templateUrl: './cv.page.html',
   styleUrls: ['./cv.page.scss'],
+    animations: [
+        trigger('slideInOut', [
+            state('in', style({
+                overflow: 'hidden',
+                height: '*',
+                width: '*'
+            })),
+            state('out', style({
+                opacity: '0',
+                overflow: 'hidden',
+                height: '0',
+                width: '*'
+            })),
+            transition('in => out', animate('400ms ease-in-out')),
+            transition('out => in', animate('400ms ease-in-out'))
+        ]),
+        trigger('slide', [
+            state('in', style({
+                overflow: 'hidden',
+                height: '*',
+                width: '*'
+            })),
+            state('out', style({
+                overflow: 'hidden',
+                height: '0',
+                width: '*'
+            })),
+            transition('in => out', animate('200ms ease-out')),
+            transition('out => in', animate('200ms ease-out'))
+        ])
+    ],
 })
 export class CVPage implements OnInit {
   CVid: string;
   cvCol: AngularFirestoreDocument<CV>;
   CV;
   certificates;
+  audioFiles = 'in';
+  videoFiles = 'in';
   cCol: AngularFirestoreCollection<Certificate>;
   owner: string;
   imageSources = new Array();
@@ -65,6 +98,12 @@ export class CVPage implements OnInit {
     this.getCV();
 
   }
+    slideAudio(): void {
+        this.audioFiles = this.audioFiles === 'out' ? 'in' : 'out';
+    }
+    slideVideo(): void {
+        this.videoFiles = this.videoFiles === 'out' ? 'in' : 'out';
+    }
 
   getCV() {
     this.cvCol.get().subscribe((doc) => {

@@ -4,70 +4,76 @@
 
 <ion-content>
 
-   
+
     <ion-fab horizontal="end" class="exit">
         <ion-back-button defaultHref="home"></ion-back-button>
     </ion-fab>
-    
-      
-        <ion-list style="margin-top:25px">
-                <ion-item>
-                    <ion-img class="profilePic" [src]="owner.photoURL"></ion-img>
-                  <ion-label>
-                    <h2>{{owner.nickName}}</h2>
-                    <h3>{{owner.age}}</h3>
-                    <h3>{{owner.email}}</h3>
-                    <h3>{{owner.description}}</h3>
-                  </ion-label>
-                </ion-item>
-              </ion-list>
-<!--
-  <ion-row style="margin-top:50px">
-  Name: {{owner.nickName}} <span  class="right"></span>
-  </ion-row>
-  <ion-row>
-    Age: {{owner.age}} <span  class="right"></span>
-    </ion-row>
-    <ion-row>
-     {{owner.description}} <span  class="right"></span>
-      </ion-row>
-      <ion-row>
-          E-mail: {{owner.email}} <span *ngIf="CV"  class="right">{{CV.date}}</span>
-        </ion-row> -->
-        
-    <ion-grid  *ngFor="let element of certificates">
-  <ion-item id="clabel" *ngFor="let certificate of element | async; let k = index">
-    <!--Arrayn elementti kerrallaan-->
-    <ion-list>
-    <div class="mediaContainer" *ngFor="let file of certificate.data.imgurls; let i = index">
-                <img *ngIf="file" src="{{file}}" alt="ei toimi" class="skillPic"/> 
-    </div>
-</ion-list>
-    <div *ngFor="let file of certificate.data.videourls; let i = index">
-        <ion-list>
-            <div class="mediaContainer">
-                <video width="100%" *ngIf="file" controls="controls" preload="metadata" autoplay="autoplay"
-                       webkit-playsinline="webkit-playsinline" class="videoPlayer">
-                    <source [attr.src]="file" type="video/mp4"/>
-                </video>
-            </div>
-            </ion-list>
-    </div>
-    <div *ngFor="let file of certificate.data.audiourls; let i = index">
-            <ion-list>
-                <audio class="mediaContainer" *ngIf="file" controls>
-                    <source [attr.src]="file" type="audio/mpeg">
-                </audio>
-            </ion-list>
-    </div>
-    <div>
-    <ion-list>
-        <ion-label>
-    <h2 text-wrap>{{certificate.data.title}} </h2>
-    <p text-wrap>{{certificate.data.text}}</p>
-</ion-label>
-</ion-list>
-</div>
-</ion-item>
-</ion-grid>
+    <ion-list style="margin-top:50px">
+        <ion-item>
+            <ion-img class="profilePic" [src]="owner.photoURL"></ion-img>
+            <ion-label>
+                <h2>{{owner.nickName}}</h2>
+                <h3>{{owner.age}}</h3>
+                <h3>{{owner.email}}</h3>
+                <h3>{{owner.description}}</h3>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+    <ion-item *ngFor="let element of certificates">
+        <ion-item id="clabel" *ngFor="let certificate of element | async; let k = index">
+            <ion-grid fixed="true">
+                <ion-col size="12">
+                    <div class="title">
+                        <ion-chip text-center outline color="medium" style="font-size: 18px; margin-bottom: 1em;">
+                            <ion-label color="light">
+                                {{certificate.data.title}}
+                            </ion-label>
+                        </ion-chip>
+                    </div>
+                    <div class="width" *ngFor="let file of certificate.data.videourls; let i = index">
+                        <div class="title">
+                            <ion-chip class="hover" (click)="slideVideo()" *ngIf="i < 1" text-center outline
+                                      color="none"
+                                      style="font-size: 14px; margin-bottom: 1em;">
+                                <ion-icon class="icon" name="play-circle"></ion-icon>
+                                <ion-label color="primary">
+                                    Video files:
+                                </ion-label>
+                            </ion-chip>
+                        </div>
+                        <video [@slideInOut]="videoFiles" width="320px" height="240px" *ngIf="file" controls="controls"
+                               preload="metadata"
+                               autoplay="autoplay"
+                               webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                            <source [attr.src]="file" type="video/mp4"/>
+                        </video>
+                    </div>
+                    <div class="width" *ngFor="let file of certificate.data.audiourls; let i = index">
+                        <div class="title">
+                            <ion-chip class="hover" (click)="slideAudio()" *ngIf="i < 1" text-center outline
+                                      color="none"
+                                      style="font-size: 14px; margin-bottom: 1em;">
+                                <ion-icon class="icon" name="musical-note"></ion-icon>
+                                <ion-label color="primary">
+                                    Audio files:
+                                </ion-label>
+                            </ion-chip>
+                        </div>
+                        <audio *ngIf="file" controls [@slideInOut]="audioFiles">
+                            <source [attr.src]="file" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="mediaContainer" *ngFor="let file of certificate.data.imgurls; let i = index">
+                        <img align=left *ngIf="file" src="{{file}}" alt="ei toimi" class="max"/>
+                    </div>
+                    <div class="wordwrap">
+                        <p class="nomargin">{{certificate.data.text}}</p>
+                    </div>
+                    <div>
+                        <h3 style="text-align: center">Mentor comments here?</h3>
+                    </div>
+                </ion-col>
+            </ion-grid>
+        </ion-item>
+    </ion-item>
 </ion-content>
