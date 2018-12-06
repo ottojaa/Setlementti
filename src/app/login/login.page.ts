@@ -4,6 +4,7 @@ import {NavController, AlertController, Platform} from '@ionic/angular';
 import {AngularFireAuth} from 'angularfire2/auth';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import * as firebase from 'firebase/app';
 

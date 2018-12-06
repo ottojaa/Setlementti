@@ -7,13 +7,19 @@
 <ion-content padding>
     <ion-grid class="grid">
         <ion-col>
+
             <ion-item>
-                <ion-label position="floating">Email</ion-label>
+                <ion-label position="floating">Nimi</ion-label>
+                <ion-input type="text" [(ngModel)]="user.nickName"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label position="floating">Sähköposti</ion-label>
                 <ion-input type="text" [(ngModel)]="user.email"></ion-input>
             </ion-item>
 
             <ion-item>
-                <ion-label position="floating">Password</ion-label>
+                <ion-label position="floating">Salasana</ion-label>
                 <ion-input type="password" [(ngModel)]="user.password"></ion-input>
             </ion-item>
 
