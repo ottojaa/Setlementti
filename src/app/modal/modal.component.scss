@@ -2,10 +2,15 @@
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  height: 100%;
-  width: 80%;
+  vertical-align: middle;
+  margin-top: 6em;
+  height: auto;
+  width: 90%;
 }
-
+.content {
+  justify-content: center;
+  align-items: center;
+}
 .topButton {
   margin-top: 15px;
 }
@@ -58,7 +63,12 @@ img {
   position: absolute;
   display: none;
 }
-
+#audioContainer{
+  height: 0;
+}
+#videoContainer{
+  height: 0;
+}
 #fileinputVideo {
   position: absolute;
   display: none;
@@ -139,11 +149,13 @@ img {
 
 .image-container {
   display: flex;
+  margin-top: 3em;
+  height: 0;
 }
 
 :host /deep/ .big {
-  width: 266px;
-  height: 150px;
+  width: 294px;
+  height: 166px;
   object-fit: cover;
 }
 
@@ -153,11 +165,13 @@ img {
 }
 
 :host /deep/ .small {
-  width: 89px;
-  height: 50px;
+  width: 98px;
+  height: 55px;
   object-fit: cover;
 }
-
+.preview-container{
+  height: 0;
+}
 .item-icon-circle {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -167,7 +181,9 @@ img {
   text-align: center;
   color: white;
 }
-
+#previewSibling{
+  height: 0;
+}
 :host /deep/ .deletebutton {
   top: 0;
   right: 3%;

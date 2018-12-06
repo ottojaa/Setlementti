@@ -84,6 +84,7 @@ export class ModalComponent implements OnInit {
     task: AngularFireUploadTask;
     filesid: any;
     imagePreview = false;
+    uploading = 'in';
     @ViewChild('canvas') canvasEl: ElementRef;
     @ViewChild('#tableBanner') previewImg: ElementRef;
 
@@ -139,6 +140,7 @@ export class ModalComponent implements OnInit {
 
     upload(): void {
         this.uploadFiles = this.uploadFiles === 'out' ? 'in' : 'out';
+        this.uploading = this.uploading === 'out' ? 'in' : 'out';
     }
 
     toggleHover(event: boolean) {
@@ -148,7 +150,8 @@ export class ModalComponent implements OnInit {
 
     makeVideoPreview() {
         const video = document.createElement('video');
-        const parent = document.getElementById('previewSibling');
+        const parent = document.getElementById('videoContainer');
+        parent.style.height = 'auto';
         parent.parentNode.insertBefore(video, parent.nextSibling);
         video.setAttribute('controls', '');
         video.setAttribute('style', 'max-height: 200px');
@@ -160,7 +163,8 @@ export class ModalComponent implements OnInit {
 
     makeAudioPreview() {
         const audio = document.createElement('audio');
-        const parent = document.getElementById('previewSibling');
+        const parent = document.getElementById('audioContainer');
+        parent.style.height = 'auto';
         parent.parentNode.insertBefore(audio, parent.nextSibling);
         audio.setAttribute('controls', '');
         const source = document.createElement('source');
@@ -169,11 +173,12 @@ export class ModalComponent implements OnInit {
         this.createPreviewDelete(audio, audio);
     }
 
-    makeImgPreview() {
+    async makeImgPreview() {
         if (this.imageUrls.length < 1) {
             const img = document.createElement('img');
             img.className = 'big';
             const parent = document.getElementById('imagecontainer');
+            parent.style.height = 'auto';
             parent.appendChild(img);
             img.id = this.imageUrls.length.toString();
             img.setAttribute('src', URL.createObjectURL(this.file));
@@ -184,6 +189,7 @@ export class ModalComponent implements OnInit {
             img.className = 'small';
             this.fileCounter++;
             const parent = document.getElementById('smallerimages');
+            parent.style.height = 'auto';
             parent.appendChild(img);
             img.id = this.imageUrls.length.toString();
             img.setAttribute('src', URL.createObjectURL(this.file));
@@ -192,9 +198,11 @@ export class ModalComponent implements OnInit {
                 console.log('Click image ID', '=>', parseFloat(ident.id));
                 this.swapSources(parseFloat(ident.id));
             });
-        } if (this.imageUrls.length >= 4) {
+        }
+        if (this.imageUrls.length >= 4) {
             this.showAlert();
-        } if (this.imageUrls.length < 4) {
+        }
+        if (this.imageUrls.length < 4) {
             this.imageUrls.push(URL.createObjectURL(this.file));
         }
         console.log(this.imageUrls);
@@ -227,14 +235,15 @@ export class ModalComponent implements OnInit {
         [this.imageUrls[0], this.imageUrls[index]] = [this.imageUrls[index], this.imageUrls[0]];
     }
 
-    deleteInput(index, inputN) {
+    async deleteInput(index, inputN) {
         this.fileCounter--;
         this.inputsN = this.inputsN - 1;
         if (this.imageUrls.length <= 1) {
             document.getElementById((index).toString()).remove();
             document.getElementById('delete').remove();
             this.imageUrls.splice(0, 1);
-        } if (this.imageUrls.length > 1) {
+        }
+        if (this.imageUrls.length > 1) {
             for (let i = 0; i < this.imageUrls.length; i++) {
                 if (i < this.imageUrls.length - 1) {
                     document.getElementById(i.toString()).setAttribute('src', this.imageUrls[i + 1]);
@@ -243,8 +252,6 @@ export class ModalComponent implements OnInit {
                 } else {
                     document.getElementById(i.toString()).remove();
                     this.imageUrls.splice(0, 1);
-                    console.log(i);
-                    console.log(this.imageUrls);
                 }
             }
         }
@@ -255,7 +262,7 @@ export class ModalComponent implements OnInit {
     }
 
     // Määritetään uploadfilu ja tehdään uusi input
-    defineUpload(event: FileList) {
+    async defineUpload(event: FileList) {
         this.file = event.item(0);
         // Päivitetään uploadeja sisältävä taulukko
         this.files[this.fileCounter] = this.file;
@@ -442,12 +449,12 @@ export class ModalComponent implements OnInit {
         this.iCounter = 0;
         this.mentorTrue = false;
         this.userCol = this.db.collection('users', ref => ref.where('mentor', '==', true));
-        this.approved();
+        /*this.approved();*/
         // this.getMentors();
     }
 
 // päivityksiä
-    approved() {
+    /*approved() {
         const clientRef = this.db.doc(`users/${this.data.user.uid}/`);
         const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
         console.log(this.data.allusers);
@@ -462,7 +469,7 @@ export class ModalComponent implements OnInit {
                 }
             });
         });
-    }
+    }*/
 
 
     /*getMentors() {
