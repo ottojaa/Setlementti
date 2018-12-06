@@ -66,6 +66,7 @@
                 <ion-card class="cvListCard">
                         <ion-fab horizontal="end" class="exit">
                                 <ion-button id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
+                                <ion-button id="createCV" *ngIf="selection && cvExists" (click)="skillSelection()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
                             </ion-fab>
             <h1>Pick skills for CV</h1>
             <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
@@ -73,38 +74,38 @@
                 <h3 text-wrap>{{certificate.data.title}} </h3>
             </ion-item>
             <ion-item class="share">
-                <ion-label>Share to mentors</ion-label>
-                <ion-checkbox class="checkboxCV" (ionChange)="pickMentors()"></ion-checkbox>
-            </ion-item>
-            <ion-list id="userlist" [@slide]="identifier">
-                <ion-item id="listlabel" *ngFor="let mentor of data?.friendList; let i = index">
-                    <ion-row align-self-center style="width: 100%;" *ngIf="mentor?.receiver">
-                        <ion-col size="3" align-self-center>
-                            <ion-checkbox *ngIf="mentor" (ionChange)="pickMentor(mentor?.receiver)"></ion-checkbox>
-                        </ion-col>
-                        <ion-col size="2" align-self-center>
-                            <ion-img class="max smaller" [src]=mentor?.receiverPhotoURL></ion-img>
-                        </ion-col>
-                        <ion-col size="5" align-self-center>
-                            <ion-label>{{mentor?.receiverNickname}}</ion-label>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row align-self-center style="width: 100%;" *ngIf="mentor?.sender">
-                        <ion-col size="3" align-self-center>
-                            <ion-checkbox *ngIf="mentor" (ionChange)="pickMentor(mentor?.sender)"></ion-checkbox>
-                        </ion-col>
-                        <ion-col size="2" align-self-center>
-                            <ion-img class="max smaller" [src]=mentor?.senderPhotoURL></ion-img>
-                        </ion-col>
-                        <ion-col size="5" align-self-center>
-                            <ion-label>{{mentor?.senderNickname}}</ion-label>
-                        </ion-col>
-                    </ion-row>
-                    <div *ngIf="data?.friendList.length < 1">
-                        <p>No mentors found</p>
-                    </div>
+                    <ion-label>Share with mentors</ion-label>
+                    <ion-checkbox class="checkboxCV" (ionChange)="pickMentors()"></ion-checkbox>
                 </ion-item>
-            </ion-list>
+                <ion-list id="mentorlist" [@slide]="identifier">
+                    <ion-item id="listlabel" *ngFor="let mentor of data?.friendList; let i = index">
+                        <ion-row align-self-center style="width: 100%;" *ngIf="mentor?.receiver">
+                            <ion-col size="3" align-self-center>
+                                <ion-checkbox *ngIf="mentor" (ionChange)="pickMentor(mentor?.receiver)"></ion-checkbox>
+                            </ion-col>
+                            <ion-col size="2" align-self-center>
+                                <ion-img class="max smaller" [src]=mentor?.receiverPhotoURL></ion-img>
+                            </ion-col>
+                            <ion-col size="5" align-self-center>
+                                <ion-label>{{mentor?.receiverNickname}}</ion-label>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row align-self-center style="width: 100%;" *ngIf="mentor?.sender">
+                            <ion-col size="3" align-self-center>
+                                <ion-checkbox *ngIf="mentor" (ionChange)="pickMentor(mentor?.sender)"></ion-checkbox>
+                            </ion-col>
+                            <ion-col size="2" align-self-center>
+                                <ion-img class="max smaller" [src]=mentor?.senderPhotoURL></ion-img>
+                            </ion-col>
+                            <ion-col size="5" align-self-center>
+                                <ion-label>{{mentor?.senderNickname}}</ion-label>
+                            </ion-col>
+                        </ion-row>
+                        <div *ngIf="data?.friendList.length < 1">
+                            <p>No mentors found</p>
+                        </div>
+                    </ion-item>
+                </ion-list>
             <ion-button (click)=goToCV()>Generate your CV</ion-button>
             <div *ngIf="certificates?.length < 1">
                 <p>Don't you have skills? Go figure some out!</p>
