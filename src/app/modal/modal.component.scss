@@ -1,23 +1,27 @@
-.grid{
+.grid {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
   height: 100%;
   width: 80%;
 }
-.topButton{
+
+.topButton {
   margin-top: 15px;
 }
-.buttons{
+
+.buttons {
   padding-top: 10%;
   margin-top: 10%;
   justify-content: center !important;
   align-items: center !important;
 }
-.close{
+
+.close {
   justify-content: start !important;
-  align-items: end!important;
+  align-items: end !important;
 }
+
 .dropzone {
   display: flex;
   align-items: center;
@@ -27,97 +31,105 @@
   background: white;
   margin: 10px 0;
 }
+
 progress::-webkit-progress-value {
   transition: width 0.01s ease;
 }
-.center{
-  text-align:center;
+
+.center {
+  text-align: center;
 }
+
 img {
   width: 250px;
 }
-.icon{
+
+.icon {
   border: 1px solid rgb(0, 161, 225);
   background: transparent;
 }
 
-#fileinput{
+#fileinput {
   position: absolute;
   display: none;
 }
-#fileinputAudio{
+
+#fileinputAudio {
   position: absolute;
   display: none;
 }
-#fileinputVideo{
+
+#fileinputVideo {
   position: absolute;
   display: none;
 }
+
 #fileinputOther {
   position: absolute;
-  display:none;
+  display: none;
 }
-.center{
+
+.center {
   margin: auto;
 }
-.icon-circle, .icon-circle-large, .icon-circle-small{
+
+.icon-circle, .icon-circle-large, .icon-circle-small {
   position: relative;
   display: inline-block;
   margin: -1px;
 
-
   width: 45px; /* 60*/
   height: 45px;
-  font-size:40px;
+  font-size: 40px;
 
-  -moz-border-radius:50%;
-  -webkit-border-radius:50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
   border-radius: 50%;
-
-
 
   border: 1px solid #ebebeb;
 
-
   color: #fff;
 
-  text-align:center;
-
+  text-align: center;
 
 }
-.image{
+
+.image {
   background: var(--ion-color-dark-tint);
 }
-.audio{
+
+.audio {
   background: var(--ion-color-danger-shade);
 }
-.video{
+
+.video {
   background: var(--ion-color-success-shade);
 
 }
-.document{
+
+.document {
   background: var(--ion-color-secondary-shade);
 
 }
 
-.vertical{
+.vertical {
   color: #68099D;
 }
+
 .icon-circle-large {
   width: 100px;
   height: 100px;
   font-size: 64px; /* 64, originally 60 */
   padding: 16px;
 
-
 }
+
 .icon-circle-small {
   width: 44px;
   height: 44px;
   font-size: 20px;
-  padding:10px;
+  padding: 10px;
 }
-
 
 .icon-circle-outline {
   border: 1px solid rgb(0, 161, 225);
@@ -125,27 +137,44 @@ img {
   color: rgb(0, 161, 225);
 }
 
-.icon-circle-outline i {  }
+.image-container {
+  display: flex;
+}
 
+:host /deep/ .big {
+  width: 266px;
+  height: 150px;
+  object-fit: cover;
+}
+
+:host /deep/ .preview-container > img {
+  display: flex;
+  flex-direction: row;
+}
+
+:host /deep/ .small {
+  width: 89px;
+  height: 50px;
+  object-fit: cover;
+}
 
 .item-icon-circle {
-  -moz-border-radius:50%;
-  -webkit-border-radius:50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
   border-radius: 50%;
   width: 100px;
   height: 100px;
-  text-align:center;
-  color:white;
+  text-align: center;
+  color: white;
 }
-ion-content{
-  #deletebutton{
-    top: 32% !important;
-    right: 4% !important;
-    position:absolute !important;
-    z-index: 9999;
-  }
+
+:host /deep/ .deletebutton {
+  top: 0;
+  right: 3%;
+  position: absolute;
 }
-.max{
+
+.max {
   //max-height:300px;
   overflow: hidden;
   width: 80px;
@@ -155,7 +184,8 @@ ion-content{
   object-fit: cover;
   margin: 10%;
 }
-.smaller{
+
+.smaller {
   width: 30px;
   height: 30px;
   --padding-start: 4px;

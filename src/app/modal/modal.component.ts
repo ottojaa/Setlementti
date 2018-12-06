@@ -3,19 +3,20 @@ import {
     ElementRef,
     ViewChild
 } from '@angular/core';
-import { NavController, ModalController, Events } from '@ionic/angular';
-import { DataService } from '../services/data.service';
-import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection  } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
-import { tap } from 'rxjs/operators';
-import { finalize } from 'rxjs/operators';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {NavController, ModalController, Events, AlertController} from '@ionic/angular';
+import {DataService} from '../services/data.service';
+import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
+import {AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from 'angularfire2/firestore';
+import {Observable} from 'rxjs/Observable';
+import {tap} from 'rxjs/operators';
+import {finalize} from 'rxjs/operators';
+import {trigger, state, style, animate, transition} from '@angular/animations';
 import * as firebase from 'firebase/app';
+
 require('firebase/auth');
-import { HttpClient } from '@angular/common/http';
-import { stringify } from '@angular/core/src/render3/util';
-import { Certificate } from 'tls';
+import {HttpClient} from '@angular/common/http';
+import {stringify} from '@angular/core/src/render3/util';
+import {Certificate} from 'tls';
 
 interface User {
     uid: string;
@@ -51,20 +52,20 @@ interface Friend {
             transition('in => out', animate('400ms ease-in-out')),
             transition('out => in', animate('400ms ease-in-out'))
         ]),
-            trigger('slide', [
-                state('in', style({
-                    overflow: 'hidden',
-                    height: '*',
-                    width: '*'
-                })),
-                state('out', style({
-                    overflow: 'hidden',
-                    height: '0',
-                    width: '*'
-                })),
-                transition('in => out', animate('200ms ease-out')),
-                transition('out => in', animate('200ms ease-out'))
-            ])
+        trigger('slide', [
+            state('in', style({
+                overflow: 'hidden',
+                height: '*',
+                width: '*'
+            })),
+            state('out', style({
+                overflow: 'hidden',
+                height: '0',
+                width: '*'
+            })),
+            transition('in => out', animate('200ms ease-out')),
+            transition('out => in', animate('200ms ease-out'))
+        ])
     ],
     styleUrls: ['./modal.component.scss']
 })
@@ -105,17 +106,35 @@ export class ModalComponent implements OnInit {
     /**
      * Reference the context for the Canvas element
      */
-    // private _CONTEXT : any;
+        // private _CONTEXT : any;
     downloadURLs;
     identifier;
     userCol: AngularFirestoreCollection<User>;
     mentors;
+    imageUrls = [];
     mentorTrue;
     mentorArray;
     friends;
+    random;
 
-    constructor(private nav: NavController, private modalController: ModalController, public data: DataService,
-        private storage: AngularFireStorage, private db: AngularFirestore, public events: Events) {
+    constructor(private nav: NavController,
+                private modalController: ModalController,
+                public data: DataService,
+                private storage: AngularFireStorage,
+                private db: AngularFirestore,
+                public events: Events,
+                private alertController: AlertController) {
+    }
+
+    async showAlert() {
+
+        const alert = await this.alertController.create({
+            message: 'Cannot upload more than 4 images'
+        });
+        await alert.present();
+        setTimeout(() => {
+            alert.dismiss();
+        }, 2000);
     }
 
     upload(): void {
@@ -151,54 +170,84 @@ export class ModalComponent implements OnInit {
     }
 
     makeImgPreview() {
-        const img = document.createElement('img');
-        const parent = document.getElementById('previewSibling');
-        parent.parentNode.insertBefore(img, parent.nextSibling);
-        console.log(this.file.name);
-        console.log('tän jälkee tulee');
-        // console.log(localStorage.getItem('file'));
-        img.setAttribute('src', URL.createObjectURL(this.file));
-        img.setAttribute('style', 'height: 180px; width: 256px; object-fit: cover;');
-        // this.drawPreview(img)
-        this.createPreviewDelete(img, img);
+        if (this.imageUrls.length < 1) {
+            const img = document.createElement('img');
+            img.className = 'big';
+            const parent = document.getElementById('imagecontainer');
+            parent.appendChild(img);
+            img.id = this.imageUrls.length.toString();
+            img.setAttribute('src', URL.createObjectURL(this.file));
+            this.createPreviewDelete(img, img);
+        }
+        if (this.imageUrls.length >= 1 && this.imageUrls.length < 4) {
+            const img = document.createElement('img');
+            img.className = 'small';
+            this.fileCounter++;
+            const parent = document.getElementById('smallerimages');
+            parent.appendChild(img);
+            img.id = this.imageUrls.length.toString();
+            img.setAttribute('src', URL.createObjectURL(this.file));
+            img.addEventListener('click', (e) => {
+                const ident = <HTMLTextAreaElement>e.target;
+                console.log('Click image ID', '=>', parseFloat(ident.id));
+                this.swapSources(parseFloat(ident.id));
+            });
+        } if (this.imageUrls.length >= 4) {
+            this.showAlert();
+        } if (this.imageUrls.length < 4) {
+            this.imageUrls.push(URL.createObjectURL(this.file));
+        }
+        console.log(this.imageUrls);
         this.imagePreview = true;
     }
 
     createPreviewDelete(sibling, deletable) {
         const deleteButton = document.createElement('ion-button');
-        deleteButton.setAttribute('style', 'top: 32%; right: 5%; position: absolute; z-index: 9999;');
+        deleteButton.className = 'deletebutton';
         const icon = document.createElement('ion-icon');
         deleteButton.appendChild(icon);
+        deleteButton.id = 'delete';
         icon.setAttribute('name', 'close');
         sibling.parentNode.insertBefore(deleteButton, sibling.nextSibling);
-        // Määritetään fileCounterilla poistettava, files-taulukkoon tallennettu tiedosto
         const deletableFile = this.fileCounter;
-        // this.files
-        console.log('tää indexi poistetaan' + deletableFile);
+        console.log('Delete this index' + deletableFile);
         const deletableInput = this.inputsN;
         this.fileCounter++;
         deleteButton.addEventListener('click', () => {
-            this.deletePreview(deletable, deleteButton);
             this.deleteInput(deletableFile, deletableInput);
         });
     }
 
-    deletePreview(toDelete, deleteButton) {
-        this.fileCounter--;
-        toDelete.remove();
-        deleteButton.remove();
+    swapSources(index) {
+        const stringified = index.toString();
+        const largeImage = document.getElementById('0');
+        const smallImage = document.getElementById(stringified);
+        largeImage.setAttribute('src', this.imageUrls[index]);
+        smallImage.setAttribute('src', this.imageUrls[0]);
+        [this.imageUrls[0], this.imageUrls[index]] = [this.imageUrls[index], this.imageUrls[0]];
     }
 
     deleteInput(index, inputN) {
+        this.fileCounter--;
         this.inputsN = this.inputsN - 1;
-        console.log('Mones tästä oikeastaan poistetaankaan?? HÄH? ' + index);
-        console.log(this.files + '  minkälaine tää oli alunperi??');
-        console.log(this.files[0]);
-        /*this.files = */
-        this.files.splice(index, 1);
-        console.log(this.files + '  minkälaine täst arrayst tuli?');
-        console.log(this.files[0]);
-        document.getElementById('input' + inputN).remove();
+        if (this.imageUrls.length <= 1) {
+            document.getElementById((index).toString()).remove();
+            document.getElementById('delete').remove();
+            this.imageUrls.splice(0, 1);
+        } if (this.imageUrls.length > 1) {
+            for (let i = 0; i < this.imageUrls.length; i++) {
+                if (i < this.imageUrls.length - 1) {
+                    document.getElementById(i.toString()).setAttribute('src', this.imageUrls[i + 1]);
+                    console.log(i);
+                    console.log(this.imageUrls.length);
+                } else {
+                    document.getElementById(i.toString()).remove();
+                    this.imageUrls.splice(0, 1);
+                    console.log(i);
+                    console.log(this.imageUrls);
+                }
+            }
+        }
     }
 
     createNewinput() {
@@ -253,10 +302,10 @@ export class ModalComponent implements OnInit {
         const path = filetype;
         console.log(String(path));
         // Totally optional metadata
-        const customMetadata = { app: 'My AngularFire-powered PWA!' };
+        const customMetadata = {app: 'My AngularFire-powered PWA!'};
 
         // The main task
-        this.task = this.storage.upload(path, sentFile, { customMetadata });
+        this.task = this.storage.upload(path, sentFile, {customMetadata});
 
         // Progress monitoring
         this.percentage = this.task.percentageChanges();
@@ -266,7 +315,7 @@ export class ModalComponent implements OnInit {
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
                     console.log(this.data.user.uid);
-                    this.db.collection('files').add({ path, size: snap.totalBytes, sender: this.data.user.uid }).then((docRef) => {
+                    this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then((docRef) => {
                         console.log('Document written with ID: ', docRef.id);
                         this.fileids.push(docRef.id);
                         this.filesid = docRef.id;
@@ -285,30 +334,30 @@ export class ModalComponent implements OnInit {
 
         // The file's download URL
         this.snapshot.pipe(finalize(() => {
-            this.downloadURL = this.storage.ref(path).getDownloadURL();
-            const storage = firebase.storage();
-            const storageRef = storage.ref();
-            storageRef.child(path).getDownloadURL().then( (url) => {
-                // Or inserted into an <img> element:
-                this.downloadURLs.push(url);
-                console.log(url + ' DOWNLOADURL');
-                this.db.doc('files/' + this.filesid).update({downloadURL: url});
-                if (this.iCounter === (this.inputsN - 1)) {
-                    this.createPost();
-                    console.log('CREATE POST');
-                    setTimeout(() => {
+                this.downloadURL = this.storage.ref(path).getDownloadURL();
+                const storage = firebase.storage();
+                const storageRef = storage.ref();
+                storageRef.child(path).getDownloadURL().then((url) => {
+                    // Or inserted into an <img> element:
+                    this.downloadURLs.push(url);
+                    console.log(url + ' DOWNLOADURL');
+                    this.db.doc('files/' + this.filesid).update({downloadURL: url});
+                    if (this.iCounter === (this.inputsN - 1)) {
+                        this.createPost();
+                        console.log('CREATE POST');
+                        setTimeout(() => {
 
-                        this.closeModal();
-                        console.log('closeModal!');
-                    }, 1000);
-                }
-              }).catch(function(error) {
-                // Handle any errors
-              });
+                            this.closeModal();
+                            console.log('closeModal!');
+                        }, 1000);
+                    }
+                }).catch(function (error) {
+                    // Handle any errors
+                });
 
 
-        }
-            )).subscribe();
+            }
+        )).subscribe();
         /*this.snapshot.pipe(finalize(() => {
             const filesRef = this.db.collection('files');
             filesRef.doc(this.filesid).set({
@@ -330,20 +379,20 @@ export class ModalComponent implements OnInit {
         // Luodaan firebase-collection: certificates ja tallennetaan sinne otsikko, teksti, tiedostojen Id:t, tekijä, pvm
         console.log(this.fileids + ' upataanko mitä?');
         if (this.fileids.length === this.downloadURLs.length) {
-        this.db.collection('certificates').add({
-            title: this.title,
-            text: this.query,
-            files: this.fileids,
-            downloadURLs: this.downloadURLs,
-            author: this.data.user.uid,
-            date: new Date(),
-            sharedTo: this.mentorArray
-        }).then((docRef) => {
-            console.log('Document written with ID: ', docRef.id);
-            const cid = docRef.id;
-            this.db.doc('certificates/' + cid).update({cid: cid});
-        });
-    }
+            this.db.collection('certificates').add({
+                title: this.title,
+                text: this.query,
+                files: this.fileids,
+                downloadURLs: this.downloadURLs,
+                author: this.data.user.uid,
+                date: new Date(),
+                sharedTo: this.mentorArray
+            }).then((docRef) => {
+                console.log('Document written with ID: ', docRef.id);
+                const cid = docRef.id;
+                this.db.doc('certificates/' + cid).update({cid: cid});
+            });
+        }
     }
 
     // File Upataan vasta updaten yhteydessä määritetyllä parametrillä
@@ -369,7 +418,7 @@ export class ModalComponent implements OnInit {
 
         }
         this.data.currentTime = Date.now();
-        this.data.results.push({ 'title': this.title, 'text': this.query });
+        this.data.results.push({'title': this.title, 'text': this.query});
         this.inputTrue = false;
         console.log(this.data.results);
     }
@@ -394,28 +443,26 @@ export class ModalComponent implements OnInit {
         this.mentorTrue = false;
         this.userCol = this.db.collection('users', ref => ref.where('mentor', '==', true));
         this.approved();
-       // this.getMentors();
+        // this.getMentors();
     }
 
 // päivityksiä
-   approved() {
+    approved() {
         const clientRef = this.db.doc(`users/${this.data.user.uid}/`);
         const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
         console.log(this.data.allusers);
         this.friends = mentorCol.snapshotChanges().map(actions => {
             return actions.map(a => {
                 for (let i = 0; i < this.data.allusers.length; i++) {
-                const id = a.payload.doc.data() as Friend;
-                if (this.data.allusers[i].uid === id.sender) {
-                    const data = this.data.allusers[i];
-                return {id, data};
-                }
+                    const id = a.payload.doc.data() as Friend;
+                    if (this.data.allusers[i].uid === id.sender) {
+                        const data = this.data.allusers[i];
+                        return {id, data};
+                    }
                 }
             });
         });
     }
-
-
 
 
     /*getMentors() {
@@ -429,8 +476,8 @@ export class ModalComponent implements OnInit {
     }*/
 
     pickMentors() {
-        if ( this.mentorTrue === false) {
-        this.mentorTrue = true;
+        if (this.mentorTrue === false) {
+            this.mentorTrue = true;
         } else {
             this.mentorTrue = false;
         }
@@ -442,7 +489,7 @@ export class ModalComponent implements OnInit {
             const index = this.mentorArray.indexOf(uid);
             this.mentorArray.splice(index, 1);
         } else {
-        this.mentorArray.push(uid);
+            this.mentorArray.push(uid);
         }
     }
 }
