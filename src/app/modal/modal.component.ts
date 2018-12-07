@@ -164,6 +164,7 @@ export class ModalComponent implements OnInit {
         const source = document.createElement('source');
         video.appendChild(source);
         source.setAttribute('src', URL.createObjectURL(this.file));
+        source.setAttribute('alt', this.file.name);
         video.id = 'media' + this.multimedia.length.toString();
         this.createPreviewDelete(video, video);
         }
@@ -179,6 +180,7 @@ export class ModalComponent implements OnInit {
         const source = document.createElement('source');
         video.appendChild(source);
         source.setAttribute('src', URL.createObjectURL(this.file));
+        source.setAttribute('alt', this.file.name);
         video.id = 'media' + this.multimedia.length.toString();
         }
         this.multimedia.push(URL.createObjectURL(this.file));
@@ -195,6 +197,7 @@ export class ModalComponent implements OnInit {
         audio.appendChild(source);
         audio.id = 'media' + this.multimedia.length.toString();
         source.setAttribute('src', URL.createObjectURL(this.file));
+        source.setAttribute('alt', this.file.name);
         this.createPreviewDelete(audio, audio);
     }
     if (this.multimedia.length >= 1) {
@@ -209,6 +212,7 @@ export class ModalComponent implements OnInit {
         audio.appendChild(source);
         audio.id = 'media' + this.multimedia.length.toString();
         source.setAttribute('src', URL.createObjectURL(this.file));
+        source.setAttribute('alt', this.file.name);
     }
     this.multimedia.push(URL.createObjectURL(this.file));
     }
@@ -221,6 +225,7 @@ export class ModalComponent implements OnInit {
             parent.appendChild(img);
             img.id = this.imageUrls.length.toString();
             img.setAttribute('src', URL.createObjectURL(this.file));
+            img.setAttribute('alt', this.file.name);
             this.createPreviewDelete(img, img);
         }
         if (this.imageUrls.length >= 1 && this.imageUrls.length < 4) {
@@ -233,6 +238,7 @@ export class ModalComponent implements OnInit {
             parent.appendChild(img);
             img.id = this.imageUrls.length.toString();
             img.setAttribute('src', URL.createObjectURL(this.file));
+            img.setAttribute('alt', this.file.name);
             img.addEventListener('click', (e) => {
                 const ident = <HTMLTextAreaElement>e.target;
                 console.log('Click image ID', '=>', parseFloat(ident.id));
@@ -295,6 +301,15 @@ export class ModalComponent implements OnInit {
         this.fileCounter--;
         this.imageCounter--;
         this.inputsN = this.inputsN - 1;
+        const alt = document.getElementById((index).toString()).getAttribute('alt');
+        for (let i = 0; i < this.files.length - 1; i++) {
+            if (this.files[i].name === (alt).toString()) {
+const fileindex = this.files.indexOf(this.files[i]);
+this.files.splice(fileindex, 1);
+console.log(this.files);
+            }
+        }
+        console.log(this.files);
         if (this.imageUrls.length <= 1) {
             console.log(index);
             document.getElementById((index).toString()).remove();
@@ -317,6 +332,17 @@ export class ModalComponent implements OnInit {
 
     async deleteInputmedia(index, inputN) {
         this.fileCounter--;
+        const ele = document.getElementById('media' + (index).toString());
+        const alt = ele.querySelector('source').getAttribute('alt');
+        console.log(alt);
+        console.log(this.files);
+        for (let i = 0; i < this.files.length - 1; i++) {
+            if (this.files[i].name === (alt).toString()) {
+const fileindex = this.files.indexOf(this.files[i]);
+this.files.splice(fileindex, 1);
+console.log(this.files);
+            }
+        }
         this.multimediaCounter--;
         console.log(index + ' index');
         console.log(this.fileCounter + ' fileCounter');
@@ -330,7 +356,7 @@ export class ModalComponent implements OnInit {
             this.multimedia.splice(0, 1);
         }
         if (this.multimedia.length > 1) {
-            for (let i = 0; i < this.multimedia.length; i++) {
+            /*for (let i = 0; i < this.multimedia.length; i++) {
                 if (i < this.multimedia.length - 1) {
                     const element = document.getElementById('media' + i.toString());
                     console.log(element);
@@ -341,8 +367,9 @@ export class ModalComponent implements OnInit {
                     document.getElementById('media' + i.toString()).remove();
                     this.multimedia.splice(0, 1);
                 }
-            }
-
+            }*/
+            document.getElementById('media' + index.toString()).remove();
+            this.multimedia.splice(0, 1);
         }
 
     }
@@ -354,23 +381,28 @@ export class ModalComponent implements OnInit {
     // Määritetään uploadfilu ja tehdään uusi input
     async defineUpload(event: FileList) {
         this.file = event.item(0);
-        // Päivitetään uploadeja sisältävä taulukko
-        this.files[this.fileCounter] = this.file;
-        console.log(this.file);
-        // Previewit, filuja ei lähetetä vielä mihinkään
-        // this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
-        if (this.file.type.split('/')[0] === 'video') {
-            this.makeVideoPreview();
-        }
-        if (this.file.type.split('/')[0] === 'audio') {
-            this.makeAudioPreview();
-        }
-        // localStorage.setItem('file', this.file);
-        if (this.file.type.split('/')[0] === 'image') {
-            this.makeImgPreview();
-        }
+        if (this.file.toString().length > 0) {
+            // Päivitetään uploadeja sisältävä taulukko
+            // this.files[this.fileCounter] = this.file;
+            this.files.push(this.file);
+            console.log(this.file);
+            // Previewit, filuja ei lähetetä vielä mihinkään
+            // this.uploadFiles = this.uploadFiles === 'in' ? 'out' : 'in';
+            if (this.file.type.split('/')[0] === 'video') {
+                this.makeVideoPreview();
+            }
+            if (this.file.type.split('/')[0] === 'audio') {
+                this.makeAudioPreview();
+            }
+            // localStorage.setItem('file', this.file);
+            if (this.file.type.split('/')[0] === 'image') {
+                this.makeImgPreview();
+            }
 
-        this.createNewinput();
+            this.createNewinput();
+        } else {
+            console.log('ei menny');
+        }
 
     }
 
