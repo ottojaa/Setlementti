@@ -35,6 +35,11 @@
     --background: #0f619c;
   
   }
+  .background{
+    background: #35a6d4;
+    color: black;
+  }
+
   .max{
     overflow: hidden;
     width: 80px;
@@ -52,6 +57,14 @@
   #listlabel{
     background: #33a6d4;
     color: white;
+  }
+  .ellipsis{
+    color: #c7eeff;
+    text-align: right;
+  }
+  .alignbutton{
+    display: flex;
+    flex-direction: row-reverse;
   }
   
   .share{
