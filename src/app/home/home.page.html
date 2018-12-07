@@ -106,7 +106,7 @@
                         </div>
                     </ion-item>
                 </ion-list>
-            <ion-button (click)=goToCV()>Generate your CV</ion-button>
+            <ion-button (click)="goToCV(); showHomeCards()">Generate your CV</ion-button>
             <div *ngIf="certificates?.length < 1">
                 <p>Don't you have skills? Go figure some out!</p>
             </div>
