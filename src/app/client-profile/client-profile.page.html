@@ -1,67 +1,72 @@
 <ion-header>
-  <ion-toolbar color="secondary">
-      <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Profile</ion-title>
-  </ion-toolbar>
+    <ion-toolbar color="secondary">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Profile</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 
 <ion-content padding class="background">
 
-  
-  <form #formCtrl="ngForm">
-          <ion-card class="profileCard">  
-      <ion-grid>
-          <ion-row>
-              <ion-col size="4" class="image-container">
-                  <label for="input1" class="file-label">
-                      <img  *ngIf="data?.client?.receiverphotoURL" id="profilepic" class="profile-image"  [src]=data.client.receiverphotoURL>
-                      <ion-row>
-                      </ion-row>
-                  </label>
-              </ion-col>
-              <ion-col size="8" class="profile-details">
-                  <p>{{data.client.nickName}}</p>
-                  <p> {{data.client.email}}</p>
-                  <p>{{data.client.age}} years old</p>
-              </ion-col>
-          </ion-row>
 
-      </ion-grid>
-      <ion-button *ngIf="cvPermission" expand="full" color="secondary" [disabled]="!formCtrl.form.valid" ion-button block
-                  (click)="presentCV()">CV
-      </ion-button>
-      <ul id="skillList" class="inline" *ngIf="!query">
-        <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
-            <ion-card class="white">
-                <div>
-                    <ion-row>
-                        <ion-col size="5" >
-                            <ion-img id="boxshadow" *ngIf="certificate?.data?.downloadURLs?.length > 0" class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
-                            <ion-img *ngIf="certificate?.data?.downloadURLs?.length === 0" class="max" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5QmGRzyrHW2Da0NAkXA3BDsrJkQKUh3KCqcKDbgt6vHAEfdmrQ"></ion-img>
-                        </ion-col>
-                        <ion-col class="cerText" size="7" align-self-center>
-                            <ion-text>
-                                <h4 class="textHeader" style="text-transform: none">{{certificate.data.title}} </h4>
-                            </ion-text>
-                            <div class="rating">
-                                <ion-icon name="star"></ion-icon>
-                                <ion-icon name="star"></ion-icon>
-                                <ion-icon name="star"></ion-icon>
-                                <ion-icon name="star"></ion-icon>
-                                <ion-icon name="star"></ion-icon>
-                            </div>
-                            <ion-text>
-                                <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{ certificate?.data?.date?.toDate() | date:'longDate'}}</h5>
-                            </ion-text>
-                        </ion-col>
-                    </ion-row>
-                </div>
-            </ion-card>
-        </li>
-    </ul>
-  </ion-card>
-  </form>
+    <form #formCtrl="ngForm">
+        <ion-card class="profileCard">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="4" class="image-container">
+                        <img *ngIf="data?.client?.receiverPhotoURL" class="profile-image"
+                             [src]=data.client.receiverPhotoURL>
+                        <img *ngIf="data?.client?.senderPhotoURL" class="profile-image"
+                             [src]=data.client.senderPhotoURL>
+                    </ion-col>
+                    <ion-col size="8" class="profile-details">
+                        <p>{{data.client.nickName}}</p>
+                        <p> {{data.client.email}}</p>
+                        <p>{{data.client.age}} years old</p>
+                    </ion-col>
+                </ion-row>
+
+            </ion-grid>
+            <ion-button *ngIf="cvPermission" expand="full" color="secondary" [disabled]="!formCtrl.form.valid"
+                        ion-button block
+                        (click)="presentCV()">CV
+            </ion-button>
+            <ul id="skillList" class="inline" *ngIf="!query">
+                <li *ngFor="let certificate of certificates | async; let i = index"
+                    (click)="presentCertificate(certificate.id)">
+                    <ion-card class="white">
+                        <div>
+                            <ion-row>
+                                <ion-col size="5">
+                                    <ion-img id="boxshadow" *ngIf="certificate?.data?.downloadURLs?.length > 0"
+                                             class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
+                                    <ion-img *ngIf="certificate?.data?.downloadURLs?.length === 0" class="max"
+                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5QmGRzyrHW2Da0NAkXA3BDsrJkQKUh3KCqcKDbgt6vHAEfdmrQ"></ion-img>
+                                </ion-col>
+                                <ion-col class="cerText" size="7" align-self-center>
+                                    <ion-text>
+                                        <h4 class="textHeader" style="text-transform: none">
+                                            {{certificate.data.title}} </h4>
+                                    </ion-text>
+                                    <div class="rating">
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                        <ion-icon name="star"></ion-icon>
+                                    </div>
+                                    <ion-text>
+                                        <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{
+                                            certificate?.data?.date?.toDate() | date:'longDate'}}</h5>
+                                    </ion-text>
+                                </ion-col>
+                            </ion-row>
+                        </div>
+                    </ion-card>
+                </li>
+            </ul>
+        </ion-card>
+    </form>
 </ion-content>

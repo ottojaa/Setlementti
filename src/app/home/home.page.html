@@ -52,8 +52,8 @@
         <ion-fab-list side="start">
         <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
         <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
-        <ion-button  id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection()">Create CV</ion-button>
-        <ion-button  id="createCV" *ngIf="selection && cvExists" (click)="skillSelection()">Edit CV</ion-button>
+        <ion-button  id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection(); showHomeCards()">Create CV</ion-button>
+        <ion-button  id="createCV" *ngIf="selection && cvExists" (click)="skillSelection(); showHomeCards()">Edit CV</ion-button>
        <div *ngFor="let CV of CVs | async; let i = index" >
         <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">Your CV</ion-button>
        </div>
@@ -65,8 +65,8 @@
         <ion-list class="cvlist" id="certificatelist" [@slideInOut]="selection">
                 <ion-card class="cvListCard">
                         <ion-fab horizontal="end" class="exit">
-                                <ion-button id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
-                                <ion-button id="createCV" *ngIf="selection && cvExists" (click)="skillSelection()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
+                                <ion-button id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection(); showHomeCards()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
+                                <ion-button id="createCV" *ngIf="selection && cvExists" (click)="skillSelection(); showHomeCards()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
                             </ion-fab>
             <h1>Pick skills for CV</h1>
             <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
@@ -106,7 +106,7 @@
                         </div>
                     </ion-item>
                 </ion-list>
-            <ion-button (click)=goToCV()>Generate your CV</ion-button>
+            <ion-button (click)="goToCV(); showHomeCards()">Generate your CV</ion-button>
             <div *ngIf="certificates?.length < 1">
                 <p>Don't you have skills? Go figure some out!</p>
             </div>
@@ -114,7 +114,7 @@
         </ion-list>
         <ul id="skillList" class="inline" *ngIf="!query">
             <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
-                <ion-card class="white">
+                <ion-card class="white" *ngIf="showCards">
                     <div>
                         <ion-row>
                             <ion-col size="5" >
