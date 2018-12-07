@@ -105,6 +105,7 @@ export class HomePage implements OnInit {
     receiver;
     receiverData;
     sender;
+    showCards = true;
     showList = false;
     friendRequests: AngularFirestoreCollection<FriendRequest>;
     friendReqs;
@@ -141,6 +142,10 @@ export class HomePage implements OnInit {
             this.showList = false;
         }
 
+    }
+
+    showHomeCards() {
+        this.showCards = !this.showCards;
     }
 
     showAllUsers() {
