@@ -117,6 +117,11 @@ export class ModalComponent implements OnInit {
     mentorArray;
     friends;
     random;
+    multimedia = [];
+
+    // Itse uploadiin merkityksettömät counterit, jotka ovat vain osa spagettia vanhan spagettisekoilun korjaamiseksi
+    multimediaCounter = 0;
+    imageCounter = 0;
 
     constructor(private nav: NavController,
                 private modalController: ModalController,
@@ -149,6 +154,7 @@ export class ModalComponent implements OnInit {
 
 
     makeVideoPreview() {
+        if (this.multimedia.length < 1) {
         const video = document.createElement('video');
         const parent = document.getElementById('videoContainer');
         parent.style.height = 'auto';
@@ -158,10 +164,28 @@ export class ModalComponent implements OnInit {
         const source = document.createElement('source');
         video.appendChild(source);
         source.setAttribute('src', URL.createObjectURL(this.file));
+        video.id = 'media' + this.multimedia.length.toString();
         this.createPreviewDelete(video, video);
+        }
+        if (this.multimedia.length >= 1) {
+            const video = document.createElement('video');
+        const parent = document.getElementById('videoContainer');
+        this.fileCounter++;
+        this.multimediaCounter++;
+        parent.style.height = 'auto';
+        parent.parentNode.insertBefore(video, parent.nextSibling);
+        video.setAttribute('controls', '');
+        video.setAttribute('style', 'max-height: 200px');
+        const source = document.createElement('source');
+        video.appendChild(source);
+        source.setAttribute('src', URL.createObjectURL(this.file));
+        video.id = 'media' + this.multimedia.length.toString();
+        }
+        this.multimedia.push(URL.createObjectURL(this.file));
     }
 
     makeAudioPreview() {
+        if (this.multimedia.length < 1) {
         const audio = document.createElement('audio');
         const parent = document.getElementById('audioContainer');
         parent.style.height = 'auto';
@@ -169,10 +193,25 @@ export class ModalComponent implements OnInit {
         audio.setAttribute('controls', '');
         const source = document.createElement('source');
         audio.appendChild(source);
+        audio.id = 'media' + this.multimedia.length.toString();
         source.setAttribute('src', URL.createObjectURL(this.file));
         this.createPreviewDelete(audio, audio);
     }
-
+    if (this.multimedia.length >= 1) {
+        const audio = document.createElement('audio');
+        const parent = document.getElementById('audioContainer');
+        this.fileCounter++;
+        this.multimediaCounter++;
+        parent.style.height = 'auto';
+        parent.parentNode.insertBefore(audio, parent.nextSibling);
+        audio.setAttribute('controls', '');
+        const source = document.createElement('source');
+        audio.appendChild(source);
+        audio.id = 'media' + this.multimedia.length.toString();
+        source.setAttribute('src', URL.createObjectURL(this.file));
+    }
+    this.multimedia.push(URL.createObjectURL(this.file));
+    }
     async makeImgPreview() {
         if (this.imageUrls.length < 1) {
             const img = document.createElement('img');
@@ -188,6 +227,7 @@ export class ModalComponent implements OnInit {
             const img = document.createElement('img');
             img.className = 'small';
             this.fileCounter++;
+            this.imageCounter++;
             const parent = document.getElementById('smallerimages');
             parent.style.height = 'auto';
             parent.appendChild(img);
@@ -214,16 +254,32 @@ export class ModalComponent implements OnInit {
         deleteButton.className = 'deletebutton';
         const icon = document.createElement('ion-icon');
         deleteButton.appendChild(icon);
-        deleteButton.id = 'delete';
+
         icon.setAttribute('name', 'close');
         sibling.parentNode.insertBefore(deleteButton, sibling.nextSibling);
-        const deletableFile = this.fileCounter;
+        const deletableFile = this.imageCounter;
         console.log('Delete this index' + deletableFile);
         const deletableInput = this.inputsN;
+        console.log(this.fileCounter);
+        const deletableMultimedia = this.multimediaCounter;
+        console.log('Delete this media' + deletableMultimedia);
         this.fileCounter++;
+        const tag = sibling.tagName.toString();
+        console.log(tag);
+        if (tag === 'IMG') {
+            this.imageCounter++;
+            deleteButton.id = 'delete';
         deleteButton.addEventListener('click', () => {
             this.deleteInput(deletableFile, deletableInput);
         });
+    } else {
+        this.multimediaCounter++;
+        console.log('poistetaan video/ääni');
+        deleteButton.id = 'deletemulti';
+        deleteButton.addEventListener('click', () => {
+            this.deleteInputmedia(deletableMultimedia, deletableInput);
+        });
+    }
     }
 
     swapSources(index) {
@@ -237,8 +293,10 @@ export class ModalComponent implements OnInit {
 
     async deleteInput(index, inputN) {
         this.fileCounter--;
+        this.imageCounter--;
         this.inputsN = this.inputsN - 1;
         if (this.imageUrls.length <= 1) {
+            console.log(index);
             document.getElementById((index).toString()).remove();
             document.getElementById('delete').remove();
             this.imageUrls.splice(0, 1);
@@ -255,6 +313,38 @@ export class ModalComponent implements OnInit {
                 }
             }
         }
+    }
+
+    async deleteInputmedia(index, inputN) {
+        this.fileCounter--;
+        this.multimediaCounter--;
+        console.log(index + ' index');
+        console.log(this.fileCounter + ' fileCounter');
+        console.log(this.multimedia.length + ' multimedia pituus');
+        console.log(this.multimedia + ' multimedia');
+        this.inputsN = this.inputsN - 1;
+        console.log(document.getElementById('media' + (index).toString()) + '  ' + document.getElementById('delete'));
+        if (this.multimedia.length <= 1) {
+            document.getElementById('deletemulti').remove();
+            document.getElementById('media' + (index).toString()).remove();
+            this.multimedia.splice(0, 1);
+        }
+        if (this.multimedia.length > 1) {
+            for (let i = 0; i < this.multimedia.length; i++) {
+                if (i < this.multimedia.length - 1) {
+                    const element = document.getElementById('media' + i.toString());
+                    console.log(element);
+                    element.querySelector('source').setAttribute('src', this.multimedia[i + 1]);
+                    console.log(i);
+                    console.log(this.multimedia.length);
+                } else {
+                    document.getElementById('media' + i.toString()).remove();
+                    this.multimedia.splice(0, 1);
+                }
+            }
+
+        }
+
     }
 
     createNewinput() {
