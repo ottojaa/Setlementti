@@ -12,6 +12,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ModalController} from '@ionic/angular';
 import {CertificateCardComponent} from '../certificate-card/certificate-card.component';
 import {MentorCardComponent} from '../mentor-card/mentor-card.component';
+
 interface User {
     uid: string;
     email: string;
@@ -24,26 +25,26 @@ interface User {
 }
 
 interface CV {
-  date: any;
-  owner: string;
-  CVid: string;
-  certificates: {};
+    date: any;
+    owner: string;
+    CVid: string;
+    certificates: {};
 }
 
 interface Certificate {
-  author: string;
-  date: string;
-  files: [];
-  text: string;
-  title: string;
-  downloadURLs: [];
-  cid: string;
+    author: string;
+    date: string;
+    files: [];
+    text: string;
+    title: string;
+    downloadURLs: [];
+    cid: string;
 }
 
 @Component({
-  selector: 'app-client-profile',
-  templateUrl: './client-profile.page.html',
-  styleUrls: ['./client-profile.page.scss'],
+    selector: 'app-client-profile',
+    templateUrl: './client-profile.page.html',
+    styleUrls: ['./client-profile.page.scss'],
     animations: [
         trigger('slideInOut', [
             state('in', style({
@@ -92,7 +93,7 @@ export class ClientProfilePage implements OnInit {
                 private cdRef: ChangeDetectorRef,
                 private alertController: AlertController,
                 public modalController: ModalController,
-                public navCtrl: NavController, ) {
+                public navCtrl: NavController,) {
     }
 
     async presentLoading() {
@@ -102,58 +103,61 @@ export class ClientProfilePage implements OnInit {
         });
         return await loading.present();
     }
+
     getCertificates() {
-      // Uploadattujen modaalien data
-      // Media näkyy toimivassa versiossa vain niillä, jotka upattu 14.11. jälkeisen päivityksen jälkeen
-      this.certificates = this.certificatesCol.snapshotChanges().map(actions => {
-          return actions.map(a => {
-              const data = a.payload.doc.data() as Certificate;
-              const id = a.payload.doc.id;
-              return {id, data};
-          });
-      });
-  }
-// asiakkaan Cardkomponentti placeholderina
-  async presentCertificate(id) {
-    this.data.clientCertificate = {};
-    this.data.clientCertificate.id = id;
-    localStorage.setItem('cid', id);
-    const modal = await this.modalController.create({
-        component: MentorCardComponent,
-        componentProps: {value: 123}
-    });
-    return await modal.present();
-}
-
-presentCV() {
-  // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
-  console.log(this.data.client);
-  localStorage.setItem('owner', JSON.stringify(this.data.client));
-  localStorage.setItem('CVid', this.data.client.CV);
-  console.log(this.data.client.CV);
-  this.navCtrl.navigateForward('CV');
-}
-
-checkCV() {
-    if (this.sharedCV.length > 0) {
-        this.cvPermission = true;
-    } else {
-        this.cvPermission = false;
+        // Uploadattujen modaalien data
+        // Media näkyy toimivassa versiossa vain niillä, jotka upattu 14.11. jälkeisen päivityksen jälkeen
+        this.certificates = this.certificatesCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                const data = a.payload.doc.data() as Certificate;
+                const id = a.payload.doc.id;
+                return {id, data};
+            });
+        });
     }
-}
+
+// asiakkaan Cardkomponentti placeholderina
+    async presentCertificate(id) {
+        this.data.clientCertificate = {};
+        this.data.clientCertificate.id = id;
+        localStorage.setItem('cid', id);
+        const modal = await this.modalController.create({
+            component: MentorCardComponent,
+            componentProps: {value: 123}
+        });
+        return await modal.present();
+    }
+
+    presentCV() {
+        // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
+        console.log(this.data.client);
+        localStorage.setItem('owner', JSON.stringify(this.data.client));
+        localStorage.setItem('CVid', this.data.client.CV);
+        console.log(this.data.client.CV);
+        this.navCtrl.navigateForward('CV');
+    }
+
+    checkCV() {
+        if (this.sharedCV.length > 0) {
+            this.cvPermission = true;
+        } else {
+            this.cvPermission = false;
+        }
+    }
 
     ngOnInit() {
         const cv = this.afs.collection('CVs', ref => ref.where('owner', '==', this.data.client.uid)
-        .where('sharedTo', 'array-contains', this.data.user.uid)).valueChanges();
+            .where('sharedTo', 'array-contains', this.data.user.uid)).valueChanges();
         cv.subscribe((data) => {
             this.sharedCV = data;
             console.log(this.sharedCV);
             this.checkCV();
         });
-      this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.client.uid)
-      .where('sharedTo', 'array-contains', this.data.user.uid));
+        this.certificatesCol = this.afs.collection('certificates', ref => ref.where('author', '==', this.data.client.uid)
+            .where('sharedTo', 'array-contains', this.data.user.uid));
         this.editProfile = 'out';
         this.getCertificates();
+        console.log(this.data.client);
     }
 
 }

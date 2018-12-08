@@ -8,6 +8,7 @@ import {DataService} from '../services/data.service';
 import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
 import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from 'angularfire2/firestore';
 import {trigger, state, style, animate, transition} from '@angular/animations';
+import {take, finalize} from 'rxjs/operators';
 import {EditCardComponent} from '../edit-card/edit-card.component';
 
 interface Certificate {
@@ -99,6 +100,8 @@ export class MentorCardComponent implements OnInit {
     imageSources = new Array();
     videoSources = new Array();
     audioSources = new Array();
+    commentIndex;
+    tempId;
     editMode = false;
     isReadOnly = true;
     animationStates = [];
@@ -182,21 +185,50 @@ export class MentorCardComponent implements OnInit {
     }
 
     addComment() {
-        this.afs.collection('certificates').doc(this.cid).collection('comments').add({
+        console.log(this.commentIndex);
+        this.tempId = this.afs.createId();
+        this.afs.collection('certificates').doc(this.cid).collection('comments').doc(this.tempId).set({
             sender: this.data.user.uid,
             senderNickname: this.data.user.nickName,
             senderPhotoURL: this.data.user.photoURL,
             comment: this.comment,
             time: this.data.currentTime,
+            id: this.tempId,
         });
+        console.log(this.commentIndex);
         this.commenting = !this.commenting;
         this.comment = '';
     }
-    commentMode() {
-        this.commenting = !this.commenting;
-    }
+
     getComments() {
-        return this.afs.collection('certificates').doc(this.cid).collection('comments').valueChanges();
+        return this.afs.collection('certificates').doc(this.cid).collection('comments', ref => ref.orderBy('time')).valueChanges();
+    }
+
+    deleteComment(i) {
+        console.log(this.commentIndex);
+        this.afs.collection('certificates')
+            .doc(this.cid)
+            .collection('comments').doc(this.commentData[i].id).delete();
+    }
+    async confirmDelete(i) {
+        const alert = await this.alertController.create({
+            message: '<strong>Delete comment?</strong>',
+            buttons: [
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                    }
+                }, {
+                    text: 'Yes',
+                    handler: () => {
+                        this.deleteComment(i);
+                    }
+                }
+            ]
+        });
+        await alert.present();
     }
 
     ngOnInit() {
@@ -212,10 +244,10 @@ export class MentorCardComponent implements OnInit {
         this.identifier = 'out';
         console.log(this.data.friendList);
         this.getComments().subscribe((comments => {
+            this.commentIndex = comments.length;
             this.commentData = comments;
             console.log(this.commentData);
         }));
-        this.approved();
 
     }
 
