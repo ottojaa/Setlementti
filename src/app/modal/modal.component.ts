@@ -3,20 +3,20 @@ import {
     ElementRef,
     ViewChild
 } from '@angular/core';
-import {NavController, ModalController, Events, AlertController} from '@ionic/angular';
-import {DataService} from '../services/data.service';
-import {AngularFireStorage, AngularFireUploadTask} from 'angularfire2/storage';
-import {AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from 'angularfire2/firestore';
-import {Observable} from 'rxjs/Observable';
-import {tap} from 'rxjs/operators';
-import {finalize} from 'rxjs/operators';
-import {trigger, state, style, animate, transition} from '@angular/animations';
+import { NavController, ModalController, Events, AlertController } from '@ionic/angular';
+import { DataService } from '../services/data.service';
+import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { Observable } from 'rxjs/Observable';
+import { tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import * as firebase from 'firebase/app';
 
 require('firebase/auth');
-import {HttpClient} from '@angular/common/http';
-import {stringify} from '@angular/core/src/render3/util';
-import {Certificate} from 'tls';
+import { HttpClient } from '@angular/common/http';
+import { stringify } from '@angular/core/src/render3/util';
+import { Certificate } from 'tls';
 
 interface User {
     uid: string;
@@ -107,7 +107,7 @@ export class ModalComponent implements OnInit {
     /**
      * Reference the context for the Canvas element
      */
-        // private _CONTEXT : any;
+    // private _CONTEXT : any;
     downloadURLs;
     identifier;
     userCol: AngularFirestoreCollection<User>;
@@ -118,18 +118,22 @@ export class ModalComponent implements OnInit {
     friends;
     random;
     multimedia = [];
-
+    voice = [];
+    imageAlt = [];
+    videoAlt = [];
+    audioAlt = [];
     // Itse uploadiin merkityksettömät counterit, jotka ovat vain osa spagettia vanhan spagettisekoilun korjaamiseksi
     multimediaCounter = 0;
     imageCounter = 0;
+    voiceCounter = 0;
 
     constructor(private nav: NavController,
-                private modalController: ModalController,
-                public data: DataService,
-                private storage: AngularFireStorage,
-                private db: AngularFirestore,
-                public events: Events,
-                private alertController: AlertController) {
+        private modalController: ModalController,
+        public data: DataService,
+        private storage: AngularFireStorage,
+        private db: AngularFirestore,
+        public events: Events,
+        private alertController: AlertController) {
     }
 
     async showAlert() {
@@ -155,66 +159,96 @@ export class ModalComponent implements OnInit {
 
     makeVideoPreview() {
         if (this.multimedia.length < 1) {
-        const video = document.createElement('video');
-        const parent = document.getElementById('videoContainer');
-        parent.style.height = 'auto';
-        parent.parentNode.insertBefore(video, parent.nextSibling);
-        video.setAttribute('controls', '');
-        video.setAttribute('style', 'max-height: 200px');
-        const source = document.createElement('source');
-        video.appendChild(source);
-        source.setAttribute('src', URL.createObjectURL(this.file));
-        source.setAttribute('alt', this.file.name);
-        video.id = 'media' + this.multimedia.length.toString();
-        this.createPreviewDelete(video, video);
-        }
-        if (this.multimedia.length >= 1) {
             const video = document.createElement('video');
-        const parent = document.getElementById('videoContainer');
-        this.fileCounter++;
-        this.multimediaCounter++;
-        parent.style.height = 'auto';
-        parent.parentNode.insertBefore(video, parent.nextSibling);
-        video.setAttribute('controls', '');
-        video.setAttribute('style', 'max-height: 200px');
-        const source = document.createElement('source');
-        video.appendChild(source);
-        source.setAttribute('src', URL.createObjectURL(this.file));
-        source.setAttribute('alt', this.file.name);
-        video.id = 'media' + this.multimedia.length.toString();
+            const parent = document.getElementById('videoContainer');
+            parent.style.height = 'auto';
+            parent.parentNode.insertBefore(video, parent.nextSibling);
+            video.setAttribute('controls', '');
+            video.setAttribute('style', 'max-height: 200px');
+            const source = document.createElement('source');
+            video.appendChild(source);
+            source.setAttribute('src', URL.createObjectURL(this.file));
+            source.setAttribute('alt', this.file.name);
+                video.id = 'media' + this.multimedia.length.toString();
+this.createPreviewDelete(video, video);
         }
-        this.multimedia.push(URL.createObjectURL(this.file));
+        if (this.multimedia.length >= 1 && this.multimedia.length < 4) {
+            const video = document.createElement('video');
+            video.className = 'small';
+            const parent = document.getElementById('smallervideos');
+            this.fileCounter++;
+            this.multimediaCounter++;
+            parent.style.height = 'auto';
+            parent.appendChild(video);
+            // video.setAttribute('controls', '');
+            video.setAttribute('style', 'max-height: 200px');
+            const source = document.createElement('source');
+            video.appendChild(source);
+            source.setAttribute('src', URL.createObjectURL(this.file));
+            source.setAttribute('alt', this.file.name);
+                video.id = 'media' + this.multimedia.length.toString();
+            const alt = this.file.name;
+            video.addEventListener('click', (e) => {
+                const ident = <HTMLTextAreaElement>e.target;
+                console.log('Click image ID', '=>', ident.id);
+                this.swapMediaSources(ident.id, alt);
+            });
+        }
+        if (this.multimedia.length >= 4) {
+            this.showAlert();
+        }
+        if (this.multimedia.length < 4) {
+            this.multimedia.push(URL.createObjectURL(this.file));
+            this.videoAlt.push(this.file.name);
+        }
     }
 
     makeAudioPreview() {
-        if (this.multimedia.length < 1) {
-        const audio = document.createElement('audio');
-        const parent = document.getElementById('audioContainer');
-        parent.style.height = 'auto';
-        parent.parentNode.insertBefore(audio, parent.nextSibling);
-        audio.setAttribute('controls', '');
-        const source = document.createElement('source');
-        audio.appendChild(source);
-        audio.id = 'media' + this.multimedia.length.toString();
-        source.setAttribute('src', URL.createObjectURL(this.file));
-        source.setAttribute('alt', this.file.name);
-        this.createPreviewDelete(audio, audio);
-    }
-    if (this.multimedia.length >= 1) {
-        const audio = document.createElement('audio');
-        const parent = document.getElementById('audioContainer');
-        this.fileCounter++;
-        this.multimediaCounter++;
-        parent.style.height = 'auto';
-        parent.parentNode.insertBefore(audio, parent.nextSibling);
-        audio.setAttribute('controls', '');
-        const source = document.createElement('source');
-        audio.appendChild(source);
-        audio.id = 'media' + this.multimedia.length.toString();
-        source.setAttribute('src', URL.createObjectURL(this.file));
-        source.setAttribute('alt', this.file.name);
-    }
-    this.multimedia.push(URL.createObjectURL(this.file));
+        if (this.voice.length < 1) {
+            const audio = document.createElement('audio');
+            audio.className = 'big';
+            const parent = document.getElementById('audioContainer');
+            parent.style.height = 'auto';
+            parent.appendChild(audio);
+            audio.setAttribute('controls', '');
+            const source = document.createElement('source');
+            audio.appendChild(source);
+                audio.id = 'voice' + this.voice.length.toString();
+            console.log(audio.id);
+            source.setAttribute('src', URL.createObjectURL(this.file));
+            source.setAttribute('alt', this.file.name);
+            this.createPreviewDelete(audio, audio);
+        }
+        if (this.voice.length >= 1 && this.voice.length < 4) {
+            const audio = document.createElement('audio');
+            audio.className = 'small';
+            const parent = document.getElementById('smalleraudios');
+            this.fileCounter++;
+            this.voiceCounter++;
+            parent.style.height = 'auto';
+            parent.appendChild(audio);
+            audio.setAttribute('controls', '');
+            const source = document.createElement('source');
+            audio.appendChild(source);
+
+                audio.id = 'voice' + this.voice.length.toString();
+ source.setAttribute('src', URL.createObjectURL(this.file));
+            source.setAttribute('alt', this.file.name);
+            const alt = this.file.name;
+            /*audio.addEventListener('click', (e) => {
+                const ident = <HTMLTextAreaElement>e.target;
+                console.log('Click image ID', '=>', ident.id);
+                this.swapAudioSources(ident.id, alt);
+            });*/
+        }
+
+        if (this.voice.length >= 4) {
+            this.showAlert();
+        }
+        if (this.voice.length < 4) {
+            this.voice.push(URL.createObjectURL(this.file));
+            this.audioAlt.push(this.file.name);
+        }
     }
     async makeImgPreview() {
         if (this.imageUrls.length < 1) {
@@ -223,7 +257,7 @@ export class ModalComponent implements OnInit {
             const parent = document.getElementById('imagecontainer');
             parent.style.height = 'auto';
             parent.appendChild(img);
-            img.id = this.imageUrls.length.toString();
+                img.id = this.imageUrls.length.toString();
             img.setAttribute('src', URL.createObjectURL(this.file));
             img.setAttribute('alt', this.file.name);
             this.createPreviewDelete(img, img);
@@ -236,13 +270,14 @@ export class ModalComponent implements OnInit {
             const parent = document.getElementById('smallerimages');
             parent.style.height = 'auto';
             parent.appendChild(img);
-            img.id = this.imageUrls.length.toString();
+                img.id = this.imageUrls.length.toString();
             img.setAttribute('src', URL.createObjectURL(this.file));
             img.setAttribute('alt', this.file.name);
+            const alt = this.file.name;
             img.addEventListener('click', (e) => {
                 const ident = <HTMLTextAreaElement>e.target;
                 console.log('Click image ID', '=>', parseFloat(ident.id));
-                this.swapSources(parseFloat(ident.id));
+                this.swapSources(parseFloat(ident.id), alt);
             });
         }
         if (this.imageUrls.length >= 4) {
@@ -250,6 +285,7 @@ export class ModalComponent implements OnInit {
         }
         if (this.imageUrls.length < 4) {
             this.imageUrls.push(URL.createObjectURL(this.file));
+            this.imageAlt.push(this.file.name);
         }
         console.log(this.imageUrls);
         this.imagePreview = true;
@@ -268,45 +304,95 @@ export class ModalComponent implements OnInit {
         const deletableInput = this.inputsN;
         console.log(this.fileCounter);
         const deletableMultimedia = this.multimediaCounter;
+        const deletableAudio = this.voiceCounter;
         console.log('Delete this media' + deletableMultimedia);
         this.fileCounter++;
         const tag = sibling.tagName.toString();
         console.log(tag);
         if (tag === 'IMG') {
+            console.log('poistetaan kuva');
             this.imageCounter++;
             deleteButton.id = 'delete';
-        deleteButton.addEventListener('click', () => {
-            this.deleteInput(deletableFile, deletableInput);
-        });
-    } else {
-        this.multimediaCounter++;
-        console.log('poistetaan video/ääni');
-        deleteButton.id = 'deletemulti';
-        deleteButton.addEventListener('click', () => {
-            this.deleteInputmedia(deletableMultimedia, deletableInput);
-        });
-    }
+            deleteButton.addEventListener('click', () => {
+                this.deleteInput(deletableFile, deletableInput);
+            });
+        }
+        if (tag === 'AUDIO') {
+            console.log('poistetaan ääni');
+            this.voiceCounter++;
+            deleteButton.id = 'deleteaudio';
+            document.getElementById('audioContainer').appendChild(deleteButton);
+            deleteButton.addEventListener('click', () => {
+                this.deleteInputaudio(deletableAudio, deletableInput);
+            });
+        } if (tag === 'VIDEO') {
+            this.multimediaCounter++;
+            console.log('poistetaan video');
+            deleteButton.id = 'deletemulti';
+            document.getElementById('videoContainer').appendChild(deleteButton);
+            deleteButton.addEventListener('click', () => {
+                this.deleteInputmedia(deletableMultimedia, deletableInput);
+            });
+        }
     }
 
-    swapSources(index) {
+    swapSources(index, alt) {
         const stringified = index.toString();
         const largeImage = document.getElementById('0');
         const smallImage = document.getElementById(stringified);
         largeImage.setAttribute('src', this.imageUrls[index]);
+        largeImage.setAttribute('alt', this.imageAlt[index]);
         smallImage.setAttribute('src', this.imageUrls[0]);
+        smallImage.setAttribute('alt', this.imageAlt[0]);
         [this.imageUrls[0], this.imageUrls[index]] = [this.imageUrls[index], this.imageUrls[0]];
     }
+
+    swapMediaSources(index, alt) {
+        const stringIndex = index;
+        const floatIndex = parseFloat(index.slice(-1));
+        console.log(floatIndex);
+        const largeImage = <HTMLVideoElement>document.getElementById('media0');
+        const smallImage = <HTMLVideoElement>document.getElementById(stringIndex);
+        console.log(this.multimedia[floatIndex]);
+        console.log(largeImage.querySelector('source').src);
+        largeImage.querySelector('source').setAttribute('src', this.multimedia[floatIndex]);
+        console.log(largeImage.querySelector('source').src);
+        largeImage.querySelector('source').setAttribute('alt', this.videoAlt[floatIndex]);
+        smallImage.querySelector('source').setAttribute('src', this.multimedia[0]);
+        smallImage.querySelector('source').setAttribute('alt', this.videoAlt[0]);
+        [this.multimedia[0], this.multimedia[floatIndex]] = [this.multimedia[floatIndex], this.multimedia[0]];
+        largeImage.load();
+        smallImage.load();
+    }
+
+    /*swapAudioSources(index, alt) {
+        const stringIndex = index;
+        const floatIndex = parseFloat(index.slice(-1));
+        const largeImage = <HTMLMediaElement>document.getElementById('voice0');
+        const smallImage = <HTMLMediaElement>document.getElementById(stringIndex);
+        console.log(floatIndex);
+        largeImage.querySelector('source').setAttribute('src', this.voice[floatIndex]);
+        largeImage.querySelector('source').setAttribute('alt', this.audioAlt[floatIndex]);
+        smallImage.querySelector('source').setAttribute('src', this.voice[0]);
+        smallImage.querySelector('source').setAttribute('alt', this.audioAlt[0]);
+        [this.voice[0], this.voice[floatIndex]] = [this.voice[floatIndex], this.voice[0]];
+        largeImage.load();
+        smallImage.load();
+    }*/
 
     async deleteInput(index, inputN) {
         this.fileCounter--;
         this.imageCounter--;
         this.inputsN = this.inputsN - 1;
         const alt = document.getElementById((index).toString()).getAttribute('alt');
-        for (let i = 0; i < this.files.length - 1; i++) {
-            if (this.files[i].name === (alt).toString()) {
-const fileindex = this.files.indexOf(this.files[i]);
-this.files.splice(fileindex, 1);
-console.log(this.files);
+        console.log(this.files[0].name);
+        console.log(typeof alt);
+        for (let i = 0; i < this.files.length; i++) {
+            console.log(i);
+            if (this.files[i].name === alt) {
+                const fileindex = this.files.indexOf(this.files[i]);
+                this.files.splice(fileindex, 1);
+                console.log('alt olemassa');
             }
         }
         console.log(this.files);
@@ -315,16 +401,20 @@ console.log(this.files);
             document.getElementById((index).toString()).remove();
             document.getElementById('delete').remove();
             this.imageUrls.splice(0, 1);
+            this.imageAlt.splice(0, 1);
         }
         if (this.imageUrls.length > 1) {
             for (let i = 0; i < this.imageUrls.length; i++) {
                 if (i < this.imageUrls.length - 1) {
                     document.getElementById(i.toString()).setAttribute('src', this.imageUrls[i + 1]);
+                    document.getElementById(i.toString()).setAttribute('alt', this.imageAlt[i + 1]);
+
                     console.log(i);
                     console.log(this.imageUrls.length);
                 } else {
                     document.getElementById(i.toString()).remove();
                     this.imageUrls.splice(0, 1);
+                    this.imageAlt.splice(0, 1);
                 }
             }
         }
@@ -336,11 +426,11 @@ console.log(this.files);
         const alt = ele.querySelector('source').getAttribute('alt');
         console.log(alt);
         console.log(this.files);
-        for (let i = 0; i < this.files.length - 1; i++) {
-            if (this.files[i].name === (alt).toString()) {
-const fileindex = this.files.indexOf(this.files[i]);
-this.files.splice(fileindex, 1);
-console.log(this.files);
+        for (let i = 0; i < this.files.length; i++) {
+            if (this.files[i].name === alt) {
+                const fileindex = this.files.indexOf(this.files[i]);
+                this.files.splice(fileindex, 1);
+                console.log(this.files);
             }
         }
         this.multimediaCounter--;
@@ -352,24 +442,73 @@ console.log(this.files);
         console.log(document.getElementById('media' + (index).toString()) + '  ' + document.getElementById('delete'));
         if (this.multimedia.length <= 1) {
             document.getElementById('deletemulti').remove();
-            document.getElementById('media' + (index).toString()).remove();
+            document.getElementById('media' + index.toString()).remove();
             this.multimedia.splice(0, 1);
+            this.videoAlt.splice(0, 1);
         }
         if (this.multimedia.length > 1) {
-            /*for (let i = 0; i < this.multimedia.length; i++) {
+            for (let i = 0; i < this.multimedia.length; i++) {
                 if (i < this.multimedia.length - 1) {
-                    const element = document.getElementById('media' + i.toString());
+                    const element = <HTMLVideoElement>document.getElementById('media' + i.toString());
                     console.log(element);
                     element.querySelector('source').setAttribute('src', this.multimedia[i + 1]);
+                    element.querySelector('source').setAttribute('alt', this.videoAlt[i + 1]);
+                    element.load();
                     console.log(i);
                     console.log(this.multimedia.length);
                 } else {
                     document.getElementById('media' + i.toString()).remove();
                     this.multimedia.splice(0, 1);
+                    this.videoAlt.splice(0, 1);
                 }
-            }*/
-            document.getElementById('media' + index.toString()).remove();
-            this.multimedia.splice(0, 1);
+            }
+        }
+
+    }
+
+    deleteInputaudio(index, inputN) {
+        this.fileCounter--;
+        const ele = document.getElementById('voice' + (index).toString());
+        const alt = ele.querySelector('source').getAttribute('alt');
+        console.log(alt);
+        console.log(this.files);
+        for (let i = 0; i < this.files.length; i++) {
+            if (this.files[i].name === alt) {
+                const fileindex = this.files.indexOf(this.files[i]);
+                this.files.splice(fileindex, 1);
+                console.log(this.files);
+            }
+        }
+        this.voiceCounter--;
+        console.log(index + ' index');
+        console.log(this.fileCounter + ' fileCounter');
+        console.log(this.voice.length + ' voice pituus');
+        console.log(this.voice + ' voice');
+        this.inputsN = this.inputsN - 1;
+        console.log(document.getElementById('voice' + (index).toString()) + '  ' + document.getElementById('delete'));
+        if (this.voice.length <= 1) {
+            document.getElementById('deleteaudio').remove();
+            document.getElementById('voice' + (index).toString()).remove();
+            this.voice.splice(0, 1);
+            this.audioAlt.splice(0, 1);
+        }
+        if (this.voice.length > 1) {
+            for (let i = 0; i < this.voice.length; i++) {
+                if (i < this.voice.length - 1) {
+                    const element = <HTMLMediaElement>document.getElementById('voice' + i.toString());
+                    console.log(element);
+                    element.querySelector('source').setAttribute('src', this.voice[i + 1]);
+                    element.querySelector('source').setAttribute('alt', this.audioAlt[i + 1]);
+
+                    console.log(i);
+                    console.log(this.voice.length);
+                    element.load();
+                } else {
+                    document.getElementById('voice' + i.toString()).remove();
+                    this.voice.splice(0, 1);
+                    this.audioAlt.splice(0, 1);
+                }
+            }
         }
 
     }
@@ -381,7 +520,7 @@ console.log(this.files);
     // Määritetään uploadfilu ja tehdään uusi input
     async defineUpload(event: FileList) {
         this.file = event.item(0);
-        if (this.file.toString().length > 0) {
+        if (typeof this.file !== 'undefined') {
             // Päivitetään uploadeja sisältävä taulukko
             // this.files[this.fileCounter] = this.file;
             this.files.push(this.file);
@@ -431,10 +570,10 @@ console.log(this.files);
         const path = filetype;
         console.log(String(path));
         // Totally optional metadata
-        const customMetadata = {app: 'My AngularFire-powered PWA!'};
+        const customMetadata = { app: 'My AngularFire-powered PWA!' };
 
         // The main task
-        this.task = this.storage.upload(path, sentFile, {customMetadata});
+        this.task = this.storage.upload(path, sentFile, { customMetadata });
 
         // Progress monitoring
         this.percentage = this.task.percentageChanges();
@@ -444,7 +583,7 @@ console.log(this.files);
                 if (snap.bytesTransferred === snap.totalBytes) {
                     // Update firestore on completion
                     console.log(this.data.user.uid);
-                    this.db.collection('files').add({path, size: snap.totalBytes, sender: this.data.user.uid}).then((docRef) => {
+                    this.db.collection('files').add({ path, size: snap.totalBytes, sender: this.data.user.uid }).then((docRef) => {
                         console.log('Document written with ID: ', docRef.id);
                         this.fileids.push(docRef.id);
                         this.filesid = docRef.id;
@@ -463,29 +602,29 @@ console.log(this.files);
 
         // The file's download URL
         this.snapshot.pipe(finalize(() => {
-                this.downloadURL = this.storage.ref(path).getDownloadURL();
-                const storage = firebase.storage();
-                const storageRef = storage.ref();
-                storageRef.child(path).getDownloadURL().then((url) => {
-                    // Or inserted into an <img> element:
-                    this.downloadURLs.push(url);
-                    console.log(url + ' DOWNLOADURL');
-                    this.db.doc('files/' + this.filesid).update({downloadURL: url});
-                    if (this.iCounter === (this.inputsN - 1)) {
-                        this.createPost();
-                        console.log('CREATE POST');
-                        setTimeout(() => {
+            this.downloadURL = this.storage.ref(path).getDownloadURL();
+            const storage = firebase.storage();
+            const storageRef = storage.ref();
+            storageRef.child(path).getDownloadURL().then((url) => {
+                // Or inserted into an <img> element:
+                this.downloadURLs.push(url);
+                console.log(url + ' DOWNLOADURL');
+                this.db.doc('files/' + this.filesid).update({ downloadURL: url });
+                if (this.iCounter === (this.inputsN - 1)) {
+                    this.createPost();
+                    console.log('CREATE POST');
+                    setTimeout(() => {
 
-                            this.closeModal();
-                            console.log('closeModal!');
-                        }, 1000);
-                    }
-                }).catch(function (error) {
-                    // Handle any errors
-                });
+                        this.closeModal();
+                        console.log('closeModal!');
+                    }, 1000);
+                }
+            }).catch(function (error) {
+                // Handle any errors
+            });
 
 
-            }
+        }
         )).subscribe();
         /*this.snapshot.pipe(finalize(() => {
             const filesRef = this.db.collection('files');
@@ -519,7 +658,7 @@ console.log(this.files);
             }).then((docRef) => {
                 console.log('Document written with ID: ', docRef.id);
                 const cid = docRef.id;
-                this.db.doc('certificates/' + cid).update({cid: cid});
+                this.db.doc('certificates/' + cid).update({ cid: cid });
             });
         }
     }
@@ -547,7 +686,7 @@ console.log(this.files);
 
         }
         this.data.currentTime = Date.now();
-        this.data.results.push({'title': this.title, 'text': this.query});
+        this.data.results.push({ 'title': this.title, 'text': this.query });
         this.inputTrue = false;
         console.log(this.data.results);
     }
@@ -571,38 +710,8 @@ console.log(this.files);
         this.iCounter = 0;
         this.mentorTrue = false;
         this.userCol = this.db.collection('users', ref => ref.where('mentor', '==', true));
-        /*this.approved();*/
-        // this.getMentors();
+
     }
-
-// päivityksiä
-    /*approved() {
-        const clientRef = this.db.doc(`users/${this.data.user.uid}/`);
-        const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
-        console.log(this.data.allusers);
-        this.friends = mentorCol.snapshotChanges().map(actions => {
-            return actions.map(a => {
-                for (let i = 0; i < this.data.allusers.length; i++) {
-                    const id = a.payload.doc.data() as Friend;
-                    if (this.data.allusers[i].uid === id.sender) {
-                        const data = this.data.allusers[i];
-                        return {id, data};
-                    }
-                }
-            });
-        });
-    }*/
-
-
-    /*getMentors() {
-        this.mentors = this.userCol.snapshotChanges().map(actions => {
-            return actions.map(a => {
-                const data = a.payload.doc.data() as User;
-                const id = a.payload.doc.id;
-                return { id, data };
-            });
-        });
-    }*/
 
     pickMentors() {
         if (this.mentorTrue === false) {
