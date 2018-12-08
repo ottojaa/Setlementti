@@ -67,6 +67,12 @@
                     </ion-card-content>
                 </ion-card>
                 <ion-card class="background">
+                    <div class="justify">
+                        <a style="color: #faff23;" *ngFor="let item of starList; let i = index">
+                            <i *ngIf="item" class="fa fa-star-o fa-lg"></i>
+                            <i *ngIf="!item" class="fa fa-star fa-lg"></i>
+                        </a>
+                    </div>
                     <ion-item class="listlabel" *ngFor="let comment of data?.commentData, let i = index">
                         <ion-label>
                             <ion-grid fix class="searchbox">

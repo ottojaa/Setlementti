@@ -58,7 +58,17 @@
                                       [ngModelOptions]="{standalone:true}"></ion-textarea>
                     </ion-card-content>
                 </ion-card>
+
                 <ion-card class="background">
+
+                    <div class="justify">
+                        <a style="color: #faff23;" *ngFor="let item of starList; let i = index"
+                           (click)="setStar(i)">
+                            <i *ngIf="item" class="fa fa-star-o fa-lg"></i>
+                            <i *ngIf="!item" class="fa fa-star fa-lg"></i>
+                        </a>
+                    </div>
+
                     <ion-item>
                         <ion-label style="color: white;" position="floating">Kommenttikenttä</ion-label>
                         <ion-textarea style="color: white;" autosize spellcheck="false"
@@ -77,7 +87,8 @@
                                         <ion-img class="max smaller" [src]=comment?.senderPhotoURL></ion-img>
                                     </ion-col>
                                     <ion-col size="8" offset="" align-self-center class="ellipsis">
-                                        <ion-button (click)="confirmDelete(i)" *ngIf="comment?.sender === data.user.uid" style="margin-bottom: 5px; font-size: 12px;">
+                                        <ion-button (click)="confirmDelete(i)" *ngIf="comment?.sender === data.user.uid"
+                                                    style="margin-bottom: 5px; font-size: 12px;">
                                             <ion-icon slot="icon-only" name="close"></ion-icon>
                                         </ion-button>
                                         <p>{{comment?.time | date:'medium'}}</p>

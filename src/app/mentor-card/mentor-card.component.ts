@@ -102,7 +102,10 @@ export class MentorCardComponent implements OnInit {
     audioSources = new Array();
     commentIndex;
     tempId;
-    editMode = false;
+    initialRating;
+    starTitle = 'Star Rating';
+    starList: boolean[] = [true, true, true, true, true];       // create a list which contains status of 5 stars
+    rating: number;
     isReadOnly = true;
     animationStates = [];
     commenting;
@@ -226,6 +229,21 @@ export class MentorCardComponent implements OnInit {
         });
         await alert.present();
     }
+    setStar(data: any) {
+        const collectionRef = this.afs.collection('certificates').doc(this.cid).collection('ratings').doc(this.data.user.uid);
+        this.rating = data + 1;
+        for (let i = 0; i <= 4; i++) {
+            if (i <= data) {
+                this.starList[i] = false;
+            } else {
+                this.starList[i] = true;
+            }
+        }
+        collectionRef.set({
+            rating: this.rating,
+            ratedBy: this.data.user.uid,
+        });
+    }
 
     ngOnInit() {
         this.cid = this.data.clientCertificate.id;
@@ -243,6 +261,11 @@ export class MentorCardComponent implements OnInit {
             this.data.commentIndex = comments.length;
             this.data.commentData = comments;
             console.log(this.data.commentData);
+        }));
+        this.data.getRatings(this.cid).take(1).subscribe(( ratings => {
+            this.data.ratingData = ratings;
+            this.initialRating = this.data.ratingData[0].rating;
+            this.setStar(this.initialRating - 1);
         }));
 
     }

@@ -98,6 +98,9 @@ export class CertificateCardComponent implements OnInit {
     imageSources = new Array();
     videoSources = new Array();
     audioSources = new Array();
+    initialRating;
+    rating;
+    starList: boolean[] = [true, true, true, true, true];
     editMode = false;
     isReadOnly = true;
     animationStates = [];
@@ -289,6 +292,21 @@ export class CertificateCardComponent implements OnInit {
                 }
             });
     }
+    setStar(data: any) {
+        const collectionRef = this.afs.collection('certificates').doc(this.cid).collection('ratings').doc(this.data.user.uid);
+        this.rating = data + 1;
+        for (let i = 0; i <= 4; i++) {
+            if (i <= data) {
+                this.starList[i] = false;
+            } else {
+                this.starList[i] = true;
+            }
+        }
+        collectionRef.set({
+            rating: this.rating,
+            ratedBy: this.data.user.uid,
+        });
+    }
 
     ngOnInit() {
         this.cid = localStorage.getItem('cid');
@@ -307,7 +325,11 @@ export class CertificateCardComponent implements OnInit {
             this.data.commentData = comments;
             console.log(this.data.commentData);
         }));
-        console.log(this.data.commentData);
+        this.data.getRatings(this.cid).take(1).subscribe(( ratings => {
+            this.data.ratingData = ratings;
+            this.initialRating = this.data.ratingData[0].rating;
+            this.setStar(this.initialRating - 1);
+        }));
 
     }
 

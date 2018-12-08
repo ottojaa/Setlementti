@@ -29,6 +29,7 @@ export class DataService {
     commentIndex;
     client;
     clientCertificate;
+    ratingData;
 
     startobs = this.startAt.asObservable();
     endobs = this.endAt.asObservable();
@@ -72,6 +73,9 @@ export class DataService {
     }
     getComments(cid) {
         return this.afs.collection('certificates').doc(cid).collection('comments', ref => ref.orderBy('time')).valueChanges();
+    }
+    getRatings(cid) {
+        return this.afs.collection('certificates').doc(cid).collection('ratings').valueChanges();
     }
 
    /* getClient(index) {
