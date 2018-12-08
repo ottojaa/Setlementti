@@ -25,6 +25,8 @@ export class DataService {
     friendRequests;
     sentRequests;
     profilePicture;
+    commentData;
+    commentIndex;
     client;
     clientCertificate;
 
@@ -67,6 +69,9 @@ export class DataService {
 
     getAllUsers() {
         return this.afs.collection('users', ref => ref).valueChanges();
+    }
+    getComments(cid) {
+        return this.afs.collection('certificates').doc(cid).collection('comments', ref => ref.orderBy('time')).valueChanges();
     }
 
    /* getClient(index) {

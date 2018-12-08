@@ -302,6 +302,12 @@ export class CertificateCardComponent implements OnInit {
         this.identifier = 'out';
         console.log(this.data.friendList);
         this.approved();
+        this.data.getComments(this.cid).subscribe((comments => {
+            this.data.commentIndex = comments.length;
+            this.data.commentData = comments;
+            console.log(this.data.commentData);
+        }));
+        console.log(this.data.commentData);
 
     }
 

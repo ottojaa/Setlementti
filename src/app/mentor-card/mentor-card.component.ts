@@ -200,10 +200,6 @@ export class MentorCardComponent implements OnInit {
         this.comment = '';
     }
 
-    getComments() {
-        return this.afs.collection('certificates').doc(this.cid).collection('comments', ref => ref.orderBy('time')).valueChanges();
-    }
-
     deleteComment(i) {
         console.log(this.commentIndex);
         this.afs.collection('certificates')
@@ -243,10 +239,10 @@ export class MentorCardComponent implements OnInit {
         this.mentorArray = [];
         this.identifier = 'out';
         console.log(this.data.friendList);
-        this.getComments().subscribe((comments => {
-            this.commentIndex = comments.length;
-            this.commentData = comments;
-            console.log(this.commentData);
+        this.data.getComments(this.cid).subscribe((comments => {
+            this.data.commentIndex = comments.length;
+            this.data.commentData = comments;
+            console.log(this.data.commentData);
         }));
 
     }
