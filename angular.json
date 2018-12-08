@@ -33,16 +33,11 @@
               }
             ],
             "styles": [
-              "../node_modules/font-awesome/css/font-awesome.css",
               {
                 "input": "src/theme/variables.scss"
               },
               {
                 "input": "src/global.scss"
-              },
-              {
-                "input": "../node_modules/font-awesome/css/font-awesome.css"
-
               }
             ],
             "scripts": ["node_modules/jquery/dist/jquery.min.js"]

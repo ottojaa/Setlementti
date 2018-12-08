@@ -104,7 +104,7 @@ export class MentorCardComponent implements OnInit {
     tempId;
     initialRating;
     starTitle = 'Star Rating';
-    starList: boolean[] = [true, true, true, true, true];       // create a list which contains status of 5 stars
+    starList: boolean[] = [true, true, true, true, true];
     rating: number;
     isReadOnly = true;
     animationStates = [];
