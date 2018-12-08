@@ -180,8 +180,6 @@ export class HomePage implements OnInit {
     }
 
     skillSelection() {
-        this.cURLs = [];
-        this.queue = [];
         this.selectTrue = true;
         this.selection = this.selection === 'out' ? 'in' : 'out';
         this.selectTrue = false;
@@ -239,7 +237,6 @@ checkCV() {
                 // userid localstorageen, jotta muidenkin olisi mahdollista mahdollisesti tarkastella kyseistä CV:tä
                 localStorage.setItem('owner', JSON.stringify(this.data.user));
                 localStorage.setItem('CVid', this.data.user.CV);
-                this.identifier = 'out';
                 this.skillSelection();
                 this.navCtrl.navigateForward('CV');
             });
@@ -253,7 +250,6 @@ checkCV() {
             this.afs.doc(`CVs/${docRef.id}`).update({ CVid: docRef.id });
             this.afs.doc(`users/${this.data.user.uid}`).update({CV: docRef.id});
         }).then(() => {
-            this.identifier = 'out';
             this.skillSelection();
             this.navCtrl.navigateForward('CV');
 
