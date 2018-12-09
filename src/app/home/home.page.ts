@@ -223,7 +223,7 @@ checkCV() {
     goToCV() {
         this.cvExists = true;
         console.log(this.data.user.CV);
-        if (this.data.user.CV.length > 3) {
+        if (this.data.user.CV.length > 1) {
             console.log('päivitetään CV');
             const CVref: AngularFirestoreDocument<CV> = this.afs.doc(`CVs/${this.data.user.CV}`);
             const data: CV = {

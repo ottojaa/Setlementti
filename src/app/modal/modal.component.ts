@@ -659,6 +659,13 @@ this.createPreviewDelete(video, video);
                 console.log('Document written with ID: ', docRef.id);
                 const cid = docRef.id;
                 this.db.doc('certificates/' + cid).update({ cid: cid });
+                const userRef: AngularFirestoreDocument<User> = this.db.doc(`users/${this.data.user.uid}/`);
+                userRef.ref.get()
+            .then(doc => {
+                this.data.user = doc.data();
+                    console.log(doc.data());
+            });
+
             });
         }
     }
