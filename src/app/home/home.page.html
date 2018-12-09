@@ -46,6 +46,8 @@
 </ion-header>
 <ion-content padding class="background">
     <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
+            <ion-fab-button *ngIf="mentor" (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
+            <div *ngIf="!mentor">
         <ion-fab-button>
             <ion-icon name="arrow-dropleft"></ion-icon>
         </ion-fab-button>
@@ -59,6 +61,7 @@
        </div>
         <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
     </ion-fab-list>
+</div>
     </ion-fab>
     <div *ngIf="!mentor">
         
