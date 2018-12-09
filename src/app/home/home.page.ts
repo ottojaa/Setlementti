@@ -24,6 +24,7 @@ interface User {
     description?: string;
     nickName: string;
     mentor: boolean;
+    age: number;
     CV: string;
 }
 
@@ -412,6 +413,7 @@ checkCV() {
     private createUserDoc(user) {
         console.log('höm?');
         console.log(this.data.user);
+        const tempId = this.afs.createId();
 
         const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
 
@@ -422,7 +424,8 @@ checkCV() {
             nickName: 'Nickname',
             description: 'Description',
             mentor: false,
-            CV: ''
+            age: 18,
+            CV: tempId,
         };
         // console.log(user.uid);
         // console.log(user.email);

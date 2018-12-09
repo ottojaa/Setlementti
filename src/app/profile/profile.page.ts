@@ -171,7 +171,7 @@ export class ProfilePage implements OnInit {
         };
         console.log(data.age);
         this.toggleReadOnly();
-        return userRef.set(data);
+        return userRef.set(data, {merge: true});
     }
 
     public CalculateAge(): void {
