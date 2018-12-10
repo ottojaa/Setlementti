@@ -169,6 +169,7 @@ export class ProfilePage implements OnInit {
             age: this.realAge,
             mentor: false
         };
+        this.afs.collection('users')
         console.log(data.age);
         this.toggleReadOnly();
         return userRef.set(data, {merge: true});

@@ -15,7 +15,7 @@
             </ion-button>
         </ion-buttons>
         <ion-searchbar value="" id="searchbar" placeholder="Search" mode="md" spellcheck="false" color="light"
-            (ionChange)="search($event)" showCancelButton="false">
+                       (ionChange)="search($event)" showCancelButton="false">
         </ion-searchbar>
     </ion-toolbar>
     <ion-list id="userlist" *ngIf="showList">
@@ -28,7 +28,8 @@
                         </ion-col>
                         <ion-col size="7" offset="1" align-self-center class="ellipsis">
                             <h5>{{user?.nickName}}</h5>
-                            <p style="color: #02020294;">{{user?.email}}</p>
+                            <p style="color: #02020294; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{user?.email}}</p>
                         </ion-col>
                         <ion-col size="2" align-self-center>
                             <ion-button (click)="confirmSend(i)" class="addbutton" icon-only>
@@ -46,37 +47,52 @@
 </ion-header>
 <ion-content padding class="background">
     <ion-fab *ngIf="!inputTrue" vertical="bottom" horizontal="end" slot="fixed">
-            <ion-fab-button *ngIf="mentor" (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
-            <div *ngIf="!mentor">
-        <ion-fab-button>
-            <ion-icon name="arrow-dropleft"></ion-icon>
+        <ion-fab-button *ngIf="mentor" (click)="presentFriendlist()" class="fabButton" color="primary">
+            <ion-icon name="contacts"></ion-icon>
         </ion-fab-button>
-        <ion-fab-list side="start">
-        <ion-fab-button (click)="presentModal()" class="fabButton" color="primary" ><ion-icon name="add"></ion-icon></ion-fab-button>
-        <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary"><ion-icon name="contacts"></ion-icon></ion-fab-button>
-        <ion-button  id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection(); showHomeCards()">Create CV</ion-button>
-        <ion-button  id="createCV" *ngIf="selection && cvExists" (click)="skillSelection(); showHomeCards()">Edit CV</ion-button>
-       <div *ngFor="let CV of CVs | async; let i = index" >
-        <ion-button  id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">Your CV</ion-button>
-       </div>
-        <ion-button  id="CVs" *ngIf="cvTrue"  (click)="hideCVs()">Skill List</ion-button>
-    </ion-fab-list>
-</div>
+        <div *ngIf="!mentor">
+            <ion-fab-button>
+                <ion-icon name="arrow-dropleft"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-list side="start">
+                <ion-fab-button (click)="presentModal()" class="fabButton" color="primary">
+                    <ion-icon name="add"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button (click)="presentFriendlist()" class="fabButton" color="primary">
+                    <ion-icon name="contacts"></ion-icon>
+                </ion-fab-button>
+                <ion-button id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection(); showHomeCards()">
+                    Create CV
+                </ion-button>
+                <ion-button id="createCV" *ngIf="selection && cvExists" (click)="skillSelection(); showHomeCards()">Edit
+                    CV
+                </ion-button>
+                <div *ngFor="let CV of CVs | async; let i = index">
+                    <ion-button id="CVs" *ngIf="!cvTrue" (click)="presentCV(CV.id)">Your CV</ion-button>
+                </div>
+                <ion-button id="CVs" *ngIf="cvTrue" (click)="hideCVs()">Skill List</ion-button>
+            </ion-fab-list>
+        </div>
     </ion-fab>
     <div *ngIf="!mentor">
-        
+
         <ion-list class="cvlist" id="certificatelist" [@slideInOut]="selection">
-                <ion-card class="cvListCard">
-                        <ion-fab horizontal="end" class="exit">
-                                <ion-button id="createCV" *ngIf="selection && !cvExists" (click)="skillSelection(); showHomeCards()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
-                                <ion-button id="createCV" *ngIf="selection && cvExists" (click)="skillSelection(); showHomeCards()"><ion-icon name="arrow-round-back"></ion-icon></ion-button>
-                            </ion-fab>
-            <h1>Pick skills for CV</h1>
-            <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
-                <ion-checkbox (ionChange)="cvQueue(certificate.id)"></ion-checkbox>
-                <h3 text-wrap>{{certificate.data.title}} </h3>
-            </ion-item>
-            <ion-item class="share">
+            <ion-card class="cvListCard">
+                <ion-fab horizontal="end" class="exit">
+                    <ion-button id="createCV" *ngIf="selection && !cvExists"
+                                (click)="skillSelection(); showHomeCards()">
+                        <ion-icon name="arrow-round-back"></ion-icon>
+                    </ion-button>
+                    <ion-button id="createCV" *ngIf="selection && cvExists" (click)="skillSelection(); showHomeCards()">
+                        <ion-icon name="arrow-round-back"></ion-icon>
+                    </ion-button>
+                </ion-fab>
+                <h1>Pick skills for CV</h1>
+                <ion-item id="clabel" *ngFor="let certificate of certificates | async;">
+                    <ion-checkbox (ionChange)="cvQueue(certificate.id)"></ion-checkbox>
+                    <h3 text-wrap>{{certificate.data.title}} </h3>
+                </ion-item>
+                <ion-item class="share">
                     <ion-label>Share with mentors</ion-label>
                     <ion-checkbox class="checkboxCV" (ionChange)="pickMentors()"></ion-checkbox>
                 </ion-item>
@@ -109,35 +125,41 @@
                         </div>
                     </ion-item>
                 </ion-list>
-            <ion-button (click)="goToCV(); showHomeCards()">Generate your CV</ion-button>
-            <div *ngIf="certificates?.length < 1">
-                <p>Don't you have skills? Go figure some out!</p>
-            </div>
-        </ion-card>
+                <ion-button (click)="goToCV(); showHomeCards()">Generate your CV</ion-button>
+                <div *ngIf="certificates?.length < 1">
+                    <p>Don't you have skills? Go figure some out!</p>
+                </div>
+            </ion-card>
         </ion-list>
         <ul id="skillList" class="inline" *ngIf="!query">
-            <li *ngFor="let certificate of certificates | async; let i = index" (click)="presentCertificate(certificate.id)">
+            <li *ngFor="let certificate of certificates | async; let i = index"
+                (click)="presentCertificate(certificate.id)">
                 <ion-card class="white" *ngIf="showCards">
                     <div>
                         <ion-row>
-                            <ion-col size="5" >
-                                <ion-img id="boxshadow" *ngIf="certificate?.data?.downloadURLs?.length > 0" class="max" [src]="certificate.data.downloadURLs[0]"></ion-img>
-                                <ion-img *ngIf="certificate?.data?.downloadURLs?.length === 0" class="max" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5QmGRzyrHW2Da0NAkXA3BDsrJkQKUh3KCqcKDbgt6vHAEfdmrQ"></ion-img>
-                                
+                            <ion-col size="5">
+                                <ion-img id="boxshadow" *ngIf="certificate?.data?.downloadURLs?.length > 0" class="max"
+                                         [src]="certificate.data.downloadURLs[0]"></ion-img>
+                                <ion-img *ngIf="certificate?.data?.downloadURLs?.length === 0" class="max"
+                                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5QmGRzyrHW2Da0NAkXA3BDsrJkQKUh3KCqcKDbgt6vHAEfdmrQ"></ion-img>
+
                             </ion-col>
                             <ion-col class="cerText" size="7" align-self-center>
                                 <ion-text>
                                     <h4 class="textHeader" style="text-transform: none">{{certificate.data.title}} </h4>
                                 </ion-text>
                                 <div class="rating">
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
-                                    <ion-icon name="star"></ion-icon>
+                                    <a style="color: #faff23;">
+                                        <i *ngIf="certificate?.data?.averageRating >= 1" class="fa fa-star fa-lg"></i>
+                                        <i *ngIf="certificate?.data?.averageRating >= 2" class="fa fa-star fa-lg"></i>
+                                        <i *ngIf="certificate?.data?.averageRating >= 3" class="fa fa-star fa-lg"></i>
+                                        <i *ngIf="certificate?.data?.averageRating >= 4" class="fa fa-star fa-lg"></i>
+                                        <i *ngIf="certificate?.data?.averageRating >= 5" class="fa fa-star fa-lg"></i>
+                                    </a>
                                 </div>
                                 <ion-text>
-                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{ certificate?.data?.date?.toDate() | date:'longDate'}}</h5>
+                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{
+                                        certificate?.data?.date?.toDate() | date:'longDate'}}</h5>
                                 </ion-text>
                             </ion-col>
                         </ion-row>
@@ -171,26 +193,31 @@
     </div>
     <div *ngIf="mentor">
         <ion-header>
-            <h1>Current Clients</h1>
+            <h1 style="text-align: center; color: white;">Tämänhetkiset asiakkaat</h1>
         </ion-header>
         <ul class="inline" *ngIf="!query">
             <li *ngFor="let friend of data.friendList let i = index" (click)="presentClient(i)">
                 <ion-card class="white">
                     <div>
                         <ion-row>
-                            <ion-col size="5" >
-                                <ion-img *ngIf="friend.senderPhotoURL" id="boxshadow" class="max" [src]="friend.senderPhotoURL"></ion-img>
-                                <ion-img *ngIf="friend.receiverPhotoURL" id="boxshadow2" class="max" [src]="friend.receiverPhotoURL"></ion-img>
-                           
+                            <ion-col size="4">
+                                <ion-img *ngIf="friend.senderPhotoURL" id="boxshadow" class="max"
+                                         [src]="friend.senderPhotoURL"></ion-img>
+                                <ion-img *ngIf="friend.receiverPhotoURL" id="boxshadow2" class="max"
+                                         [src]="friend.receiverPhotoURL"></ion-img>
+
                             </ion-col>
-                            <ion-col class="cerText" size="7" align-self-center>
+                            <ion-col class="cerText" size="8" align-self-center>
                                 <ion-text>
-                                    <h4 class="textHeader" style="text-transform: none">{{friend.receiverNickname}} </h4>
+                                    <h4 class="textHeader" style="text-transform: none">
+                                        {{friend.receiverNickname}} </h4>
                                     <h4 class="textHeader" style="text-transform: none">{{friend.senderNickname}} </h4>
                                 </ion-text>
                                 <ion-text>
-                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{ friend.receiverEmail}}</h5>
-                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px;"> {{ friend.senderEmail}}</h5>
+                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ friend.receiverEmail}}</h5>
+                                    <h5 style="color: #d8e1ff; font-size: 14px; margin-left: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ friend.senderEmail}}</h5>
                                 </ion-text>
                             </ion-col>
                         </ion-row>

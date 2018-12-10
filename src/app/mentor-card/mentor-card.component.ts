@@ -100,6 +100,8 @@ export class MentorCardComponent implements OnInit {
     imageSources = new Array();
     videoSources = new Array();
     audioSources = new Array();
+    commentSum = 0;
+    commentAvg;
     commentIndex;
     tempId;
     initialRating;
@@ -204,11 +206,13 @@ export class MentorCardComponent implements OnInit {
     }
 
     deleteComment(i) {
-        console.log(this.commentIndex);
+        console.log(this.data.commentData);
+        console.log(this.data.commentData[i].id);
         this.afs.collection('certificates')
             .doc(this.cid)
-            .collection('comments').doc(this.commentData[i].id).delete();
+            .collection('comments').doc(this.data.commentData[i].id).delete();
     }
+
     async confirmDelete(i) {
         const alert = await this.alertController.create({
             message: '<strong>Delete comment?</strong>',
@@ -229,6 +233,7 @@ export class MentorCardComponent implements OnInit {
         });
         await alert.present();
     }
+
     setStar(data: any) {
         const collectionRef = this.afs.collection('certificates').doc(this.cid).collection('ratings').doc(this.data.user.uid);
         this.rating = data + 1;
@@ -242,7 +247,21 @@ export class MentorCardComponent implements OnInit {
         collectionRef.set({
             rating: this.rating,
             ratedBy: this.data.user.uid,
+            nickname: this.data.user.nickName,
+            photoUrl: this.data.user.photoURL,
         });
+    }
+
+    getAverageRating() {
+        for (let i = 0; i < this.data.ratingData.length; i++) {
+            this.commentSum += parseInt(this.data.ratingData[i].rating, 10);
+            console.log(this.data.ratingData[i].rating);
+            console.log(this.commentSum);
+        }
+        this.commentAvg = Math.round(this.commentSum / this.data.ratingData.length);
+        console.log(this.commentAvg);
+        const collectionRef = this.afs.collection('certificates').doc(this.cid);
+        collectionRef.set({ averageRating: this.commentAvg}, {merge: true});
     }
 
     ngOnInit() {
@@ -262,10 +281,15 @@ export class MentorCardComponent implements OnInit {
             this.data.commentData = comments;
             console.log(this.data.commentData);
         }));
-        this.data.getRatings(this.cid).take(1).subscribe(( ratings => {
-            this.data.ratingData = ratings;
-            this.initialRating = this.data.ratingData[0].rating;
-            this.setStar(this.initialRating - 1);
+        this.data.getRatings(this.cid).take(1).subscribe((ratings => {
+            if (ratings) {
+                this.data.ratingData = ratings;
+                this.initialRating = this.data.ratingData[0].rating;
+                this.setStar(this.initialRating - 1);
+                this.getAverageRating();
+            } else {
+                console.log('No ratings yet');
+            }
         }));
 
     }

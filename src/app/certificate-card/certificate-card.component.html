@@ -15,7 +15,8 @@
                     <ion-card-header>
                         <ion-row class="row">
                             <ion-col size="1" align-self-center>
-                                <ion-icon style="font-size: 15px; font-weight: 600; color: white;" name="time"></ion-icon>
+                                <ion-icon style="font-size: 15px; font-weight: 600; color: white;"
+                                          name="time"></ion-icon>
                             </ion-col>
                             <ion-col size="10" align-self-center>
                                 <p style="color: white;">{{ pageData?.date?.toDate() | date:'medium'}}</p>
@@ -23,7 +24,8 @@
                         </ion-row>
                         <ion-card-title>
                             <ion-input style="color: white;" class="input" spellcheck="false" [(ngModel)]="title"
-                                required [readonly]="isReadOnly" [ngModelOptions]="{standalone:true}"></ion-input>
+                                       required [readonly]="isReadOnly"
+                                       [ngModelOptions]="{standalone:true}"></ion-input>
                         </ion-card-title>
                     </ion-card-header>
                     <div *ngFor="let file of imageSources, let i = index;">
@@ -32,7 +34,8 @@
                                 <ion-icon name="close"></ion-icon>
                             </ion-button>
                             <!-- <ion-card-content (click)="minimize(i)">-->
-                            <img *ngIf="file?.imgsrc" (click)="minimize(i)" src="{{file?.imgsrc}}" alt="ei toimi" class="img-responsive" />
+                            <img *ngIf="file?.imgsrc" (click)="minimize(i)" src="{{file?.imgsrc}}" alt="ei toimi"
+                                 class="img-responsive"/>
                             <!--</ion-card-content>-->
                         </ion-card>
                     </div>
@@ -43,8 +46,8 @@
                             </ion-button>
                             <ion-card-content>
                                 <video *ngIf="file?.videosrc" controls="controls" preload="metadata" autoplay="autoplay"
-                                    webkit-playsinline="webkit-playsinline" class="videoPlayer">
-                                    <source [attr.src]="file?.videosrc" type="video/mp4" />
+                                       webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                                    <source [attr.src]="file?.videosrc" type="video/mp4"/>
                                 </video>
                             </ion-card-content>
                         </ion-card>
@@ -63,16 +66,36 @@
                     </div>
                     <ion-card-content>
                         <ion-textarea style="color: white;" autosize spellcheck="false" class="input" required
-                            [readonly]="isReadOnly" [(ngModel)]="text" [ngModelOptions]="{standalone:true}"></ion-textarea>
+                                      [readonly]="isReadOnly" [(ngModel)]="text"
+                                      [ngModelOptions]="{standalone:true}"></ion-textarea>
                     </ion-card-content>
                 </ion-card>
-                <ion-card class="background">
-                    <div class="justify">
-                        <a style="color: #faff23;" *ngFor="let item of starList; let i = index">
-                            <i *ngIf="item" class="fa fa-star-o fa-lg"></i>
-                            <i *ngIf="!item" class="fa fa-star fa-lg"></i>
-                        </a>
+                <div class="buttonz">
+                    <ion-button style="text-transform: none" (click)="showRatings()">Näytä mentorien arvostelut</ion-button>
+                </div>
+                <ion-card class="background" [@slide]="showratings">
+                    <div class="justify" *ngFor="let rating of certificateRatings">
+                        <ion-row>
+                            <ion-col align-items-start size="3">
+                                <ion-img class="max smaller" [src]=rating?.photoUrl></ion-img>
+                            </ion-col>
+                            <ion-col  align-self-center size="4">
+                                {{rating.nickname}}
+                            </ion-col>
+                            <ion-col size="5" align-self-center>
+                                <a style="color: #faff23;">
+                                    <i *ngIf="rating.rating >= 1" class="fa fa-star fa-lg"></i>
+                                    <i *ngIf="rating.rating >= 2" class="fa fa-star fa-lg"></i>
+                                    <i *ngIf="rating.rating >= 3" class="fa fa-star fa-lg"></i>
+                                    <i *ngIf="rating.rating >= 4" class="fa fa-star fa-lg"></i>
+                                    <i *ngIf="rating.rating >= 5" class="fa fa-star fa-lg"></i>
+                                </a>
+                            </ion-col>
+                        </ion-row>
                     </div>
+                </ion-card>
+                <ion-card class="background">
+
                     <ion-item class="listlabel" *ngFor="let comment of data?.commentData, let i = index">
                         <ion-label>
                             <ion-grid fix class="searchbox">
@@ -82,7 +105,8 @@
                                         <ion-img class="max smaller" [src]=comment?.senderPhotoURL></ion-img>
                                     </ion-col>
                                     <ion-col size="8" offset="" align-self-center class="ellipsis">
-                                        <ion-button (click)="confirmDelete(i)" *ngIf="comment?.sender === data.user.uid" style="margin-bottom: 5px; font-size: 12px;">
+                                        <ion-button (click)="confirmDelete(i)" *ngIf="comment?.sender === data.user.uid"
+                                                    style="margin-bottom: 5px; font-size: 12px;">
                                             <ion-icon slot="icon-only" name="close"></ion-icon>
                                         </ion-button>
                                         <p>{{comment?.time | date:'medium'}}</p>
@@ -104,11 +128,13 @@
                 <div class="buttonz" [@buttons]="editMode">
 
                     <ion-col col-6>
-                        <ion-button expand="block" id="save" *ngIf="editMode"  color="primary" ion-button block (click)="updateCertificate(this.cid)">Tallenna
+                        <ion-button expand="block" id="save" *ngIf="editMode" color="primary" ion-button block
+                                    (click)="updateCertificate(this.cid)">Tallenna
                         </ion-button>
                     </ion-col>
                     <ion-col col-6>
-                        <ion-button expand="block" id="del" *ngIf="editMode" color="danger" ion-button block (click)="confirmDelete('Delete this document?')">Poista
+                        <ion-button expand="block" id="del" *ngIf="editMode" color="danger" ion-button block
+                                    (click)="confirmDelete('Delete this document?')">Poista
                         </ion-button>
                     </ion-col>
                 </div>

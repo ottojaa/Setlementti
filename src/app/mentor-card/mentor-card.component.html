@@ -60,14 +60,23 @@
                 </ion-card>
 
                 <ion-card class="background">
-
-                    <div class="justify">
-                        <a style="color: #faff23;" *ngFor="let item of starList; let i = index"
-                           (click)="setStar(i)">
-                            <i *ngIf="item" class="fa fa-star-o fa-lg"></i>
-                            <i *ngIf="!item" class="fa fa-star fa-lg"></i>
-                        </a>
-                    </div>
+                    <ion-row align-items-center justify-content-around>
+                        <ion-col *ngIf="data?.ratingData?.length === 0" style="text-align: center;">
+                            <p>Arvostele tämä taito:</p>
+                        </ion-col>
+                        <ion-col *ngIf="data?.ratingData?.length > 0">
+                            <p>Antamasi tähdet: </p>
+                        </ion-col>
+                        <ion-col>
+                            <div class="justify">
+                                <a style="color: #faff23;" *ngFor="let item of starList; let i = index"
+                                   (click)="setStar(i)">
+                                    <i *ngIf="item" class="fa fa-star-o fa-lg"></i>
+                                    <i *ngIf="!item" class="fa fa-star fa-lg"></i>
+                                </a>
+                            </div>
+                        </ion-col>
+                    </ion-row>
 
                     <ion-item>
                         <ion-label style="color: white;" position="floating">Kommenttikenttä</ion-label>

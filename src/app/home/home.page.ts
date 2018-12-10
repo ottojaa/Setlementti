@@ -39,6 +39,7 @@ interface CV {
 interface Certificate {
     author: string;
     date: string;
+    averageRating: number;
     files: [];
     text: string;
     title: string;
@@ -365,6 +366,7 @@ checkCV() {
             return actions.map(a => {
                 const data = a.payload.doc.data() as Certificate;
                 const id = a.payload.doc.id;
+                console.log(data);
                 return {id, data};
             });
         });

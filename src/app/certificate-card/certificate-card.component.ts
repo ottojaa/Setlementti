@@ -35,6 +35,7 @@ interface Friend {
     sender: string;
     senderEmail: string;
 }
+
 @Component({
     selector: 'app-certificate-card',
     templateUrl: './certificate-card.component.html',
@@ -98,7 +99,9 @@ export class CertificateCardComponent implements OnInit {
     imageSources = new Array();
     videoSources = new Array();
     audioSources = new Array();
-    initialRating;
+    certificateRatings: Array<any> = [];
+    showratings;
+    numberOfRatings;
     rating;
     starList: boolean[] = [true, true, true, true, true];
     editMode = false;
@@ -109,6 +112,7 @@ export class CertificateCardComponent implements OnInit {
     mentorArray;
     friends;
     identifier;
+
     constructor(private nav: NavController,
                 private modalController: ModalController,
                 public data: DataService,
@@ -259,6 +263,9 @@ export class CertificateCardComponent implements OnInit {
         this.toggleReadOnly();
         return modalRef.set(data);
     }
+    showRatings() {
+        this.showratings = this.showratings === 'out' ? 'in' : 'out';
+    }
 
     toggleReadOnly() {
         this.editMode = !this.editMode;
@@ -292,6 +299,7 @@ export class CertificateCardComponent implements OnInit {
                 }
             });
     }
+
     setStar(data: any) {
         const collectionRef = this.afs.collection('certificates').doc(this.cid).collection('ratings').doc(this.data.user.uid);
         this.rating = data + 1;
@@ -302,10 +310,6 @@ export class CertificateCardComponent implements OnInit {
                 this.starList[i] = true;
             }
         }
-        collectionRef.set({
-            rating: this.rating,
-            ratedBy: this.data.user.uid,
-        });
     }
 
     ngOnInit() {
@@ -317,7 +321,9 @@ export class CertificateCardComponent implements OnInit {
         this.query = '';
         this.mentorTrue = false;
         this.mentorArray = [];
+        let i = 0;
         this.identifier = 'out';
+        this.showratings = 'out';
         console.log(this.data.friendList);
         this.approved();
         this.data.getComments(this.cid).subscribe((comments => {
@@ -325,64 +331,75 @@ export class CertificateCardComponent implements OnInit {
             this.data.commentData = comments;
             console.log(this.data.commentData);
         }));
-        this.data.getRatings(this.cid).take(1).subscribe(( ratings => {
+        this.data.getRatings(this.cid).subscribe((ratings => {
+            console.log(ratings);
             this.data.ratingData = ratings;
-            this.initialRating = this.data.ratingData[0].rating;
-            this.setStar(this.initialRating - 1);
+            console.log(this.data.ratingData[0].rating);
+            ratings.forEach(() => {
+                this.certificateRatings.push({
+                    ratedBy: ratings[i].ratedBy,
+                    rating: ratings[i].rating,
+                    nickname: ratings[i].nickname,
+                    photoUrl: ratings[i].photoUrl
+                });
+                console.log(this.certificateRatings);
+                i++;
+                if (i === ratings.length) {
+                    this.numberOfRatings = Array(this.certificateRatings.length).fill(0).map((x, p) => p);
+                    console.log(this.numberOfRatings);
+                }
+            });
         }));
-
     }
 
     // päivityksiä
-   approved() {
-    const clientRef = this.afs.doc(`users/${this.data.user.uid}/`);
-    const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
-    this.friends = mentorCol.snapshotChanges().map(actions => {
-        return actions.map(a => {
-            for (let i = 0; i < this.data.allusers.length; i++) {
-            const id = a.payload.doc.data();
-            if (this.data.allusers[i].uid === id.sender) {
-                const data = this.data.allusers[i];
-                console.log(id);
-            return {id, data};
-            }
-            }
+    approved() {
+        const clientRef = this.afs.doc(`users/${this.data.user.uid}/`);
+        const mentorCol = clientRef.collection('friends', ref => ref.where('approved', '==', true));
+        this.friends = mentorCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                for (let i = 0; i < this.data.allusers.length; i++) {
+                    const id = a.payload.doc.data();
+                    if (this.data.allusers[i].uid === id.sender) {
+                        const data = this.data.allusers[i];
+                        console.log(id);
+                        return {id, data};
+                    }
+                }
+            });
         });
-    });
-}
+    }
 
 
-
-
-/*getMentors() {
-    this.mentors = this.userCol.snapshotChanges().map(actions => {
-        return actions.map(a => {
-            const data = a.payload.doc.data() as User;
-            const id = a.payload.doc.id;
-            return { id, data };
+    /*getMentors() {
+        this.mentors = this.userCol.snapshotChanges().map(actions => {
+            return actions.map(a => {
+                const data = a.payload.doc.data() as User;
+                const id = a.payload.doc.id;
+                return { id, data };
+            });
         });
-    });
-}*/
+    }*/
 
-pickMentors() {
-    if ( this.mentorTrue === false) {
-    this.mentorTrue = true;
-    } else {
-        
-        this.mentorArray = [];
-        this.mentorTrue = false;
-    }
-    this.identifier = this.identifier === 'out' ? 'in' : 'out';
-}
+    pickMentors() {
+        if (this.mentorTrue === false) {
+            this.mentorTrue = true;
+        } else {
 
-pickMentor(uid) {
-    if (this.mentorArray.includes(uid)) {
-        const index = this.mentorArray.indexOf(uid);
-        this.mentorArray.splice(index, 1);
-    } else {
-    this.mentorArray.push(uid);
+            this.mentorArray = [];
+            this.mentorTrue = false;
+        }
+        this.identifier = this.identifier === 'out' ? 'in' : 'out';
     }
-}
+
+    pickMentor(uid) {
+        if (this.mentorArray.includes(uid)) {
+            const index = this.mentorArray.indexOf(uid);
+            this.mentorArray.splice(index, 1);
+        } else {
+            this.mentorArray.push(uid);
+        }
+    }
 
 }
 
